@@ -9,7 +9,7 @@ public class LP1L1 {
     public static void main(String[] args) {
     	Scanner in =new Scanner(System.in);
     	Num y;
-    	System.out.println("Enter Big Number");
+    	System.out.println("Enter Biggest Number");
     	y = new Num(in.next());
     	System.out.println("Enter base");
     	y.setBase(in.nextLong());
