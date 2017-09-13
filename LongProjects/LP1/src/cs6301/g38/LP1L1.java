@@ -21,9 +21,16 @@ public class LP1L1 {
  	y.setBase(in.nextLong());
  	y.toBase();
  	
+<<<<<<< HEAD
  	Num z = Num.add(x, y);
  	z.printList();
+=======
+ 	Num add = Num.add(x, y);
+ 	System.out.println(add.outList);
+>>>>>>> 32a624c7d2a353bbbd946f230ec670c8410201b6
  	
+ 	Num sub = Num.subtract(x, y);
+ 	System.out.println(sub.outList);
  	in.close();
 	//Num z = Num.add(x, y);
 	//System.out.println(z);
