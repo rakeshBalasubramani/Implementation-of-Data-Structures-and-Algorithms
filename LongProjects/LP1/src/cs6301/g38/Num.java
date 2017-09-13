@@ -115,8 +115,8 @@ public class Num  implements Comparable<Num> {
     static Num subtract(Num a, Num b) {
     	long borrow = 0;
 	   	long difference = 0;
-	   	ListIterator<Long> it1 = a.num1.listIterator();
-	   	ListIterator<Long> it2 = b.num1.listIterator();
+	   	ListIterator<Long> it1 = a.num.listIterator();
+	   	ListIterator<Long> it2 = b.num.listIterator();
 	   	Num z = new Num();
 	   	while(it1.hasNext() || it2.hasNext() ){
 	   		difference = next(it1) - next(it2) - borrow ;
@@ -125,14 +125,14 @@ public class Num  implements Comparable<Num> {
 	   			difference += a.base;
 	   		}
 	   		else borrow=0;
-	   		z.outList.add(difference);
+	   		z.num.add(difference);
 	   		
 	   		//borrow = difference / a.base;
 	   		System.out.println("diff "+ difference+ " borrow "+ borrow);
 	   		
 	   	}
 	   if (borrow > 0)
-		   z.outList.add(borrow);
+		   z.num.add(borrow);
 	   
 		return z;
     }
