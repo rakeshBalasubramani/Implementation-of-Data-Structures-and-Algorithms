@@ -26,9 +26,11 @@ public class LP1L1 {
  	y.toBase();
  	y.printList();
  	
- 	Num z = Num.add(x, y);
- 	System.out.println(z.outList);
+ 	Num add = Num.add(x, y);
+ 	System.out.println(add.outList);
  	
+ 	Num sub = Num.subtract(x, y);
+ 	System.out.println(sub.outList);
  	in.close();
 	//Num z = Num.add(x, y);
 	//System.out.println(z);

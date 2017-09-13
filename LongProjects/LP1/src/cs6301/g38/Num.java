@@ -121,7 +121,28 @@ public class Num  implements Comparable<Num> {
 	
 
     static Num subtract(Num a, Num b) {
-	return null;
+    	long borrow = 0;
+	   	long difference = 0;
+	   	ListIterator<Long> it1 = a.num1.listIterator();
+	   	ListIterator<Long> it2 = b.num1.listIterator();
+	   	Num z = new Num();
+	   	while(it1.hasNext() || it2.hasNext() ){
+	   		difference = next(it1) - next(it2) - borrow ;
+	   		if(difference < 0){
+	   			borrow = 1;
+	   			difference += a.base;
+	   		}
+	   		else borrow=0;
+	   		z.outList.add(difference);
+	   		
+	   		//borrow = difference / a.base;
+	   		System.out.println("diff "+ difference+ " borrow "+ borrow);
+	   		
+	   	}
+	   if (borrow > 0)
+		   z.outList.add(borrow);
+	   
+		return z;
     }
 
     // Implement Karatsuba algorithm for excellence credit
