@@ -104,7 +104,7 @@ public class Num  implements Comparable<Num> {
 	   	}
 	   if (carry > 0)
 		   z.num.add(carry);
-	   
+	   	
 		return z;
    }
 

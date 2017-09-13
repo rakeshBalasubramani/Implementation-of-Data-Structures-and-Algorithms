@@ -11,6 +11,7 @@ public class LP1L1 {
  	Num x;
  	System.out.println("Enter Biggest Number");
  	x = new Num(in.next());
+ 	x.printList();
  	System.out.println("Enter base");
  	x.setBase(in.nextLong());
  	x.printList();
