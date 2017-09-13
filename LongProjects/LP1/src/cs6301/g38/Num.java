@@ -38,11 +38,7 @@ public class Num  implements Comparable<Num> {
 
     Num(long x) {
     	
-    	String str = Long.toString(x);
-    	String[] temp = str.split("");
-    	for(String i:temp) {
-    		num.addFirst(Long.parseLong(i));
-    	}
+    	num.addFirst(x);
     }
     public Num() {
 		// TODO Auto-generated constructor stub
@@ -76,9 +72,19 @@ public class Num  implements Comparable<Num> {
     	}
     }
     public void toDecimal() {
-//    	// int p=0;
-//    	for(Long i:num) {
-//    	}
+    	long p=0;
+    	Num temp;
+    	Num decimal=new Num(0);
+    	decimal.setBase(10);
+
+    	for(Long i:num) {
+    		temp=new Num(i*(long)Math.pow(base,p++));
+    		temp.setBase(10);
+    		decimal=add(decimal,temp);
+    	}
+    	num.clear();
+    	for(Long i:decimal.num)
+    		num.add(i);
     }
    
     
@@ -89,6 +95,7 @@ public class Num  implements Comparable<Num> {
 	   	ListIterator<Long> it1 = a.num.listIterator();
 	   	ListIterator<Long> it2 = b.num.listIterator();
 	   	Num z = new Num();
+	   	z.setBase(a.base);
 	   	while(it1.hasNext() || it2.hasNext() || carry>0){
 	   		sum = next(it1) + next(it2) + carry ;
 	   		z.num.add(sum % a.base);
