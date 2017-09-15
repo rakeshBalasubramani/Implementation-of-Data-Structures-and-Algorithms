@@ -98,12 +98,12 @@ public class Num  implements Comparable<Num> {
 	   	z.setBase(a.base);
 	   	while(it1.hasNext() || it2.hasNext() || carry>0){
 	   		sum = next(it1) + next(it2) + carry ;
-	   		z.num.add(sum % a.base);
+	   		z.num.addFirst(sum % a.base);
 	   		carry = sum/a.base;
 	   		
 	   	}
 	   if (carry > 0)
-		   z.num.add(carry);
+		   z.num.addFirst(carry);
 	   	
 		return z;
    }
@@ -132,24 +132,101 @@ public class Num  implements Comparable<Num> {
 	   			difference += a.base;
 	   		}
 	   		else borrow=0;
-	   		z.num.add(difference);
+	   		z.num.addFirst(difference);
 	   		
 	   		//borrow = difference / a.base;
 	   		System.out.println("diff "+ difference+ " borrow "+ borrow);
 	   		
 	   	}
 	   if (borrow > 0)
-		   z.num.add(borrow);
+		   z.num.addFirst(borrow);
 	   
 		return z;
     }
 
     // Implement Karatsuba algorithm for excellence credit
     static Num product(Num a, Num b) {
-	return null;
+
+    	Num al=new Num();
+    	Num ah=new Num();
+    	Num bl=new Num();
+    	Num bh =new Num();
+    	int k=b.num.size()/2  ; //assuming b is smaller
+    	
+    	ah.setBase(a.getBase());
+    	al.setBase(a.getBase());
+    	bl.setBase(b.getBase());
+    	bh.setBase(b.getBase());
+
+    	for(int i=0;i<k;i++)
+    	{
+    		al.num.add(a.num.get(i));
+    		bl.num.add(b.num.get(i));
+    	}
+    	
+    	for(int j=k;j<b.num.size();j++){
+    		bh.num.add(b.num.get(j));
+    	}
+    	
+    	for(int j=k;j<a.num.size();j++){
+    		ah.num.add(a.num.get(j));
+    	}
+    	
+    	if(k==0)
+    	{
+    		return new Num();
+    	}
+    	
+    	if(k==1)
+    	{
+    		return multiply(a,b);
+    	}
+    	
+    	Num prod1 = product (ah,bh);
+        Num prod2 = product (al,bl);
+        Num prod3=  product(add(al,ah), add(bl,bh));
+     
+        return add(add(shift(prod1,2*k),shift(subtract(subtract(prod3,prod1),prod2),k)),prod2);
     }
 
-    // Use divide and conquer
+    private static Num multiply(Num a, Num b) {
+		
+    	Num res=new Num();
+    	long prod;
+    	long carry=0L;
+    	ListIterator<Long> it1 = a.num.listIterator();
+    	long bb=a.base;
+    	System.out.println("base:"+ bb);
+    	while(it1.hasNext())
+    	{
+    		prod=next(it1)*b.num.getFirst();
+    		prod+=carry;
+    		carry=prod/a.getBase();
+    		res.num.add(prod%(a.getBase()));
+    	}
+    	// for multiplying with msb
+    	prod=a.num.getLast()*b.num.getFirst();
+    	prod+=carry;
+    	res.num.add(prod%(a.getBase()));
+    	if(prod/a.getBase()>0)
+    	{
+    		res.num.add(prod/(a.getBase())); 
+    	}
+    	
+    	return res;
+	}
+
+	private static Num shift(Num prod1, int bits) {
+	
+    	for(int i=0;i<bits;i++)
+    	{
+    		prod1.num.addFirst(0L);
+    	}
+    	
+		return prod1;
+	}
+
+	// Use divide and conquer
     static Num power(Num a, long n) {
 	return null;
     }
