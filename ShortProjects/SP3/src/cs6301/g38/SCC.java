@@ -7,8 +7,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-import cs6301.g38.CC.CCVertex;
+import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
+
+import cs6301.g38.Graph;
 import cs6301.g38.Graph.Vertex;
+
+/**
+ * @author Avinash Venkatesh - axv165330 <br>
+ * 		   HariPriyaa - hum160030 <br>
+ * 		   Rakesh Balasubramani - rxb162130 <br>
+ * 		   Raj Kumar Panneer Selvam - rxp162130 
+ *
+ * @description This class is used to find the number of strongly connected components in the Input graph
+ */
+
 
 // code to find the strongly connected component 
 
@@ -16,31 +28,30 @@ public class SCC {
 
 	 // Class to store information about a vertex in this algorithm
     class CCVertex {
-	Graph.Vertex element;
-	boolean seen;
-	int cno;
-	CCVertex(Graph.Vertex u) {
-	    element = u;
-	    seen = false;
-	    cno = -1;
-	}
+		Graph.Vertex element;
+		boolean seen;
+		int cno;
+		CCVertex(Graph.Vertex u) {
+		    element = u;
+		    seen = false;
+		    cno = -1;
+		}
     }
+    
     // Algorithm uses a parallel array for storing information about vertices
     CCVertex[] ccVertex;
     Graph g;
     static List<Graph.Vertex> dfsFinishOrder = new ArrayList<Graph.Vertex>();
     static List<Graph.Vertex> dfsFinishOrder1 = new ArrayList<Graph.Vertex>();
     
-    
-
     public SCC(Graph g) {
 	this.g = g;
 	ccVertex = new CCVertex[g.size()];
-	for(Graph.Vertex u: g) { ccVertex[u.name] = new CCVertex(u); }
+	for(Graph.Vertex u: g) { ccVertex[u.getName()] = new CCVertex(u); }
     }
 
 	void runDFS() {
-		 // Main algorithm for finding the number of connected components of g using DFS
+		 // run DFS to find the finsih time order 
 		int cno = 0;
 		for(Graph.Vertex u: g) {
 		    if(!seen(u)) {
@@ -48,18 +59,18 @@ public class SCC {
 			dfsVisit(u, cno);
 		    }
 		}
-		//return cno;
 	}
 	
 	
+    /**
+     * @param u - vertex whose depth is to be explored
+     * @param cno - component number 
+     */
     void dfsVisit(Graph.Vertex u, int cno) {
 		visit(u, cno);
-		//System.out.println("vistied "+ u);
-		
-		for(Graph.Edge e: u.adj) {
-			
+		for(Graph.Edge e: u) {
 		    Graph.Vertex v = e.otherEnd(u);
-		    System.out.println("Visited " + u +" Other end "+ v);
+		    //System.out.println("Visited " + u +" Other end "+ v);
 		    if(!seen(v)) {
 			dfsVisit(v, cno);
 			}
@@ -67,23 +78,25 @@ public class SCC {
 		dfsFinishOrder.add(u);
     }
 
-    void dfsVisit1(Graph.Vertex u, int cno1) {
+    /** method to run DFS after reversing graph edges
+     * 
+     * @param u 
+     * @param cno1
+     */
+    void dfsVisitAfterEdgeReverse(Graph.Vertex u, int cno1) {
 		visit(u, cno1);
-		//System.out.println("vistied "+ u);
-		
-		for(Graph.Edge e: u.revAdj) {
-			
+		for(Graph.Edge e: u.revAdj) {			
 		    Graph.Vertex v = e.otherEnd(u);
-		    System.out.println("Visited " + u +" Other end "+ v);
+		    //System.out.println("Visited " + u +" Other end "+ v);
 		    if(!seen(v)) {
-			dfsVisit1(v, cno1);
+			dfsVisitAfterEdgeReverse(v, cno1);
 			}
 		}
 		dfsFinishOrder1.add(u);
 		return;
     }
     
-    
+   // check whether the vertex is already visited 
     boolean seen(Graph.Vertex u) {
 	CCVertex ccu = getCCVertex(u);
 	return ccu.seen;
@@ -104,7 +117,7 @@ public class SCC {
     }
     // From Vertex to CCVertex (ugly)
     CCVertex getCCVertex(Graph.Vertex u) {
-	return ccVertex[u.name];
+	return ccVertex[u.getName()];
     }
 
     // From CCVertex to Vertex
@@ -112,30 +125,28 @@ public class SCC {
 	return c.element;
     }
 
-	
-	public void print(){
-		System.out.println(dfsFinishOrder);
-	}
-	
-	public void reverse(){
-		
+    //method to run DFS 
+	public int reverse(){
 		int cno1 = 0;
+		// unvisit evry edge which was visited during the previous DFS run
 		for(Graph.Vertex v : this.g){
 			unvisit(v);
 		}
 			
-		Iterator<Graph.Vertex> it = dfsFinishOrder.iterator();
-		while(it.hasNext()){
+		java.util.ListIterator<Vertex> it = dfsFinishOrder.listIterator(dfsFinishOrder.size());
+		
+		// run DFS in the reverse order of finish time order of previous DFS run
+		while(it.hasPrevious()){
 			// CCVertex cc1 = new CCVertex(it.next());
-			Graph.Vertex vertex = it.next();
-			
+			Graph.Vertex vertex = it.previous();
 			System.out.println("Vertex" + vertex);
 			if(!seen(vertex)){
 				cno1++;
-				dfsVisit1(vertex, cno1);				
+				dfsVisitAfterEdgeReverse(vertex, cno1);				
 			}
 		}
-		System.out.println("No of strongly connected components " + cno1);
+		
+		return cno1;
 	}
 	
 	public static void main(String[] args) throws FileNotFoundException {
@@ -150,21 +161,17 @@ public class SCC {
         SCC cc = new SCC(g); 
         cc.runDFS();
         System.out.println("Finish time order");
-        cc.print();
-
-        System.out.println(" Printing reversed graph");
-        cc.reverse();
-        
-        //System.out.println("Input Graph has " + nc + " components:");
-    	System.out.println(" order "+ dfsFinishOrder1);
+        System.out.println(dfsFinishOrder);
+        int nscc = cc.reverse();
+        System.out.println("Finish time order after reversing graph "+ dfsFinishOrder1);
+    	System.out.println("Input garpgh has " + nscc + " strongly connected compenents");
 	}
-
 }
 
 /*
 
 sample input --- this is  the graph he showed 
-11 16
+11 17
 1 11 1 
 11 4 1 
 11 6 1
@@ -181,4 +188,4 @@ sample input --- this is  the graph he showed
 3 10 1
 6 3 1
 10 6 1
-*/
+7 8 1*/
