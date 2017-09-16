@@ -160,3 +160,25 @@ public class SCC {
 	}
 
 }
+
+/*
+
+sample input --- this is  the graph he showed 
+11 16
+1 11 1 
+11 4 1 
+11 6 1
+11 3 1
+9 11 1
+4 9 1
+4 1 1
+5 4 1 
+5 8 1
+5 7 1
+2 7 1
+8 2 1
+2 3 1
+3 10 1
+6 3 1
+10 6 1
+*/
