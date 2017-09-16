@@ -7,8 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
-import cs6301.g38.CC.CCVertex;
-import cs6301.g38.Graph.Vertex;
+import com.sun.xml.internal.bind.v2.runtime.reflect.ListIterator;
+
+import cs6301.g00.Graph;
+import cs6301.g00.Graph.Vertex;
 
 // code to find the strongly connected component 
 
@@ -36,7 +38,7 @@ public class SCC {
     public SCC(Graph g) {
 	this.g = g;
 	ccVertex = new CCVertex[g.size()];
-	for(Graph.Vertex u: g) { ccVertex[u.name] = new CCVertex(u); }
+	for(Graph.Vertex u: g) { ccVertex[u.getName()] = new CCVertex(u); }
     }
 
 	void runDFS() {
@@ -56,7 +58,7 @@ public class SCC {
 		visit(u, cno);
 		//System.out.println("vistied "+ u);
 		
-		for(Graph.Edge e: u.adj) {
+		for(Graph.Edge e: u) {
 			
 		    Graph.Vertex v = e.otherEnd(u);
 		    System.out.println("Visited " + u +" Other end "+ v);
@@ -104,7 +106,7 @@ public class SCC {
     }
     // From Vertex to CCVertex (ugly)
     CCVertex getCCVertex(Graph.Vertex u) {
-	return ccVertex[u.name];
+	return ccVertex[u.getName()];
     }
 
     // From CCVertex to Vertex
@@ -124,10 +126,10 @@ public class SCC {
 			unvisit(v);
 		}
 			
-		Iterator<Graph.Vertex> it = dfsFinishOrder.iterator();
-		while(it.hasNext()){
+		java.util.ListIterator<Vertex> it = dfsFinishOrder.listIterator(dfsFinishOrder.size());
+		while(it.hasPrevious()){
 			// CCVertex cc1 = new CCVertex(it.next());
-			Graph.Vertex vertex = it.next();
+			Graph.Vertex vertex = it.previous();
 			
 			System.out.println("Vertex" + vertex);
 			if(!seen(vertex)){
