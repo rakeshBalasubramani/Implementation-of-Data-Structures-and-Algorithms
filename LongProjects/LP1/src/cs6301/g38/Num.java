@@ -132,19 +132,38 @@ public class Num  implements Comparable<Num> {
 	   			difference += a.base;
 	   		}
 	   		else borrow=0;
-	   		z.num.addFirst(difference);
+	   		z.num.add(difference);
 	   		
 	   		//borrow = difference / a.base;
-	   		System.out.println("diff "+ difference+ " borrow "+ borrow);
+	   		//System.out.println("diff "+ difference+ " borrow "+ borrow);
 	   		
 	   	}
 	   if (borrow > 0)
 		   z.num.addFirst(borrow);
 	   
+	   removeLeadingZeros(z.num);
+	    
 		return z;
     }
 
-    // Implement Karatsuba algorithm for excellence credit
+    
+    private static void removeLeadingZeros(LinkedList<Long> num) {
+		
+    	ListIterator<Long> it = num.listIterator(num.size());
+		int c =  num.size();
+		while(it.hasPrevious() && c!=1){
+			c--;
+			 if(it.previous() != 0 ){
+			break;
+			}
+			else
+			{
+				it.remove();
+			}
+		}
+    }
+
+	// Implement Karatsuba algorithm for excellence credit
     static Num product(Num a, Num b) {
 
     	Num al=new Num();
