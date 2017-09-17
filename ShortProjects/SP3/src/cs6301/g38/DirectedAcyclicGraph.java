@@ -1,12 +1,16 @@
 package cs6301.g38;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Stack;
+
 import cs6301.g38.Graph.Vertex;
 
 public class DirectedAcyclicGraph {
 
 	// Class to store information about a vertex in this algorithm
-	class DFSVertex {
+	static class DFSVertex {
 		Graph.Vertex element;
 		boolean seen;
 
@@ -16,82 +20,83 @@ public class DirectedAcyclicGraph {
 		}
 	}
 
-	DFSVertex[] dfsVertex;
-	Graph g;
-	static boolean checked;
-
+	private DFSVertex[] dfsVertex;
+	
+	private List<Vertex> ancestorVertex = new ArrayList <>();
 	public DirectedAcyclicGraph(Graph g) {
-		this.g = g;
 		dfsVertex = new DFSVertex[g.size()];
 		for (Graph.Vertex u : g) {
 			dfsVertex[u.name] = new DFSVertex(u);
 		}
 	}
 
-	private boolean DFS(Graph g) {
+	private boolean dfs(Graph g) {
 
-		boolean d =true;
+		boolean isBackEdgeFound =true;
 		for (Graph.Vertex u : g) {
 			if (!seen(u)) {
-				d = dfsVisit(u);
-				if (!d) {
+				isBackEdgeFound = dfsVisit(u);
+				if (!isBackEdgeFound) {
 					break;
 				}
 			}
 		}
-		return d;
+		return isBackEdgeFound;
 	}
 
 	private boolean dfsVisit(Vertex u) {
 
 		boolean DAG = true;
 		visit(u);
+		ancestorVertex.add(u);
 		for (Graph.Edge e : u) {
 			Graph.Vertex v = e.otherEnd(u);
-			if (!seen(v)) {
-				dfsVisit(v);
-			} else {
+			if (!seen(v) ) {
+				DAG= dfsVisit(v);
+			} else if ( isRecursionStack(v)) {
 				DAG = false; // back edge
-				checked = true;
 				break;
 			}
 		}
+		ancestorVertex.remove(u);
 		
-		if (checked) {
-			DAG = false;
-		}
+
 
 		return DAG;
 
 	}
 
-	boolean seen(Graph.Vertex u) {
+	private boolean isRecursionStack(Vertex v) {
+		return ancestorVertex.contains(v);
+	}
+
+	private boolean seen(Graph.Vertex u) {
 		DFSVertex dfs = getDFSVertex(u);
 		return dfs.seen;
 	}
 
 	// Visit a node by marking it as seen
-	void visit(Graph.Vertex u) {
+	private void visit(Graph.Vertex u) {
 		DFSVertex dfs = getDFSVertex(u);
 		dfs.seen = true;
+		
 	}
 
-	DFSVertex getDFSVertex(Graph.Vertex u) {
+	public DFSVertex getDFSVertex(Graph.Vertex u) {
 		return dfsVertex[u.name];
 	}
 
-	public boolean isDAG(DirectedAcyclicGraph graph) {
-
-		boolean isAcyclic = DFS(graph.g);
-		return isAcyclic;
+	public static boolean isDAG(Graph graph) {
+		DirectedAcyclicGraph dag = new DirectedAcyclicGraph(graph);
+		return dag.dfs(graph);
 	}
 
 	public static void main(String[] args) {
 
 		Scanner in = new Scanner(System.in);	
 		Graph g = Graph.readDirectedGraph(in);
-		DirectedAcyclicGraph dag = new DirectedAcyclicGraph(g);
-		boolean isDirectedAcyclicGraph = dag.isDAG(dag);
+		
+		boolean isDirectedAcyclicGraph = DirectedAcyclicGraph.isDAG(g);
 		if (isDirectedAcyclicGraph) {
 			System.out.println("Given directed graph is a DAG");
 		} else {
