@@ -15,7 +15,7 @@ import cs6301.g38.Graph.Vertex;
  *              using the inDegree of a vertex and also using DFS.
  *
  */
-public class TopologicalOrdering {
+public class TopologicalOrder {
 
 	private LinkedList<Vertex> order2 = new LinkedList<>(); // To get the
 															// topological order
@@ -128,13 +128,13 @@ public class TopologicalOrdering {
 	public static void main(String args[]) {
 		Scanner in = new Scanner(System.in);
 		Graph g = Graph.readDirectedGraph(in);
-		TopologicalOrdering tp = new TopologicalOrdering();
-		System.out.println("Order1 : " + tp.topoLogicalOrder1(g)); // Topological
+		TopologicalOrder tp = new TopologicalOrder();
+		System.out.println("Topological Order for algorithm 1 : " + tp.topoLogicalOrder1(g)); // Topological
 																	// order
 																	// with
 																	// algorithm
 																	// 1
-		System.out.println("Order2 : " + tp.topologicalOrder2(g)); // Topological
+		System.out.println("Topological Order for algorithm 2 : " + tp.topologicalOrder2(g)); // Topological
 																	// order
 																	// with
 																	// algorithm
