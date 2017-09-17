@@ -21,7 +21,7 @@ import cs6301.g38.Graph.Vertex;
  */
 public class TopologicalOrdering {
 
-	LinkedList<Graph.Vertex> order2 = new LinkedList<>();	// To get the order of the given graph using DFS.
+	LinkedList<Vertex> order2 = new LinkedList<>();	// To get the order of the given graph using DFS.
 	boolean[] seen;	// To mark the vertices as visited.
 	boolean isDAG = true;	// To check if the given graph is a DAG.
 	List<Vertex> recursionStack = new ArrayList<Vertex>();	//To store the visited vertices. 
