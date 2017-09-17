@@ -17,7 +17,7 @@ public class DirectedAcyclicGraph {
 	/**
 	 * @Description Class used to store vertex information.
 	 */
-	static class DFSVertex {
+	private static class DFSVertex {
 		Graph.Vertex element;
 		boolean seen;
 
@@ -33,8 +33,8 @@ public class DirectedAcyclicGraph {
 		}
 	}
 
-	private DFSVertex[] dfsVertex;
-	private boolean[] ancestorVertex;
+	private DFSVertex[] dfsVertex;// To store DFSVertex.
+	private boolean[] ancestorVertex; // To store information about ancestors whether they are in the current recursion stack.
 
 	/**
 	 * Constructor to initialize the DirectedAcyclicGraph properties.
@@ -100,7 +100,7 @@ public class DirectedAcyclicGraph {
 	}
 
 	/**
-	 * Function to find whether the vertex is an ancestor.
+	 * Function to find whether an vertex is an ancestor for the current vertex.
 	 * 
 	 * @param v
 	 *            - Vertex to be checked whether it is an ancestor.
@@ -134,7 +134,7 @@ public class DirectedAcyclicGraph {
 
 	}
 
-	public DFSVertex getDFSVertex(Graph.Vertex u) {
+	private DFSVertex getDFSVertex(Graph.Vertex u) {
 		return dfsVertex[u.name];
 	}
 
