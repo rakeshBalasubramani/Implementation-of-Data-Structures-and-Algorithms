@@ -14,27 +14,36 @@ public class LP1L1 {
  	x.printList();
  	System.out.println("Enter base");
  	x.setBase(in.nextLong());
- 	x.printList();
+ 	//x.printList();
  	System.out.println();
  	x.toBase();
  	x.printList();
- 	x.toDecimal();
+ 	//x.toDecimal();
+ 	//System.out.println();
+ 	//x.printList();
+ 	Num y;
+ 	System.out.println("Enter Biggest Number");
+ 	y = new Num(in.next());
+ 	y.printList();
+ 	System.out.println("Enter base");
+ 	y.setBase(in.nextLong());
+ 	//y.printList();
  	System.out.println();
- 	x.printList();
-// 	Num y;
-// 	System.out.println("\nEnter Biggest Number");
-// 	y = new Num(in.next());
-// 	System.out.println("Enter base");
-// 	y.setBase(in.nextLong());
-// 	y.toBase();
-// 	
-// 	Num z = Num.add(x, y);
-// 	z.printList();
-// 	Num add = Num.add(x, y);
-// 	add.printList();
-// 	
-// 	Num sub = Num.subtract(x, y);
-// 	sub.printList();
+ 	y.toBase();
+ 	y.printList();
+ 	//y.toDecimal();
+ 	//System.out.println();
+ 	//y.printList();
+ 	
+ 	Num z = Num.add(x, y);
+ 	System.out.println("\nAddition ");
+ 	//z.printList();
+ 	Num add = Num.add(x, y);
+ 	add.printList();
+ 	
+ 	System.out.println("\nSubtraction");
+ 	Num sub = Num.subtract(x, y);
+ 	sub.printList();
  	in.close();
  }
 }
