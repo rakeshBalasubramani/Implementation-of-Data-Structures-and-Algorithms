@@ -187,12 +187,17 @@ public class SCC {
 			cc.runDFS();
 			// System.out.println("Finish time order");
 			// System.out.println(dfsFinishOrder);
+			/*for (Graph.Vertex u : g) {
+				System.out.print("Vertex: " + u + " Component no: "  + + cc.getCCVertex(u).cno );
+				System.out.println();
+			}*/
+			System.out.println();
+			int scc = cc.dfsForTransposeGraph();
 			for (Graph.Vertex u : g) {
 				System.out.print("Vertex: " + u + " Component no: "  + + cc.getCCVertex(u).cno );
 				System.out.println();
 			}
-			System.out.println();
-			return cc.dfsForTransposeGraph();
+			return scc;
 	   }
 	   
 	
