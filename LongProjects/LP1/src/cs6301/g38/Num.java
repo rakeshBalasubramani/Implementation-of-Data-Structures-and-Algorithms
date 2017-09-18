@@ -29,19 +29,23 @@ public class Num  implements Comparable<Num> {
 	LinkedList<Long> num = new LinkedList<>();
   	
     /* Start of Level 1 */
-    Num(String s) {
+    public Num(String s) {
+    	base = defaultBase;
     	String [] temp = s.split("");
     	for(String i:temp) {
     		num.addFirst(Long.parseLong(i));
     	}
     }
 
-    Num(long x) {
-    	
-    	num.addFirst(x);
+    public Num(long x) {
+    	base = defaultBase;
+    	String s = Long.toString(x);
+    	String [] temp = s.split("");
+    	for(String i:temp) {
+    		num.addFirst(Long.parseLong(i));
+    	}
     }
     public Num() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void toBase() {
@@ -134,9 +138,6 @@ public class Num  implements Comparable<Num> {
 	   		else borrow=0;
 	   		z.num.add(difference);
 	   		
-	   		//borrow = difference / a.base;
-	   		//System.out.println("diff "+ difference+ " borrow "+ borrow);
-	   		
 	   	}
 	   if (borrow > 0)
 		   z.num.addFirst(borrow);
@@ -208,14 +209,13 @@ public class Num  implements Comparable<Num> {
         return add(add(shift(prod1,2*k),shift(subtract(subtract(prod3,prod1),prod2),k)),prod2);
     }
 
-    private static Num multiply(Num a, Num b) {
+    public static Num multiply(Num a, Num b) {
 		
     	Num res=new Num();
     	long prod;
     	long carry=0L;
     	ListIterator<Long> it1 = a.num.listIterator();
     	long bb=a.base;
-    	System.out.println("base:"+ bb);
     	while(it1.hasNext())
     	{
     		prod=next(it1)*b.num.getFirst();
@@ -246,8 +246,23 @@ public class Num  implements Comparable<Num> {
 	}
 
 	// Use divide and conquer
-    static Num power(Num a, long n) {
-	return null;
+    public static Num power(Num a, long n) {
+    	
+    	if(n==0) {
+    		return new Num(1);
+    	}
+    	else if (n==1) {	
+    		return a;
+    	}
+    	else {
+    		Num temp = power(product(a, a),n/2);
+    		if(n%2==0) {
+    			return product(temp,temp);
+    		}
+    		else {
+    			return product(product(temp,temp),a);
+    		}
+    	}
     }
     /* End of Level 1 */
 
@@ -288,7 +303,7 @@ public class Num  implements Comparable<Num> {
     
     // Return number to a string in base 10
     public String toString() {
-	return null;
+	return num.toString();
     }
 
     public long base() { return base; }
