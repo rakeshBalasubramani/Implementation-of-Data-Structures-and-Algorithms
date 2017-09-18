@@ -268,7 +268,7 @@ public class Num implements Comparable<Num> {
 		return null;
 	}
 
-	static Num mod(Num a, Num b) {
+	public static Num mod(Num a, Num b) {
 	
 		return subtract(a,product(divide(a,b),b)); 
 	}
