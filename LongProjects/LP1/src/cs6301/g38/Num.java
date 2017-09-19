@@ -18,7 +18,17 @@ public class Num implements Comparable<Num> {
 
 	private static long defaultBase = 10; // This can be changed to what you want it to
 									// be.
-	private long base; // Change as needed
+	private long base ; // Change as needed
+	
+	private boolean signBit = false; // false if positive , else negative.
+
+	public boolean isSignBit() {
+		return signBit;
+	}
+
+	public void setSignBit(boolean signBit) {
+		this.signBit = signBit;
+	}
 
 	public long getBase() {
 		return base;
@@ -34,8 +44,19 @@ public class Num implements Comparable<Num> {
 	/* Start of Level 1 */
 	public Num(String s) {
 		base = defaultBase;
+		parseInputString(s);
+	}
+
+	private void parseInputString(String s) {
+		boolean isLeadingZero = true;
 		String[] temp = s.split("");
+		String zeroString= "0";
 		for (String i : temp) {
+			if(  isLeadingZero &&i.equals(zeroString))
+			{
+				continue;
+			}
+			isLeadingZero =false;
 			num.addFirst(Long.parseLong(i));
 		}
 	}
@@ -43,15 +64,13 @@ public class Num implements Comparable<Num> {
 	public Num(long x) {
 		base = defaultBase;
 		String s = Long.toString(x);
-		String[] temp = s.split("");
-		for (String i : temp) {
-			num.addFirst(Long.parseLong(i));
-		}
+		parseInputString(s);
 	}
 
 	public Num() {
 		base = defaultBase;
 	}
+	
 
 	public void toBase() {
 		LinkedList<Long> quotient = new LinkedList<Long>();
@@ -129,8 +148,48 @@ public class Num implements Comparable<Num> {
 		return it1.hasNext() ? it1.next() : 0;
 	
 	}
+	
+	public static Num subtract(Num a , Num b)
+	{
+		Num result=new Num(); // dummy
+		if(a.signBit==b.signBit)
+		{
+			if(a.signBit==false) // both are positive
+			{ 
+				
+		     result = subtraction(a,b);
+		
+			}
+			else // both are negative
+			{
+				result = add(a,b);
+				result.setSignBit(true); // negative number				
+			}
+		}
+		else if (a.signBit!=b.signBit)
+		{
+			if(a.signBit==true) // a is negative and b is positive
+			{
+				result = add(a,b);
+				result.setSignBit(true); // negative number		
+			}
+			else // a is positive and b is negative
+			{
+				result = add(a, b);
+			}
+		}
+		
+		return result;
+	}
 
-	public static Num subtract(Num a, Num b) {
+	private static Num subtraction(Num a, Num b) {
+		
+		if (a.compareTo(b)<0)
+		{
+			Num res= subtract(b, a);
+			res.setSignBit(true); // negative number.
+			return res;
+		}
 		long borrow = 0;
 		long difference = 0;
 		ListIterator<Long> it1 = a.num.listIterator();
@@ -171,7 +230,7 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
-	// Implement Karatsuba algorithm for excellence credit
+	// Implement Karatsuba algorithm 
 	public static Num product(Num a, Num b) {
 
 		Num al = new Num();
@@ -184,7 +243,7 @@ public class Num implements Comparable<Num> {
 			a = b;
 			b = temp;
 		}
-		int k = b.num.size() / 2; // assuming b is smaller
+		int k =( b.num.size() / 2)+(b.num.size()%2); // assuming b is smaller
 
 		ah.setBase(a.getBase());
 		al.setBase(a.getBase());
@@ -208,7 +267,7 @@ public class Num implements Comparable<Num> {
 			return new Num();
 		}
 
-		if (k == 1) {
+		if (k == 1 && b.num.size()==1) {
 			return multiply(a, b);
 		}
 
@@ -222,6 +281,7 @@ public class Num implements Comparable<Num> {
 	private static Num multiply(Num a, Num b) {
 
 		Num res = new Num();
+		res.setBase(a.base);
 		long prod;
 		long carry = 0L;
 		ListIterator<Long> it1 = a.num.listIterator();
@@ -231,13 +291,13 @@ public class Num implements Comparable<Num> {
 			carry = prod / a.getBase();
 			res.num.add(prod % (a.getBase()));
 		}
-		// for multiplying with msb
-		prod = a.num.getLast() * b.num.getFirst();
-		prod += carry;
-		res.num.add(prod % (a.getBase()));
-		if (prod / a.getBase() > 0) {
-			res.num.add(prod / (a.getBase()));
-		}
+		// for multiplying with msb (explanation needed)
+//		prod = a.num.getLast() * b.num.getFirst();
+//		prod += carry;
+//		res.num.add(prod % (a.getBase()));
+//		if (prod / a.getBase() > 0) {
+//			res.num.add(prod / (a.getBase()));
+//		}
 
 		return res;
 	}
