@@ -4,6 +4,7 @@
 // Changed type of base to long: 1:15 PM, 2017-09-08.
 package cs6301.g38;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -20,14 +21,14 @@ public class Num implements Comparable<Num> {
 									// be.
 	private long base ; // Change as needed
 	
-	private boolean signBit = false; // false if positive , else negative.
+	private boolean negativeSignBit = false; // false if positive , else negative.
 
-	public boolean isSignBit() {
-		return signBit;
+	public boolean isNegative() {
+		return negativeSignBit;
 	}
 
-	public void setSignBit(boolean signBit) {
-		this.signBit = signBit;
+	public void setNegativeSignBit(boolean signBit) {
+		this.negativeSignBit = signBit;
 	}
 
 	public long getBase() {
@@ -152,9 +153,9 @@ public class Num implements Comparable<Num> {
 	public static Num subtract(Num a , Num b)
 	{
 		Num result=new Num(); // dummy
-		if(a.signBit==b.signBit)
+		if(a.negativeSignBit==b.negativeSignBit)
 		{
-			if(a.signBit==false) // both are positive
+			if(a.negativeSignBit==false) // both are positive
 			{ 
 				
 		     result = subtraction(a,b);
@@ -163,15 +164,15 @@ public class Num implements Comparable<Num> {
 			else // both are negative
 			{
 				result = add(a,b);
-				result.setSignBit(true); // negative number				
+				result.setNegativeSignBit(true); // negative number				
 			}
 		}
-		else if (a.signBit!=b.signBit)
+		else if (a.negativeSignBit!=b.negativeSignBit)
 		{
-			if(a.signBit==true) // a is negative and b is positive
+			if(a.negativeSignBit==true) // a is negative and b is positive
 			{
 				result = add(a,b);
-				result.setSignBit(true); // negative number		
+				result.setNegativeSignBit(true); // negative number		
 			}
 			else // a is positive and b is negative
 			{
@@ -187,7 +188,7 @@ public class Num implements Comparable<Num> {
 		if (a.compareTo(b)<0)
 		{
 			Num res= subtract(b, a);
-			res.setSignBit(true); // negative number.
+			res.setNegativeSignBit(true); // negative number.
 			return res;
 		}
 		long borrow = 0;
@@ -267,7 +268,7 @@ public class Num implements Comparable<Num> {
 			return new Num();
 		}
 
-		if (k == 1 && b.num.size()==1) {
+		if ( b.num.size()==1) {
 			return multiply(a, b);
 		}
 
@@ -291,13 +292,7 @@ public class Num implements Comparable<Num> {
 			carry = prod / a.getBase();
 			res.num.add(prod % (a.getBase()));
 		}
-		// for multiplying with msb (explanation needed)
-//		prod = a.num.getLast() * b.num.getFirst();
-//		prod += carry;
-//		res.num.add(prod % (a.getBase()));
-//		if (prod / a.getBase() > 0) {
-//			res.num.add(prod / (a.getBase()));
-//		}
+
 
 		return res;
 	}
@@ -353,7 +348,32 @@ public class Num implements Comparable<Num> {
 	// compare "this" to "other": return +1 if this is greater, 0 if equal, -1
 	// otherwise
 	public int compareTo(Num other) {
-		return 0;
+		
+		if(this.num.size()> other.num.size())
+		{
+			return 1;
+		}
+		else if (this.num.size()== other.num.size())
+		{
+			Long temp, temp1;
+			Iterator<Long> iterator1 = num.iterator();
+			Iterator<Long> iterator2 = other.num.iterator();
+			while(iterator1.hasNext())
+			{
+				temp = iterator1.next();
+				temp1 = iterator2.next();
+				if( temp > temp1)
+				{
+					return 1;
+				}
+				else if (temp < temp1)
+				{
+					return -1;
+				}
+			}
+			return 0;
+		}
+		return -1;
 	}
 
 	// Output using the format "base: elements of list ..."
