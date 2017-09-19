@@ -16,9 +16,9 @@ import java.util.ListIterator;
  */
 public class Num implements Comparable<Num> {
 
-	static long defaultBase = 10; // This can be changed to what you want it to
+	private static long defaultBase = 10; // This can be changed to what you want it to
 									// be.
-	long base; // Change as needed
+	private long base; // Change as needed
 
 	public long getBase() {
 		return base;
@@ -28,7 +28,7 @@ public class Num implements Comparable<Num> {
 		this.base = base;
 	}
 
-	LinkedList<Long> num = new LinkedList<>();
+	private LinkedList<Long> num = new LinkedList<>();
 
 	/* Start of Level 1 */
 	public Num(String s) {
@@ -95,7 +95,7 @@ public class Num implements Comparable<Num> {
 			num.add(i);
 	}
 
-	static Num add(Num a, Num b) {
+	public static Num add(Num a, Num b) {
 
 		long carry = 0;
 		long sum = 0;
@@ -105,7 +105,7 @@ public class Num implements Comparable<Num> {
 		z.setBase(a.base);
 		while (it1.hasNext() || it2.hasNext() || carry > 0) {
 			sum = next(it1) + next(it2) + carry;
-			z.num.addFirst(sum % a.base);
+			z.num.add(sum % a.base);
 			carry = sum / a.base;
 
 		}
@@ -125,6 +125,7 @@ public class Num implements Comparable<Num> {
 	 */
 	private static long next(ListIterator<Long> it1) {
 		return it1.hasNext() ? it1.next() : 0;
+	
 	}
 
 	public static Num subtract(Num a, Num b) {
@@ -264,7 +265,7 @@ public class Num implements Comparable<Num> {
 	/* End of Level 1 */
 
 	/* Start of Level 2 */
-	static Num divide(Num a, Num b) {
+	public static Num divide(Num a, Num b) {
 		return null;
 	}
 
@@ -274,11 +275,11 @@ public class Num implements Comparable<Num> {
 	}
 
 	// Use divide and conquer
-	static Num power(Num a, Num n) {
+	public static Num power(Num a, Num n) {
 		return null;
 	}
 
-	static Num squareRoot(Num a) {
+	public static Num squareRoot(Num a) {
 		return null;
 	}
 	/* End of Level 2 */
@@ -293,7 +294,8 @@ public class Num implements Comparable<Num> {
 	// Output using the format "base: elements of list ..."
 	// For example, if base=100, and the number stored corresponds to 10965,
 	// then the output is "100: 65 9 1"
-	void printList() {
+	public void printList() {
+		System.out.print(base + ": ");
 		for (Long i : num) {
 			System.out.print(i + " ");
 		}
@@ -301,7 +303,22 @@ public class Num implements Comparable<Num> {
 
 	// Return number to a string in base 10
 	public String toString() {
-		return num.toString();
+		long p = 0;
+		Num temp;
+		Num decimal = new Num(0);
+		decimal.setBase(10);
+
+		for (Long i : num) {
+			temp = new Num(i * (long) Math.pow(base, p++)); // Need to use Num.pow() 
+			temp.setBase(10);
+			decimal = add(decimal, temp);
+		}
+		StringBuilder strBuild = new StringBuilder();
+		
+		for (Long i : decimal.num)
+			strBuild.insert(0, i);
+		
+		return strBuild.toString();
 	}
 
 	public long base() {
