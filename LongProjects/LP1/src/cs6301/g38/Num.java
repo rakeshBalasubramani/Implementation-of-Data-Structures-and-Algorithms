@@ -26,6 +26,7 @@ public class Num implements Comparable<Num> {
 
 	public void setBase(long base) {
 		this.base = base;
+		toBase();
 	}
 
 	private LinkedList<Long> num = new LinkedList<>();
@@ -49,6 +50,7 @@ public class Num implements Comparable<Num> {
 	}
 
 	public Num() {
+		base = defaultBase;
 	}
 
 	public void toBase() {
@@ -134,13 +136,16 @@ public class Num implements Comparable<Num> {
 		ListIterator<Long> it1 = a.num.listIterator();
 		ListIterator<Long> it2 = b.num.listIterator();
 		Num z = new Num();
+		z.base=a.base;
 		while (it1.hasNext() || it2.hasNext()) {
 			difference = next(it1) - next(it2) - borrow;
 			if (difference < 0) {
 				borrow = 1;
 				difference += a.base;
 			} else
+			{
 				borrow = 0;
+			}
 			z.num.add(difference);
 
 		}
