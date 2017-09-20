@@ -4,7 +4,6 @@
 // Changed type of base to long: 1:15 PM, 2017-09-08.
 package cs6301.g38;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -50,7 +49,14 @@ public class Num implements Comparable<Num> {
 		parseInputString(s);
 	}
 
-	private void parseInputString(String s) {
+	private void parseInputString(String s) {	
+		if(s.charAt(0)=='-') {
+			negativeSignBit=true;
+			s=s.substring(1);
+		}
+		else {
+			negativeSignBit=false;
+		}
 		boolean isLeadingZero = true;
 		String[] temp = s.split("");
 		String zeroString = "0";
@@ -68,7 +74,7 @@ public class Num implements Comparable<Num> {
 		String s = Long.toString(x);
 		parseInputString(s);
 	}
-
+	
 	public Num() {
 		base = defaultBase;
 	}
@@ -116,25 +122,49 @@ public class Num implements Comparable<Num> {
 		for (Long i : decimal.num)
 			num.add(i);
 	}
-
-	public static Num add(Num a, Num b) {
-
+	
+	
+	public static Num add(Num a,Num b) {
+		Num z = new Num(0);
+		Num tempB = new Num(0);
+		tempB.base=b.base;
+		tempB.negativeSignBit=b.negativeSignBit;
+		for(Long i : b.num) {
+			tempB.num.add(i);
+		}
+		if(a.getBase()!=b.getBase()) {
+			tempB.setBase(a.base);
+		}
+		z.base=a.base;
+		if(a.isNegative()==tempB.isNegative()) {
+			z.addition(a, tempB);
+			z.setNegativeSignBit(a.negativeSignBit);
+		}
+		else {
+			if(a.compareTo(tempB)==1) {
+				z.subtraction(a, tempB);
+				z.setNegativeSignBit(a.negativeSignBit);
+			}
+			else if(a.compareTo(tempB)==-1) {
+				z.subtraction(tempB,a);
+				z.setNegativeSignBit(tempB.negativeSignBit);
+			}
+		}
+		return z;
+	}
+	public void addition(Num a, Num b) {
 		long carry = 0;
 		long sum = 0;
 		ListIterator<Long> it1 = a.num.listIterator();
 		ListIterator<Long> it2 = b.num.listIterator();
-		Num z = new Num();
-		z.setBase(a.base);
 		while (it1.hasNext() || it2.hasNext() || carry > 0) {
 			sum = next(it1) + next(it2) + carry;
-			z.num.add(sum % a.base);
+			num.add(sum % a.base);
 			carry = sum / a.base;
 
 		}
 		if (carry > 0)
-			z.num.addFirst(carry);
-
-		return z;
+			num.addFirst(carry);
 	}
 
 	/**
@@ -151,45 +181,66 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static Num subtract(Num a, Num b) {
-		Num result = new Num(); // dummy
-		if (a.negativeSignBit == b.negativeSignBit) {
-			if (a.negativeSignBit == false) // both are positive
-			{
-
-				result = subtraction(a, b);
-
-			} else // both are negative
-			{
-				result = add(a, b);
-				result.setNegativeSignBit(true); // negative number
+		Num result = new Num(0);
+		Num tempB = new Num(0);
+		tempB.base=b.base;
+		tempB.negativeSignBit=b.negativeSignBit;
+		for(Long i : b.num) {
+			tempB.num.add(i);
+		}
+		if(a.getBase()!=b.getBase()) {
+			tempB.setBase(a.base);
+		}
+		result.base=a.base;
+		if((a.isNegative()&&tempB.isNegative())||(!a.isNegative()&&!tempB.isNegative())) {
+			result.subtraction(a, tempB);
+			if(a.compareTo(tempB)==1) {
+				result.setNegativeSignBit(a.negativeSignBit);
 			}
-		} else if (a.negativeSignBit != b.negativeSignBit) {
-			if (a.negativeSignBit == true) // a is negative and b is positive
-			{
-				result = add(a, b);
-				result.setNegativeSignBit(true); // negative number
-			} else // a is positive and b is negative
-			{
-				result = add(a, b);
+			else {
+				result.setNegativeSignBit(!b.negativeSignBit);
 			}
 		}
-
+		else if(b.negativeSignBit) {
+			result.addition(a, tempB);
+			result.negativeSignBit=false;
+		}
+		else {
+			result.addition(a, tempB);
+			result.negativeSignBit=true;
+		}
 		return result;
+//		if (a.negativeSignBit == tempB.negativeSignBit) {
+//			if (a.negativeSignBit == false) // both are positive
+//			{
+//				result.subtraction(a, tempB);
+//
+//			} else // both are negative
+//			{
+//				result.subtraction(a, tempB);
+//				result.setNegativeSignBit(true); // negative number
+//			}
+//		} else if (a.negativeSignBit != tempB.negativeSignBit) {
+//			if (a.negativeSignBit == true) // a is negative and b is positive
+//			{
+//				result.addition(a, tempB);
+//				result.setNegativeSignBit(true); // negative number
+//			} else // a is positive and b is negative
+//			{
+//				result.addition(a, tempB);
+//			}
+//		}
+//
+//		return result;
 	}
 
-	private static Num subtraction(Num a, Num b) {
+	private void subtraction(Num a, Num b) {
 
-		if (a.compareTo(b) < 0) {
-			Num res = subtract(b, a);
-			res.setNegativeSignBit(true); // negative number.
-			return res;
-		}
 		long borrow = 0;
 		long difference = 0;
 		ListIterator<Long> it1 = a.num.listIterator();
 		ListIterator<Long> it2 = b.num.listIterator();
-		Num z = new Num();
-		z.base = a.base;
+		base = a.base;
 		while (it1.hasNext() || it2.hasNext()) {
 			difference = next(it1) - next(it2) - borrow;
 			if (difference < 0) {
@@ -198,15 +249,13 @@ public class Num implements Comparable<Num> {
 			} else {
 				borrow = 0;
 			}
-			z.num.add(difference);
+			num.add(difference);
 
 		}
 		if (borrow > 0)
-			z.num.addFirst(borrow);
+			num.addFirst(borrow);
 
-		removeLeadingZeros(z.num);
-
-		return z;
+		removeLeadingZeros(num);
 	}
 
 	private static void removeLeadingZeros(LinkedList<Long> num) {
@@ -387,16 +436,16 @@ public class Num implements Comparable<Num> {
 	// compare "this" to "other": return +1 if this is greater, 0 if equal, -1
 	// otherwise
 	public int compareTo(Num other) {
-
 		if (this.num.size() > other.num.size()) {
 			return 1;
 		} else if (this.num.size() == other.num.size()) {
-			Long temp, temp1;
-			Iterator<Long> iterator1 = num.iterator();
-			Iterator<Long> iterator2 = other.num.iterator();
-			while (iterator1.hasNext()) {
-				temp = iterator1.next();
-				temp1 = iterator2.next();
+			ListIterator<Long> iterator1 = num.listIterator(num.size());
+			ListIterator<Long> iterator2 = other.num.listIterator(other.num.size());
+			long temp,temp1;
+			while(iterator1.hasPrevious())
+			{
+				temp=iterator1.previous();
+				temp1=iterator2.previous();
 				if (temp > temp1) {
 					return 1;
 				} else if (temp < temp1) {
@@ -410,7 +459,7 @@ public class Num implements Comparable<Num> {
 
 	// Output using the format "base: elements of list ..."
 	// For example, if base=100, and the number stored corresponds to 10965,
-	// then the output is "100: 65 9 1"
+	// then the output is "100: 65 9 1"				// I have a doubt with this output 
 	public void printList() {
 		System.out.print(base + ": ");
 		for (Long i : num) {
@@ -420,26 +469,24 @@ public class Num implements Comparable<Num> {
 
 	// Return number to a string in base 10
 	public String toString() {
-		long p = 0;
-		Num temp;
-		Num decimal = new Num(0);
-		decimal.setBase(10);
-
-		for (Long i : num) {
-			temp = new Num(i * (long) Math.pow(base, p++)); // Need to use
-															// Num.pow()
-			temp.setBase(10);
-			decimal = add(decimal, temp);
+		Num temp = new Num();
+		temp.base=base;
+		for(Long i : num) {
+			temp.num.add(i);
 		}
+		temp.toDecimal();
+		temp.setNegativeSignBit(negativeSignBit);
 		StringBuilder strBuild = new StringBuilder();
-
-		for (Long i : decimal.num)
+		if(num.size()==0) {
+			strBuild.insert(0, 0);
+		}
+		for (Long i : temp.num)
 			strBuild.insert(0, i);
-
+		if(temp.negativeSignBit) {
+			strBuild.insert(0,"-");
+		}
 		return strBuild.toString();
 	}
 
-	public long base() {
-		return base;
-	}
+
 }
