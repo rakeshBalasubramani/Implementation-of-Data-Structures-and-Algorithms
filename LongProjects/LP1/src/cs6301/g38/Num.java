@@ -112,9 +112,9 @@ public class Num implements Comparable<Num> {
 		Num temp;
 		Num decimal = new Num(0);
 		decimal.setBase(10);
-
+		Num tBase = new Num(base);
 		for (Long i : num) {
-			temp = new Num(i * (long) Math.pow(base, p++));
+			temp = product(new Num(i),Num.power(tBase, p++));
 			temp.setBase(10);
 			decimal = add(decimal, temp);
 		}
@@ -417,7 +417,7 @@ public class Num implements Comparable<Num> {
 		} else if (n == 1) {
 			return a;
 		} else {
-			Num temp = power(product(a, a), n / 2);
+			Num temp = power(a, n / 2);
 			if (n % 2 == 0) {
 				return product(temp, temp);
 			} else {
@@ -438,14 +438,18 @@ public class Num implements Comparable<Num> {
 		}
 		Num med = rightShift(add(first,last));
 		while(!((product(med,b).compareTo(a)<=0)&&(a.compareTo(product(add(med,new Num(1)),b))<0))) {
-			if(product(med,b).compareTo(a)<0) {
-				first = med;
-				med = rightShift(add(first,last));
-				
+			if(first.compareTo(last)>=0) {
+				return new Num(0);
 			}
 			else {
-				last = med;
-				med = rightShift(add(first,last));
+				if (product(med, b).compareTo(a) < 0) {
+					first = med;
+					med = rightShift(add(first, last));
+
+				} else {
+					last = med;
+					med = rightShift(add(first, last));
+				}
 			}
 		}
 		if(a.negativeSignBit!=b.negativeSignBit) {
@@ -465,17 +469,65 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static Num mod(Num a, Num b) {
-
-		return subtract(a, product(divide(a, b), b));
+		Num tempa=new Num();
+		Num tempb=new Num();
+		tempa.base=a.base;
+		tempb.base=b.base;
+		for(Long i : a.num) {
+			tempa.num.add(i);
+		}
+		for(Long i : b.num) {
+			tempb.num.add(i);
+		}
+		Num temp = subtract(tempa, product(divide(tempa, tempb), tempb));
+		if(a.negativeSignBit!=b.negativeSignBit) {
+			temp.negativeSignBit=true;
+		}
+		return temp;
 	}
 
 	// Use divide and conquer
 	public static Num power(Num a, Num n) {
-		return null;
+		if(n.compareTo(new Num(1))==0) {
+			return a;
+		}
+		else if(n.compareTo(new Num(0))==0) {
+			return new Num(1);
+		}
+		Num tempn=new Num();
+		tempn.base=n.base;
+		for(Long i :n.num) {
+			tempn.num.add(i);
+		}
+		long s = tempn.shift();
+		return product(power(power(a,tempn),n.base),power(a,s));
+	}
+
+	private long shift() {
+		return num.removeFirst();
 	}
 
 	public static Num squareRoot(Num a) {
-		return null;
+		Num first = new Num(1);
+		first.setBase(a.base);
+		Num last = new Num();
+		last.base=a.base;
+		for(Long i :a.num) {
+			last.num.add(i);
+		}
+		Num med = rightShift(add(first,last));
+		while (!(power(med, 2).compareTo(a) <= 0 && a.compareTo(power(add(med, new Num(1)), 2)) < 0)) {
+			if (power(med, 2).compareTo(a) < 0) {
+				first = med;
+				med = rightShift(add(first, last));
+
+			} else {
+				last = med;
+				med = rightShift(add(first, last));
+			}
+		}
+		return med;
+		
 	}
 	/* End of Level 2 */
 
