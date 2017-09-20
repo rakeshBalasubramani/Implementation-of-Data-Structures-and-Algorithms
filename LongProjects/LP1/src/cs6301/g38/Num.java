@@ -285,21 +285,23 @@ public class Num implements Comparable<Num> {
 			a = b;
 			b = temp;
 		}
-		
-		if (b.num.size()==0) {
+
+		if (b.num.size() == 0) {
 			return new Num();
 		}
 
 		if (b.num.size() == 1) {
 			return multiply(a, b);
 		}
-		
-		//int k = (b.num.size() / 2) + (b.num.size() % 2); // assuming b is
-															// smaller
-		
-		int k = (b.num.size() / 2); // if size of b is 3 or 5, when we add second part in above line k
-									//	value is not correct, i.e 5/2 should be 2 but it would be 3. 
-		
+
+		// int k = (b.num.size() / 2) + (b.num.size() % 2); // assuming b is
+		// smaller
+
+		int k = (b.num.size() / 2); // if size of b is 3 or 5, when we add
+									// second part in above line k
+									// value is not correct, i.e 5/2 should be 2
+									// but it would be 3.
+
 		ah.setBase(a.getBase());
 		al.setBase(a.getBase());
 		bl.setBase(b.getBase());
@@ -353,18 +355,18 @@ public class Num implements Comparable<Num> {
 		System.out.println("shifting prod2");
 		shift2.printList();
 		System.out.println();
-		
-		Num add1 = add(shift1,shift2);
+
+		Num add1 = add(shift1, shift2);
 		System.out.println("add 1");
 		add1.printList();
 		System.out.println();
 
-		Num add2 = add(add1,prod2);
+		Num add2 = add(add1, prod2);
 		System.out.println("add 2");
 		add2.printList();
 		System.out.println();
-		
-		return add2;
+
+		 return add2;
 		//return add(add(shift(prod1, 2 * k), shift(subtract(subtract(prod3, prod1), prod2), k)), prod2);
 	}
 
@@ -380,6 +382,10 @@ public class Num implements Comparable<Num> {
 			prod += carry;
 			carry = prod / a.getBase();
 			res.num.add(prod % (a.getBase()));
+		}
+
+		if (carry != 0) {
+			res.num.add(carry);
 		}
 
 		return res;
