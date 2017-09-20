@@ -121,19 +121,24 @@ public class Num implements Comparable<Num> {
 		num.clear();
 		for (Long i : decimal.num)
 			num.add(i);
+		base = 10;
 	}
 	
 	
 	public static Num add(Num a,Num b) {
 		Num z = new Num(0);
-		Num tempB = new Num(0);
-		tempB.base=b.base;
-		tempB.negativeSignBit=b.negativeSignBit;
-		for(Long i : b.num) {
-			tempB.num.add(i);
-		}
+		Num tempB;
 		if(a.getBase()!=b.getBase()) {
+			 	tempB = new Num(0);
+				tempB.base=b.base;
+				tempB.negativeSignBit=b.negativeSignBit;
+				for(Long i : b.num) {
+					tempB.num.add(i);
+				}
 			tempB.setBase(a.base);
+		}
+		else {
+			tempB = b;
 		}
 		z.base=a.base;
 		if(a.isNegative()==tempB.isNegative()) {
@@ -182,14 +187,18 @@ public class Num implements Comparable<Num> {
 
 	public static Num subtract(Num a, Num b) {
 		Num result = new Num(0);
-		Num tempB = new Num(0);
-		tempB.base=b.base;
-		tempB.negativeSignBit=b.negativeSignBit;
-		for(Long i : b.num) {
-			tempB.num.add(i);
-		}
+		Num tempB;
 		if(a.getBase()!=b.getBase()) {
+			 	tempB = new Num(0);
+				tempB.base=b.base;
+				tempB.negativeSignBit=b.negativeSignBit;
+				for(Long i : b.num) {
+					tempB.num.add(i);
+				}
 			tempB.setBase(a.base);
+		}
+		else {
+			tempB = b;
 		}
 		result.base=a.base;
 		if((a.isNegative()&&tempB.isNegative())||(!a.isNegative()&&!tempB.isNegative())) {
@@ -320,51 +329,51 @@ public class Num implements Comparable<Num> {
 			ah.num.add(a.num.get(j));
 		}
 
-		System.out.println();
+//		System.out.println();
 		Num prod1 = product(ah, bh);
-		System.out.println("prod1");
-		prod1.printList();
-		System.out.println();
-
+//		System.out.println("prod1");
+//		prod1.printList();
+//		System.out.println();
+//
 		Num prod2 = product(al, bl);
-		System.out.println("prod2");
-		prod2.printList();
-		System.out.println();
-
+//		System.out.println("prod2");
+//		prod2.printList();
+//		System.out.println();
+//
 		Num prod3 = product(add(al, ah), add(bl, bh));
-		System.out.println("prod3");
-		prod3.printList();
-		System.out.println();
-
+//		System.out.println("prod3");
+//		prod3.printList();
+//		System.out.println();
+//
 		Num sub1 = subtract(prod3, prod1);
-		System.out.println("sub 1");
-		sub1.printList();
-		System.out.println();
-
+//		System.out.println("sub 1");
+//		sub1.printList();
+//		System.out.println();
+//
 		Num sub2 = subtract(sub1, prod2);
-		System.out.println("sub 2");
-		sub2.printList();
-		System.out.println();
-
+//		System.out.println("sub 2");
+//		sub2.printList();
+//		System.out.println();
+//
 		Num shift1 = shift(prod1, 2 * k);
-		System.out.println("shifting prod1");
-		shift1.printList();
-		System.out.println();
-
+//		System.out.println("shifting prod1");
+//		shift1.printList();
+//		System.out.println();
+//
 		Num shift2 = shift(sub2, k);
-		System.out.println("shifting prod2");
-		shift2.printList();
-		System.out.println();
-
+//		System.out.println("shifting prod2");
+//		shift2.printList();
+//		System.out.println();
+//
 		Num add1 = add(shift1, shift2);
-		System.out.println("add 1");
-		add1.printList();
-		System.out.println();
-
+//		System.out.println("add 1");
+//		add1.printList();
+//		System.out.println();
+//
 		Num add2 = add(add1, prod2);
-		System.out.println("add 2");
-		add2.printList();
-		System.out.println();
+//		System.out.println("add 2");
+//		add2.printList();
+//		System.out.println();
 
 		 return add2;
 		//return add(add(shift(prod1, 2 * k), shift(subtract(subtract(prod3, prod1), prod2), k)), prod2);
@@ -420,7 +429,31 @@ public class Num implements Comparable<Num> {
 
 	/* Start of Level 2 */
 	public static Num divide(Num a, Num b) {
-		return null;
+		Num first = new Num(1);
+		Num last = new Num();
+		for(Long i :a.num) {
+			last.num.add(i);
+		}
+		Num med = rightShift(add(first,last));
+		while(!((product(med,b).compareTo(a)<=0)&&(a.compareTo(product(add(med,new Num(1)),b))<0))) {
+			if(product(med,b).compareTo(a)<0) {
+				first = med;
+				med = rightShift(add(first,last));
+				
+			}
+			else {
+				last = med;
+				med = rightShift(add(first,last));
+			}
+		}
+		return med;
+	}
+
+	private static Num rightShift(Num x) {
+		x.setBase(2);
+		x.num.remove();
+		x.toDecimal();
+		return x;
 	}
 
 	public static Num mod(Num a, Num b) {
