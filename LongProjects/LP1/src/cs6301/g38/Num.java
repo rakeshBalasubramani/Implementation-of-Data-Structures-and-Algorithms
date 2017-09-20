@@ -430,7 +430,9 @@ public class Num implements Comparable<Num> {
 	/* Start of Level 2 */
 	public static Num divide(Num a, Num b) {
 		Num first = new Num(1);
+		first.setBase(a.base);
 		Num last = new Num();
+		last.base=a.base;
 		for(Long i :a.num) {
 			last.num.add(i);
 		}
@@ -446,13 +448,19 @@ public class Num implements Comparable<Num> {
 				med = rightShift(add(first,last));
 			}
 		}
+		if(a.negativeSignBit!=b.negativeSignBit) {
+			med.negativeSignBit=true;
+		}
 		return med;
 	}
 
 	private static Num rightShift(Num x) {
+		long tempBase = x.base;
+		x.toDecimal();
 		x.setBase(2);
 		x.num.remove();
 		x.toDecimal();
+		x.setBase(tempBase);
 		return x;
 	}
 
