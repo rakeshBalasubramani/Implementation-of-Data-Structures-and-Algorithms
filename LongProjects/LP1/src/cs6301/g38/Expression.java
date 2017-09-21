@@ -62,4 +62,8 @@ public class Expression {
 		}
 		return stack.pop();
 	}
+
+	public void end() {
+		variables.get(exp[0]).printList();		
+	}
 }

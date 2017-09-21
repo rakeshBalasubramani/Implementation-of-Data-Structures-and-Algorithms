@@ -19,6 +19,7 @@ public class LP1L3 {
 			}
 			e.eval(word);
 		}
+		e.end();
 		in.close();
 	}
 }
