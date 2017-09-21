@@ -15,6 +15,8 @@ import java.util.ListIterator;
  *         HariPriyaa Manian - hum160030
  *
  */
+
+//1.divisor (if numerator size is small than deno case.
 public class Num implements Comparable<Num> {
 
 	private static long defaultBase = 10; // This can be changed to what you
@@ -61,12 +63,19 @@ public class Num implements Comparable<Num> {
 		boolean isLeadingZero = true;
 		String[] temp = s.split("");
 		String zeroString = "0";
+		int zeroLength= 0;
 		for (String i : temp) {
 			if (isLeadingZero && i.equals(zeroString) && temp.length!=1) {
+				zeroLength++;
 				continue;
 			}
 			isLeadingZero = false;
 			num.addFirst(Long.parseLong(i));
+		}
+		
+		if(num.size()==0 && zeroLength==temp.length)
+		{
+			num.add(0L);
 		}
 	}
 
@@ -629,6 +638,11 @@ public class Num implements Comparable<Num> {
 		for (Long i : num) {
 			System.out.print(i + " ");
 		}
+		if(isNegative())
+		{
+			System.out.print("Negative number");
+		}
+		System.out.println();
 	}
 
 	// Return number to a string in base 10
