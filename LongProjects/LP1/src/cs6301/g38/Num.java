@@ -61,7 +61,7 @@ public class Num implements Comparable<Num> {
 		String[] temp = s.split("");
 		String zeroString = "0";
 		for (String i : temp) {
-			if (isLeadingZero && i.equals(zeroString)) {
+			if (isLeadingZero && i.equals(zeroString) && temp.length!=1) {
 				continue;
 			}
 			isLeadingZero = false;
@@ -75,7 +75,7 @@ public class Num implements Comparable<Num> {
 		parseInputString(s);
 	}
 	
-	public Num() {
+	private Num() {
 		base = defaultBase;
 	}
 
@@ -108,9 +108,13 @@ public class Num implements Comparable<Num> {
 	}
 
 	public void toDecimal() {
+		if(base == 10)
+		{
+			return;
+		}
 		long p = 0;
 		Num temp;
-		Num decimal = new Num(0);
+		Num decimal = new Num();
 		decimal.setBase(10);
 		Num tBase = new Num(base);
 		for (Long i : num) {
@@ -120,16 +124,18 @@ public class Num implements Comparable<Num> {
 		}
 		num.clear();
 		for (Long i : decimal.num)
+		{
 			num.add(i);
+		}
 		base = 10;
 	}
 	
 	
 	public static Num add(Num a,Num b) {
-		Num z = new Num(0);
+		Num z = new Num();
 		Num tempB;
 		if(a.getBase()!=b.getBase()) {
-			 	tempB = new Num(0);
+			 	tempB = new Num();
 				tempB.base=b.base;
 				tempB.negativeSignBit=b.negativeSignBit;
 				for(Long i : b.num) {
@@ -186,10 +192,10 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static Num subtract(Num a, Num b) {
-		Num result = new Num(0);
+		Num result = new Num();
 		Num tempB;
 		if(a.getBase()!=b.getBase()) {
-			 	tempB = new Num(0);
+			 	tempB = new Num();
 				tempB.base=b.base;
 				tempB.negativeSignBit=b.negativeSignBit;
 				for(Long i : b.num) {
@@ -201,9 +207,9 @@ public class Num implements Comparable<Num> {
 			tempB = b;
 		}
 		result.base=a.base;
-		if((a.isNegative()&&tempB.isNegative())||(!a.isNegative()&&!tempB.isNegative())) {
+		if((a.isNegative()==tempB.isNegative())) {
 			result.subtraction(a, tempB);
-			if(a.compareTo(tempB)==1) {
+			if(a.compareTo(tempB)>=0) {
 				result.setNegativeSignBit(a.negativeSignBit);
 			}
 			else {
@@ -245,6 +251,15 @@ public class Num implements Comparable<Num> {
 
 	private void subtraction(Num a, Num b) {
 
+		if(a.compareTo(b) < 0)
+		{
+			Num temp = a;
+			a=b;
+			b= temp;
+		}
+		
+		
+		
 		long borrow = 0;
 		long difference = 0;
 		ListIterator<Long> it1 = a.num.listIterator();
@@ -429,13 +444,20 @@ public class Num implements Comparable<Num> {
 
 	/* Start of Level 2 */
 	public static Num divide(Num a, Num b) {
-		Num first = new Num(1);
+		Num zeroNum = new Num(0);
+		zeroNum.setBase(a.base);
+		if(b.compareTo(zeroNum)==0)
+		{
+			throw new IllegalArgumentException("Divisor is 0");
+		}
+		Num first = new Num(0);
 		first.setBase(a.base);
 		Num last = new Num();
 		last.base=a.base;
 		for(Long i :a.num) {
 			last.num.add(i);
 		}
+		last=add(last,new Num(1));// To handle integers.
 		Num med = rightShift(add(first,last));
 		while(!((product(med,b).compareTo(a)<=0)&&(a.compareTo(product(add(med,new Num(1)),b))<0))) {
 			if(first.compareTo(last)>=0) {
