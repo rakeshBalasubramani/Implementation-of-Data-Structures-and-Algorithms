@@ -4,6 +4,7 @@
 // Changed type of base to long: 1:15 PM, 2017-09-08.
 package cs6301.g38;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -305,9 +306,16 @@ public class Num implements Comparable<Num> {
 		Num bh = new Num();
 
 		if (b.num.size() > a.num.size()) {
+			boolean setb=a.negativeSignBit;
+			boolean seta= b.negativeSignBit;
+			
 			Num temp = a;
 			a = b;
 			b = temp;
+			
+			a.setNegativeSignBit(seta);
+			b.setNegativeSignBit(setb);
+			
 		}
 
 		if (b.num.size() == 0) {
@@ -318,31 +326,59 @@ public class Num implements Comparable<Num> {
 			return multiply(a, b);
 		}
 
-		// int k = (b.num.size() / 2) + (b.num.size() % 2); // assuming b is
-		// smaller
-
-		int k = (b.num.size() / 2); // if size of b is 3 or 5, when we add
-									// second part in above line k
-									// value is not correct, i.e 5/2 should be 2
-									// but it would be 3.
+		int k = (b.num.size() / 2);
 
 		ah.setBase(a.getBase());
 		al.setBase(a.getBase());
 		bl.setBase(b.getBase());
 		bh.setBase(b.getBase());
+		
+		if(a.negativeSignBit)
+		{
+			al.setNegativeSignBit(true);
+			ah.setNegativeSignBit(true);
+		}
+		
+		if(b.negativeSignBit)
+		{
+			bl.setNegativeSignBit(true);
+			bh.setNegativeSignBit(true);
+		}
+		
+		
+		Iterator<Long> iteratora=a.num.iterator();
+		Iterator<Long> iteratorb=b.num.iterator();
+		int count=0;
 
-		for (int i = 0; i < k; i++) {
-			al.num.add(a.num.get(i));
-			bl.num.add(b.num.get(i));
+		while(iteratora.hasNext() && iteratorb.hasNext() && count<k)
+		{
+			al.num.add(iteratora.next());
+			bl.num.add(iteratorb.next());
+			count++;
+			
+		}
+		
+//		for (int i = 0; i < k; i++) {
+//			al.num.add(a.num.get(i));
+//			bl.num.add(b.num.get(i));
+//		}
+		
+		while(iteratora.hasNext())
+		{
+			ah.num.add(iteratora.next());
 		}
 
-		for (int j = k; j < b.num.size(); j++) {
-			bh.num.add(b.num.get(j));
-		}
+//		for (int j = k; j < b.num.size(); j++) {
+//			bh.num.add(b.num.get(j));
+//		}
 
-		for (int j = k; j < a.num.size(); j++) {
-			ah.num.add(a.num.get(j));
+		while(iteratorb.hasNext())
+		{
+			bh.num.add(iteratorb.next());
 		}
+//		for (int j = k; j < a.num.size(); j++) {
+//			ah.num.add(a.num.get(j));
+//		}
 
 //		System.out.println();
 		Num prod1 = product(ah, bh);
@@ -390,6 +426,9 @@ public class Num implements Comparable<Num> {
 //		add2.printList();
 //		System.out.println();
 
+		if(a.negativeSignBit!=b.negativeSignBit) {
+			add2.setNegativeSignBit(true);
+		}
 		 return add2;
 		//return add(add(shift(prod1, 2 * k), shift(subtract(subtract(prod3, prod1), prod2), k)), prod2);
 	}
@@ -412,6 +451,9 @@ public class Num implements Comparable<Num> {
 			res.num.add(carry);
 		}
 
+		if(a.negativeSignBit!=b.negativeSignBit) {
+			res.setNegativeSignBit(true);
+		}
 		return res;
 	}
 
@@ -491,23 +533,24 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static Num mod(Num a, Num b) {
-		Num tempa=new Num();
-		Num tempb=new Num();
-		tempa.base=a.base;
-		tempb.base=b.base;
-		for(Long i : a.num) {
-			tempa.num.add(i);
-		}
-		for(Long i : b.num) {
-			tempb.num.add(i);
-		}
-		Num temp = subtract(tempa, product(divide(tempa, tempb), tempb));
-		if(a.negativeSignBit!=b.negativeSignBit) {
-			temp.negativeSignBit=true;
-		}
-		return temp;
-	}
 
+		if(b.negativeSignBit)
+		{
+			throw new ArithmeticException("b should be positive");
+		}
+		if(a.negativeSignBit)
+		{
+			Num prod=product(a,b);
+			prod.printList();
+			return subtract(b,subtract(a, product(divide(a, b), b)));
+		}
+		else
+		{
+			return subtract(a, product(divide(a, b), b));
+		}
+		
+	}
+	
 	// Use divide and conquer
 	public static Num power(Num a, Num n) {
 		if(n.compareTo(new Num(1))==0) {
