@@ -10,17 +10,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Euler {
-	int VERBOSE;
-	Graph g;
-	List<Graph.Edge> tour = new LinkedList<>();
-	EulerVertex start; // start vertex
-	ArrayList<EulerVertex> vertexWithunExploredEdges = new ArrayList<EulerVertex>();
-	ArrayList<EulerVertex> ev = new ArrayList<EulerVertex>();
+	private int VERBOSE;
+	private Graph g;
+	private List<Graph.Edge> tour = new LinkedList<>(); // output tour
+	private EulerVertex start; // start vertex
+	private ArrayList<EulerVertex> vertexWithunExploredEdges = new ArrayList<EulerVertex>(); // List to store Vertices which has unexplored edges
+	private ArrayList<EulerVertex> ev = new ArrayList<EulerVertex>(); // Euler Vertices
 
 	private class EulerVertex implements Iterable<EulerEdge> {
 		int name;
-		List<EulerEdge> unexploredEdges = new LinkedList<EulerEdge>();
-		List<EulerEdge> mytour = new LinkedList<EulerEdge>();
+		List<EulerEdge> unexploredEdges = new LinkedList<EulerEdge>();//  Unexplored edges 
+		List<EulerEdge> mytour = new LinkedList<EulerEdge>(); // Tour for this vertex
 		Graph.Vertex myVertex;
 
 		EulerVertex(Graph.Vertex v) {
@@ -75,7 +75,7 @@ public class Euler {
 	}
 
 	// Constructor
-	Euler(Graph g, Graph.Vertex start) {
+	public Euler(Graph g, Graph.Vertex start) {
 		this.g = g;
 		VERBOSE = 1;
 		tour = new LinkedList<Graph.Edge>();
@@ -106,7 +106,7 @@ public class Euler {
 
 	}
 
-	// To do: function to find an Euler tour
+	// function to find an Euler tour
 	public List<Graph.Edge> findEulerTour() {
 		findTours();
 
@@ -118,7 +118,7 @@ public class Euler {
 	}
 
 	/*
-	 * To do: test if the graph is Eulerian. If the graph is not Eulerian, it
+	 * test if the graph is Eulerian. If the graph is not Eulerian, it
 	 * prints the message: "Graph is not Eulerian" and one reason why, such as
 	 * "inDegree = 5, outDegree = 3 at Vertex 37" or
 	 * "Graph is not strongly connected"
@@ -167,8 +167,7 @@ public class Euler {
 	}
 	
 
-	EulerVertex u = start;
-	static List<Graph.Vertex> node;
+	
 
 	private void findTours() {
 		EulerVertex tmpStartVertex = start;
@@ -218,14 +217,7 @@ public class Euler {
 		return edge;
 	}
 
-	/*
-	 * Print tours found by findTours() using following format: Start vertex of
-	 * tour: list of edges with no separators Example: lp2-in1.txt, with start
-	 * vertex 3, following tours may be found. 3:
-	 * (3,1)(1,2)(2,3)(3,4)(4,5)(5,6)(6,3) 4: (4,7)(7,8)(8,4) 5: (5,7)(7,9)(9,5)
-	 * 
-	 * Just use System.out.print(u) and System.out.print(e)
-	 */
+
 	void printTours() {
 		
 		for(EulerVertex v : ev)
@@ -242,7 +234,7 @@ public class Euler {
 		}
 	}
 
-	// Stitch tours into a single tour using the algorithm discussed in class
+	// Stitch tours into a single tour 
 	private void stitchTours() {
 		explore(start);
 	}

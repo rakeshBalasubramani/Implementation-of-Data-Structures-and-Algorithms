@@ -29,7 +29,6 @@ public class LP2 {
 
         Timer timer = new Timer();
 	Euler euler = new Euler(g, startVertex);
-	VERBOSE=10;
 	euler.setVerbose(VERBOSE);
 
 	boolean eulerian = euler.isEulerian();
