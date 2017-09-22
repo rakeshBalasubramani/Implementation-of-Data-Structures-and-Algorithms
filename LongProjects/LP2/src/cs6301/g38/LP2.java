@@ -1,5 +1,4 @@
 
-// change following line to your group number
 package cs6301.g38;
 
 import java.util.Scanner;
