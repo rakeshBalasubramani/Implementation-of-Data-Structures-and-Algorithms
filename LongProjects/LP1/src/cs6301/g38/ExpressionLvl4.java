@@ -2,37 +2,90 @@ package cs6301.g38;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
+
+class Program {
+	Program(String[] code2) {
+		if(checkLineNo(code2[0])) {
+			lineNo=Long.parseLong(code2[0]);
+			code = Arrays.copyOfRange(code2,1,code2.length);
+		}
+		else {
+			lineNo=-1;
+			code = code2;
+		}
+		
+	}
+	private boolean checkLineNo(String string) {
+		return string.matches("\\d+");
+	}
+	String[] code;
+	long lineNo;
+}
+
 public class ExpressionLvl4 {
-	LinkedList<String[]> program = new LinkedList<String[]>();
+	String questionMark="?";
+	String collin=":";
+	LinkedList<Program> program = new LinkedList<Program>();
 	Expression e = new Expression();
-	public void setProgram(String code) {
-		program.add(code.split("\\s+"));
-		execute(code);		
+
+	public void setProgram(String[] code) {
+		program.add(new Program(code));
 	}
-	private void execute(String code) {
-		String[] tempCode = code.split("\\s+");
-		if(tempCode.length==3) {
-			e.eval(tempCode);
+
+	public void execute() {
+		assignLineNumbers();
+		for (int pc = 0; pc < program.size(); pc++) {
+			if (program.get(pc).code.length > 2 && !program.get(pc).code[1].equals(questionMark)) {
+				shuntingYardAlgo(program.get(pc).code);
+				e.eval(program.get(pc).code);
+			} else if (program.get(pc).code.length > 2 && program.get(pc).code[1].equals(questionMark)) {
+				if (e.variables.get(program.get(pc).code[0]).compareTo(new Num(0)) != 0) {
+					pc=Integer.parseInt(program.get(pc).code[2])-1;
+				}
+				else if(program.get(pc).code.length > 3 && program.get(pc).code[3].equals(collin)) {
+					pc=Integer.parseInt(program.get(pc).code[4]);
+				}
+			} else {
+				e.eval(program.get(pc).code);
+			}
 		}
-		else if(!code.contains("?")) {
-			shuntingYardAlgo(tempCode);
-			e.eval(tempCode);
+	}
+	
+	public void assignLineNumbers() {
+		
+		for(Program p : program) {
+			if(p.code.length>1&&p.code[1].equals(questionMark)) {
+				p.code[2]=getLineNo(p.code[2]);
+				if(p.code.length>3&&p.code[3].equals(collin)) {
+					p.code[4]=getLineNo(p.code[4]);
+				}
+			}
 		}
-//		else {
-//			if(e.variables.get(tempCode[1]).compareTo(new Num(0))!=0){
-//				String[] temp;
-//				for(int i=0;i<program.size();i++) {
-//					if(tempCode[3]==program.get(i)[0]) {
-//					}
-//				}
-//			}
-//		}
-	}	
+		for(Program p :program) {
+			System.out.print(program.indexOf(p)+" ");
+			for(String c:p.code) {
+				System.out.print(c+" ");
+			}
+			System.out.println();
+		}
+	}
+
+	private String getLineNo(String lno) {
+		for(Program p :program) {
+			if(p.lineNo==Long.parseLong(lno)) {
+				return Integer.toString(program.indexOf(p));
+			}
+		}
+		return null;
+	}
+
 	public void end() {
-		e.end();		
+		e.end();
 	}
+
 	private void shuntingYardAlgo(String[] exp) {
 		ArrayDeque<String> operatorStack = new ArrayDeque<String>(); // Operator Stack
 		ArrayDeque<String> outputQueue = new ArrayDeque<String>(); // Output Queue
@@ -45,14 +98,14 @@ public class ExpressionLvl4 {
 		operatorList.add("(");
 		operatorList.add("^");
 		operatorList.add("|");
-		int j=-1;
-		for(int i=0;i<exp.length;i++) {
-			if(exp[i]=="=") {
-				j=i;
+		int j = -1;
+		for (int i = 0; i < exp.length; i++) {
+			if (exp[i] == "=") {
+				j = i;
 				break;
 			}
 		}
-		for (int i = j+1; i < exp.length; i++) {
+		for (int i = j + 1; i < exp.length; i++) {
 			if (!operatorList.contains(exp[i])) { // Add operands directly to the output queue.
 				outputQueue.add(exp[i]);
 			} else {
@@ -93,7 +146,7 @@ public class ExpressionLvl4 {
 		while (!operatorStack.isEmpty()) {
 			outputQueue.add(operatorStack.pop());
 		}
-		int i = j+1;
+		int i = j + 1;
 		while (!outputQueue.isEmpty())
 			exp[i++] = outputQueue.removeFirst();
 	}

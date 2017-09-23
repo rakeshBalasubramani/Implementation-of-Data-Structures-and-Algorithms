@@ -9,14 +9,14 @@ public class LP1L4 {
 
 	public static void main(String[] args) {
 		Scanner in;
-		if (args.length > 0) {
-			int base = Integer.parseInt(args[0]);
-			// Use above base for all numbers (except I/O, which is in base 10)
-		}
+//		if (args.length > 0) {
+//			int base = Integer.parseInt(args[0]);
+//			// Use above base for all numbers (except I/O, which is in base 10)
+//		}
 		ExpressionLvl4 e4 = new ExpressionLvl4();
-		Expression e3 = new Expression();
+//		Expression e3 = new Expression();
 		in = new Scanner(System.in);
-		LP1L4 x = new LP1L4();
+//		LP1L4 x = new LP1L4();
 		String word;
 		String line=""; 
 		while (in.hasNext()) {
@@ -26,7 +26,7 @@ public class LP1L4 {
 					break;
 				}
 //				e3.eval(line);
-				e4.setProgram(line);
+				e4.setProgram(line.split("\\s+"));
 				line="";
 			}
 			else {
@@ -38,6 +38,7 @@ public class LP1L4 {
 				}
 			}
 		}
+		e4.execute();
 		e4.end();
 		in.close();
 	}
