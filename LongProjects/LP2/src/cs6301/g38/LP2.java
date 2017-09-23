@@ -29,17 +29,9 @@ public class LP2 {
 			VERBOSE = Integer.parseInt(args[2]);
 		}
 		
-	//VERBOSE=10;
 		Graph g = Graph.readDirectedGraph(in);
 		System.out.println("Graph read done");
 		
-		
-		long ver = 0; // DEbug PurposeDEbug Purpose
-		for(Vertex v : g)// DEbug PurposeDEbug Purpose
-		{
-			ver = v.adj.size()+ver;// DEbug PurposeDEbug Purpose
-		}
-		System.out.println("Graph edges " +ver);// DEbug PurposeDEbug Purpose
 		Graph.Vertex startVertex = g.getVertex(start);
 
 		Timer timer = new Timer();
@@ -52,11 +44,11 @@ public class LP2 {
 		}
 		List<Graph.Edge> tour = euler.findEulerTour();
 		timer.end();
-System.out.println("Tour edges " + tour.size());// DEbug PurposeDEbug Purpose
+		
 		BufferedWriter writer = new BufferedWriter(new FileWriter("Output.txt"));// DEbug PurposeDEbug Purpose
 		if (VERBOSE > 0) {
 			System.out.println("Output:\n_________________________");
-			writer.write("Output:\n_________________________");// DEbug PurposeDEbug Purpose
+			writer.write("Output:\n_________________________\n");// DEbug PurposeDEbug Purpose
 			
 			for (Graph.Edge e : tour) {
 				//System.out.print(e);
