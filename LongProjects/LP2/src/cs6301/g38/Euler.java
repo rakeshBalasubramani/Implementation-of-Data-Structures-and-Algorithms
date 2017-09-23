@@ -15,11 +15,11 @@ import java.util.LinkedList;
  *         Rakesh Balasubramani - rxb162130 <br>
  *         HariPriyaa Manian - hum160030
  * 
- * @Desc Class used to check whether given graph is an Eulerian Graph
+ * @Desc Class used to check whether given graph is an Eulerian Graph, if it is Eulerian, then it will provide the Euler Tour for the given graph.
  */
 public class Euler {
 	private int VERBOSE;
-	private Graph g;
+	private Graph g; // Given graph
 	private List<Graph.Edge> tour; // output tour
 	private EulerVertex start; // start vertex
 	private ArrayList<EulerVertex> ev = new ArrayList<EulerVertex>();// Parallel list to store information about vertices
@@ -34,7 +34,7 @@ public class Euler {
 						
 		Graph.Vertex myVertex;
 
-		boolean isTourExplored; // to check whether tour from this vertex is explored
+		boolean isTourExplored; // to check whether tour for the vertex is explored or not.
 
 		EulerVertex(Graph.Vertex v) {
 			myVertex = v;
@@ -43,7 +43,7 @@ public class Euler {
 		}
 
 		/**
-		 * Function to store unexplored edges for each vertex.
+		 * Function to store unexplored edges for the vertex.
 		 * 
 		 */
 		private void assignAdjList() {
@@ -105,7 +105,7 @@ public class Euler {
 	}
 
 	/**
-	 * Helper function to store unexplored edges.
+	 * Helper function to populate unexplored edges for each vertex.
 	 * 
 	 */
 	private void assignEulerEdge() {
@@ -149,7 +149,7 @@ public class Euler {
 	/**
 	 * Function to test if the graph is Eulerian.
 	 * 
-	 * @return True if graph is Eulerian else false.
+	 * @return True if graph is Eulerian, else false.
 	 */
 	public boolean isEulerian() {
 
@@ -162,7 +162,7 @@ public class Euler {
 	}
 
 	/**
-	 * Function to check whether each vertex has the same number of indegree and
+	 * Function to check whether each vertex has equal number of indegree and
 	 * outdegree.
 	 * 
 	 * @return true if number of outdegree is equal to indegree else false.
@@ -198,7 +198,7 @@ public class Euler {
 	}
 
 	/**
-	 * Helper function to find tour from a given vertex.
+	 * Helper function to find tour.
 	 * 
 	 */
 	private void findTours() {
@@ -233,7 +233,7 @@ public class Euler {
 	 * @param u
 	 *            - Vertex from which the tour is to be found.
 	 * @param tour
-	 *            - List to store edges of a tour.
+	 *            - List to store tour edges.
 	 */
 	private void findTour(EulerVertex u, List<EulerEdge> tour) {
 		EulerEdge unExploredEdge;
@@ -263,7 +263,7 @@ public class Euler {
 			break;
 		}
 		if (edge != null) {
-			u2.unexploredEdges.remove(edge);// It takes O(1) since it is the first element in the LinkedList.
+			u2.unexploredEdges.remove(edge);
 
 		}
 		return edge;
@@ -303,6 +303,7 @@ public class Euler {
 	 *            - Vertex whose sub tour is added to the main output tour.
 	 */
 	private void explore(EulerVertex v) {
+		
 		if (v.isTourExplored) {
 			return;
 		}
