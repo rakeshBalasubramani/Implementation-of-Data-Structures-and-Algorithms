@@ -12,12 +12,24 @@ public class LP1L3 {
 		// LP1L3 x = new LP1L3();
 		Expression e = new Expression();
 		String word;
+		String line=""; 
 		while (in.hasNext()) {
-			word = in.nextLine();
+			word = in.next();
 			if (word.equals(";")) {
-				break;
+				if(line=="") {
+					break;
+				}
+				e.eval(line.split("\\s+"));
+				line="";
 			}
-			e.eval(word);
+			else {
+				if(line=="") {
+					line = word;
+				}
+				else {
+					line=line+" "+word;
+				}
+			}
 		}
 		e.end();
 		in.close();

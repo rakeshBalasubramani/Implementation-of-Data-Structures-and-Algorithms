@@ -3,34 +3,37 @@ package cs6301.g38;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 //Input Validation need to be done
 public class Expression {
 	String[] exp;
 	HashMap<String, Num> variables = new HashMap<String, Num>();
 
-	public void eval(String word) {
-		exp = word.split("\\s+");
-		if (exp.length == 4) {
-			variables.put(exp[0], new Num(exp[2]));
-		} else {
+	public void eval(String[] word) {
+		exp = word;
+		if(exp.length==3) {
+			variables.put(exp[0],new Num(exp[2]));
+		}
+		else if(exp.length>3)  {
 			variables.put(exp[0], postFix());
 		}
 		System.out.println(variables.get(exp[0]));
 	}
 
 	private Num postFix() {
-		String operatorList = "+-*/%^|";
+		String operatorList = "+-=*/%^|";
+		String numeric = "012132456789";
 		Num a, b;
 		String[] expTemp = Arrays.copyOfRange(exp, 2, exp.length);
 		ArrayDeque<Num> stack = new ArrayDeque<>();
 		for (String i : expTemp) {
-			if (i.equals(";")) {
-				break;
+			if(numeric.indexOf(i.charAt(0))>-1) {
+				stack.push(new Num(i));
 			}
-			if (!operatorList.contains(i)) {
+			else if (!operatorList.contains(i)) {
 				stack.push(variables.get(i));
-			} else {
+			} else{
 				if (i.equals("+")) {
 					a = stack.pop();
 					b = stack.pop();
@@ -59,6 +62,7 @@ public class Expression {
 					stack.push(Num.squareRoot(stack.pop()));
 				}
 			}
+			
 		}
 		return stack.pop();
 	}
