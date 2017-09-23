@@ -9,37 +9,49 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ * 
+ * @Desc Class used to check whether given graph is an Eulerian Graph, if it is Eulerian, then it will provide the Euler Tour for the given graph.
+ */
 public class Euler {
 	private int VERBOSE;
-	private Graph g;
-	private List<Graph.Edge> tour = new LinkedList<>(); // output tour
+	private Graph g; // Given graph
+	private List<Graph.Edge> tour; // output tour
 	private EulerVertex start; // start vertex
-	private ArrayList<EulerVertex> ev = new ArrayList<EulerVertex>(); 
-	
+	private ArrayList<EulerVertex> ev = new ArrayList<EulerVertex>();// Parallel list to store information about vertices
 
+	/**
+	 * @Desc Class used to store vertex information.
+	 *
+	 */
 	private class EulerVertex implements Iterable<EulerEdge> {
-		int name;
-		List<EulerEdge> unexploredEdges = new LinkedList<EulerEdge>();// Unexplored
-																		// edges
-		List<EulerEdge> mytour = new LinkedList<EulerEdge>(); // Tour for this
-																// vertex
+		List<EulerEdge> unexploredEdges = new LinkedList<EulerEdge>();// List to store Unexplored edges 
+		List<EulerEdge> mytour = new LinkedList<EulerEdge>(); // List to store tour for this vertex
+						
 		Graph.Vertex myVertex;
+
+		boolean isTourExplored; // to check whether tour for the vertex is explored or not.
 
 		EulerVertex(Graph.Vertex v) {
 			myVertex = v;
-			name = v.getName();
+			v.getName();
 
 		}
 
+		/**
+		 * Function to store unexplored edges for the vertex.
+		 * 
+		 */
 		private void assignAdjList() {
 
 			for (Edge e : this.myVertex) {
-				EulerVertex fromVertex = ev.get(e.from
-						.getName());
-				EulerVertex toVertex = ev.get(e.to
-						.getName());
+				EulerVertex fromVertex = ev.get(e.from.getName());
+				EulerVertex toVertex = ev.get(e.to.getName());
 				EulerEdge eulerEdge = new EulerEdge(fromVertex, toVertex, e);
-				// eAdj.add(eulerEdge);
 				unexploredEdges.add(eulerEdge);
 			}
 
@@ -52,6 +64,10 @@ public class Euler {
 		}
 	}
 
+	/**
+	 * @Desc Class used to store edge information.
+	 *
+	 */
 	private class EulerEdge {
 		Graph.Edge edge;
 		EulerVertex from; // head vertex
@@ -88,27 +104,38 @@ public class Euler {
 
 	}
 
+	/**
+	 * Helper function to populate unexplored edges for each vertex.
+	 * 
+	 */
 	private void assignEulerEdge() {
 
 		for (EulerVertex vertex : ev) {
 			vertex.assignAdjList();
 
 		}
-
 	}
 
+	/**
+	 * Function to populate Euler Vertices.
+	 * 
+	 * @param g
+	 *            - Input Graph.
+	 */
 	private void assignEulerVertex(Graph g) {
 
 		for (Vertex v : g) {
 			EulerVertex vertex = new EulerVertex(v);
 			ev.add(vertex);
-			
-
 		}
 
 	}
 
-	// function to find an Euler tour
+	/**
+	 * Function to find an Euler Tour
+	 * 
+	 * @return Euler tour.
+	 */
 	public List<Graph.Edge> findEulerTour() {
 		findTours();
 
@@ -119,31 +146,34 @@ public class Euler {
 		return tour;
 	}
 
-	/*
-	 * test if the graph is Eulerian. If the graph is not Eulerian, it prints
-	 * the message: "Graph is not Eulerian" and one reason why, such as
-	 * "inDegree = 5, outDegree = 3 at Vertex 37" or
-	 * "Graph is not strongly connected"
+	/**
+	 * Function to test if the graph is Eulerian.
+	 * 
+	 * @return True if graph is Eulerian, else false.
 	 */
 	public boolean isEulerian() {
 
-//		if (!isStronglyConnected()) {
-//			return false;
-	//	}
+		if (!isStronglyConnected()) {
+			return false;
+		}
 
 		return degreeCheckOnVertices();
 
 	}
 
+	/**
+	 * Function to check whether each vertex has equal number of indegree and
+	 * outdegree.
+	 * 
+	 * @return true if number of outdegree is equal to indegree else false.
+	 */
 	private boolean degreeCheckOnVertices() {
 		boolean isDegreeMatches = true;
 
 		for (Vertex v : g) {
 			if (v.adj.size() != v.revAdj.size()) {
 				System.out.println("Graph is not Eulerian");
-				System.out.println("outDegree = " + v.adj.size()
-						+ " , inDegree = " + v.revAdj.size() + " at Vertex "
-						+ v);
+				System.out.println("outDegree = " + v.adj.size() + " , inDegree = " + v.revAdj.size() + " at Vertex " + v);
 				isDegreeMatches = false;
 				break;
 			}
@@ -152,6 +182,11 @@ public class Euler {
 
 	}
 
+	/**
+	 * Function to check whether graph is strongly connected.
+	 * 
+	 * @return true if all the vertices have same component number else false.
+	 */
 	private boolean isStronglyConnected() {
 		if (SCC.stronglyConnectedComponents(g) != 1) {
 			System.out.println("Graph is not Eulerian");
@@ -162,6 +197,10 @@ public class Euler {
 		return true;
 	}
 
+	/**
+	 * Helper function to find tour.
+	 * 
+	 */
 	private void findTours() {
 		EulerVertex tmpStartVertex = start;
 
@@ -172,19 +211,30 @@ public class Euler {
 
 	}
 
+	/**
+	 * Function to find vertices which has unexplored outgoing edges.
+	 * 
+	 * @return Vertex which has unexplored outgoing edges.
+	 */
 	private EulerVertex getNodeWithUnexploredEdges() {
 		EulerVertex vertexUnExploreEdge = null;
-	for(EulerVertex vertex : ev)
-	{
-		if(vertex.unexploredEdges.size()>0)
-		{
-			vertexUnExploreEdge = vertex;
-			break;
+		for (EulerVertex vertex : ev) {
+			if (vertex.unexploredEdges.size() > 0) {
+				vertexUnExploreEdge = vertex;
+				break;
+			}
 		}
-	}
 		return vertexUnExploreEdge;
 	}
 
+	/**
+	 * Function to find sub tours from a given vertex.
+	 * 
+	 * @param u
+	 *            - Vertex from which the tour is to be found.
+	 * @param tour
+	 *            - List to store tour edges.
+	 */
 	private void findTour(EulerVertex u, List<EulerEdge> tour) {
 		EulerEdge unExploredEdge;
 		while ((unExploredEdge = getUnexploredEdge(u)) != null) {
@@ -195,6 +245,14 @@ public class Euler {
 		}
 	}
 
+	/**
+	 * Function to find an unexplored outgoing edge from a given vertex.
+	 * 
+	 * @param u2
+	 *            - Vertex from which an unexplored outgoing edge is to be
+	 *            found.
+	 * @return An unexplored outgoing edge.
+	 */
 	private EulerEdge getUnexploredEdge(EulerVertex u2) {
 
 		Iterator<EulerEdge> iteratorEdge = u2.unexploredEdges.iterator();
@@ -205,14 +263,16 @@ public class Euler {
 			break;
 		}
 		if (edge != null) {
-			u2.unexploredEdges.remove(edge);// Actually it takes O(1) since it
-											// is the first element in the
-											// LinkedList.
-			
+			u2.unexploredEdges.remove(edge);
+
 		}
 		return edge;
 	}
 
+	/**
+	 * Function to print the sub tours from a vertex.
+	 * 
+	 */
 	void printTours() {
 
 		for (EulerVertex v : ev) {
@@ -225,20 +285,35 @@ public class Euler {
 				System.out.println();
 			}
 		}
+
 	}
 
-	// Stitch tours into a single tour
+	/**
+	 * Helper function to stitch tours into a single tour.
+	 * 
+	 */
 	private void stitchTours() {
 		explore(start);
 	}
 
+	/**
+	 * Function to stitch tours into a single tour.
+	 * 
+	 * @param v
+	 *            - Vertex whose sub tour is added to the main output tour.
+	 */
 	private void explore(EulerVertex v) {
-
+		
+		if (v.isTourExplored) {
+			return;
+		}
 		EulerVertex tmp = v;
 		EulerVertex start = v;
-
+	
 		for (EulerEdge edgesInTour : tmp.mytour) {
+			v.isTourExplored = true;
 			tour.add(edgesInTour.edge);
+
 			tmp = edgesInTour.otherEnd(tmp);
 			if (tmp.mytour.size() > 0 && !start.equals(tmp)) {
 				explore(tmp);
