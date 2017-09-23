@@ -18,16 +18,17 @@ public class Euler {
 	
 
 	private class EulerVertex implements Iterable<EulerEdge> {
-		int name;
 		List<EulerEdge> unexploredEdges = new LinkedList<EulerEdge>();// Unexplored
 																		// edges
 		List<EulerEdge> mytour = new LinkedList<EulerEdge>(); // Tour for this
 																// vertex
 		Graph.Vertex myVertex;
 
+		boolean isTourExplored;
+		
 		EulerVertex(Graph.Vertex v) {
 			myVertex = v;
-			name = v.getName();
+			v.getName();
 
 		}
 
@@ -94,6 +95,7 @@ public class Euler {
 			vertex.assignAdjList();
 
 		}
+		
 
 	}
 
@@ -127,9 +129,9 @@ public class Euler {
 	 */
 	public boolean isEulerian() {
 
-//		if (!isStronglyConnected()) {
-//			return false;
-	//	}
+		if (!isStronglyConnected()) {
+			return false;
+		}
 
 		return degreeCheckOnVertices();
 
@@ -214,7 +216,7 @@ public class Euler {
 	}
 
 	void printTours() {
-
+		
 		for (EulerVertex v : ev) {
 			if (v.mytour.size() > 0) {
 
@@ -225,6 +227,8 @@ public class Euler {
 				System.out.println();
 			}
 		}
+		
+		
 	}
 
 	// Stitch tours into a single tour
@@ -236,9 +240,14 @@ public class Euler {
 
 		EulerVertex tmp = v;
 		EulerVertex start = v;
-
+		if(v.isTourExplored)
+		{
+			return;
+		}
 		for (EulerEdge edgesInTour : tmp.mytour) {
+			v.isTourExplored=true;
 			tour.add(edgesInTour.edge);
+			
 			tmp = edgesInTour.otherEnd(tmp);
 			if (tmp.mytour.size() > 0 && !start.equals(tmp)) {
 				explore(tmp);
