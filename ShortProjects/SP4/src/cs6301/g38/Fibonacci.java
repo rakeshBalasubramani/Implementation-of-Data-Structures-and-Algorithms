@@ -18,15 +18,16 @@ public class Fibonacci {
 
 	// method to calculate fibonacci using linear scan algorithm
 	private static BigInteger linearFibonacci(int num) {
-		if(num == 0){
-			return BigInteger.ZERO;
-		}
-		else if(num == 1){
-			return BigInteger.ONE;
-		}
-		else{
-			return linearFibonacci(num -2).add(linearFibonacci(num-1)); 
-		}
+		
+		BigInteger [] fib = new BigInteger[num+1];
+		fib[0]= BigInteger.ZERO;
+		
+		fib[1]= BigInteger.ONE;
+		
+		for(int i=2; i<=num ;i++)
+			fib[i]=fib[i-2].add(fib[i-1]); 
+		
+		return fib[num];
 		
 	}
 	
