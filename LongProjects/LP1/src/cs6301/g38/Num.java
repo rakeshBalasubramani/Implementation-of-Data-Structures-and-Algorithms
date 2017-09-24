@@ -158,6 +158,8 @@ public class Num implements Comparable<Num> {
 				result.setNegativeSignBit(b.negativeSignBit);
 			}
 		}
+		
+		removeLeadingZeros(result.num);
 		return result;
 	}
 	public void addition(Num a, Num b) {
