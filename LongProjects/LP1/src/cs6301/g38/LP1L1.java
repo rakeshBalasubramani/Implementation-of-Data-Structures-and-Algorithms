@@ -10,15 +10,22 @@ public class LP1L1 {
  public static void main(String[] args) {
  	Scanner in =new Scanner(System.in);
  	Num x,y;
- 	String p = "12";
- 	String q = "32";
+ 	String p = "1001";
+ 	String q = "3";
  	BigInteger a = new BigInteger(p);
  	BigInteger b = new BigInteger(q);
+ 	BigInteger c = new BigInteger("1");
  	x = new Num(p);
  	y = new Num(q);
- 	x.setBase(2);
- 	y.setBase(2);
- 	System.out.println("Big:"+a.pow(new Integer(q)));
- 	System.out.println("Div:"+Num.power(x,y));
+// 	while(a.pow(3).toString().equals(Num.power(x,3).toString())) {
+// 		a=a.add(c);
+// 		x=Num.add(x,new Num(1));
+// 	}
+// 	x.setBase(3);
+// 	y.setBase(3);
+ 	System.out.println(a+":"+a.pow(2));
+ 	System.out.println(x+":"+Num.power(x,3));
+ 	System.out.println(Num.product(x,x));
+ 	Num.add(x,y).printList();
  }
 }
