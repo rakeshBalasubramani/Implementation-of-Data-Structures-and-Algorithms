@@ -2,15 +2,29 @@ package cs6301.g38;
 
 import java.util.Scanner;
 
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ * 
+ * @Description  Question 3 - Comparison of Running time of different versions of Merge Sort 
+ * 
+ * */
 public class MergeSort {
 
 	private static int size = 10;
 	private static int threshold = 1;
 	
-	//----------------merge sort as per text book---------------------
+	
+	/**
+	 * @description Version 1 -merge sort as per text book
+	 * 
+	 * @param arr - array to be sorted
+	 */
 	private static void mergeSortAsPerTextBook(int[] arr) {
 		 mergeSort1(arr, 0, arr.length-1);
-		// printArray(arr);
+		
 	}
 	private static void mergeSort1(int[] A, int start, int  end){
 		if(start < end){
@@ -21,7 +35,15 @@ public class MergeSort {
 		}
 	}
 	
-	//merge method as described in text book
+	
+	/**
+	 * merge method as described in text book
+	 * 
+	 * @param A - Array to be sorted
+	 * @param start - start index
+	 * @param mid - mid index
+	 * @param end - end index
+	 */
 	private static void merge1(int[] A, int start, int mid, int end){
 		long[] L = new long[mid-start+2]; // Long because we are using infinity as Long.MAX
 		long[] R = new long[end-mid+1];
@@ -53,7 +75,12 @@ public class MergeSort {
 		}
 	}
 
-	//--------------mergesort passing temp array-------------------- 
+	
+	/**
+	 * @description  Version 2 - mergesort passing temp array
+	 * 
+	 * @param arr
+	 */
 	private static void mergeSortwithTemp(int[] arr) {
 		int[] tmp = new int[arr.length];
 		mergeSort2(arr, tmp, 0, arr.length - 1);
@@ -67,6 +94,14 @@ public class MergeSort {
 			merge2(A,tmp, start, mid, end);
 		}
 	}	
+	/**
+	 * 	tmp passed as parameter, result stored in tmp
+	 * @param A - input Array
+	 * @param tmp - tmp array
+	 * @param start - start index
+	 * @param mid - mid index
+	 * @param end - end index
+	 */
 	private static void merge2(int[] A, int[] tmp, int start, int mid, int end) {
 
 		long[] L = new long [mid-start+2];
@@ -100,7 +135,12 @@ public class MergeSort {
 	}
 	
 	
-	// --------------Using Insertion Sort when array size is smaller than threshold---------------------
+	// -----------------------------------
+	/**
+	 * 
+	 * @description Version 3 Using Insertion Sort when array size is smaller than threshold
+	 * @param arr
+	 */
 	private static void mergeSortWithThresholdSize(int[] arr) {
 		int[] tmp = new int[arr.length];
 		mergeSort3(arr, tmp, 0, arr.length-1);
@@ -140,8 +180,11 @@ public class MergeSort {
 		}
 	}
 	
-	//------------Avoid Copying to tmp array---------------------------------
-	
+	/**
+	 * 
+	 * @description Version 4 Using Insertion Sort and avoid copying into tmp array
+	 * @param arr
+	 */
 	private static void mergeSortAvoidTmpCopy(int[] arr) {
 		int[] tmp = new int[arr.length];
 		//copy arr into tmp
@@ -222,23 +265,6 @@ public class MergeSort {
 		System.out.println("Array to be sorted ");
 	//	printArray(arr);
 		
-		
-		
-		System.out.println("3. Using Insertion Sort for array size smaller than threshold ");
-		t.start(); // start timer
-		mergeSortWithThresholdSize(arr);
-		t.end();
-		System.out.println(t); // end timer
-		System.out.println();
-		
-		System.out.println("4. Avoid copying to tmp array ");
-		t.start(); // start timer
-		mergeSortAvoidTmpCopy(arr);
-		t.end();
-		System.out.println(t); // end timer
-		System.out.println();
-		
-		
 		System.out.println("Merge Sort");
 		System.out.println("1. As described in TextBooks:");
 		t.start(); // start timer
@@ -252,8 +278,21 @@ public class MergeSort {
 		t.end();
 		System.out.println(t); // end timer
 		System.out.println();
+				
+		System.out.println("3. Using Insertion Sort for array size smaller than threshold ");
+		t.start(); // start timer
+		mergeSortWithThresholdSize(arr);
+		t.end();
+		System.out.println(t); // end timer
+		System.out.println();
 		
-		
+		System.out.println("4. Avoid copying to tmp array ");
+		t.start(); // start timer
+		mergeSortAvoidTmpCopy(arr);
+		t.end();
+		System.out.println(t); // end timer
+		System.out.println();
+				
 		in.close();
 		
 	}
