@@ -59,9 +59,9 @@ public class Fibonacci {
 	 
 	/**
 	 * calculate the matrix power (n-1)
-	 * 
-	 * @param v
-	 * @param num
+	 *  
+	 * @param v - matrix
+	 * @param num - input number
 	 */
 	private static void calculatePower(BigInteger v[][], int num){
 		if(num == 0 || num == 1){
