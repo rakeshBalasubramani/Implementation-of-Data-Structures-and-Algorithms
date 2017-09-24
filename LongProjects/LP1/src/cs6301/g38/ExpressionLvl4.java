@@ -64,13 +64,6 @@ public class ExpressionLvl4 {
 				}
 			}
 		}
-		for(Program p :program) {
-			System.out.print(program.indexOf(p)+" ");
-			for(String c:p.code) {
-				System.out.print(c+" ");
-			}
-			System.out.println();
-		}
 	}
 
 	private String getLineNo(String lno) {
