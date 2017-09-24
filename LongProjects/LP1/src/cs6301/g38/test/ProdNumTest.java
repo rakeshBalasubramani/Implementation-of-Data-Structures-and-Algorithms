@@ -25,8 +25,8 @@ public class ProdNumTest {
 		System.out.println("--------------");
 
 
-		 na1 = new Num("00000000000000");
-		 na2 = new Num("00000000000000");
+		 na1 = new Num("1001");
+		 na2 = new Num("1001");
 		result = Num.product(na1, na2);
 		result.printList();
 		System.out.println(result);

@@ -159,7 +159,7 @@ public class Num implements Comparable<Num> {
 			}
 		}
 		
-		removeLeadingZeros(result.num);
+		removeLeadingZeros(result.num);// For product case;
 		return result;
 	}
 	public void addition(Num a, Num b) {
@@ -436,28 +436,38 @@ public class Num implements Comparable<Num> {
 	/* End of Level 1 */
 
 	/* Start of Level 2 */
-	public static Num divide(Num a, Num b) {
-		Num zeroNum = new Num(0);
-		zeroNum.setBase(a.base);
-		if(b.compareTo(zeroNum)==0)
-		{
-			throw new IllegalArgumentException("Divisor is 0");
+
+	private static Num rightShift(Num x) {
+		Num temp = Num.product(x,new Num(5));
+		temp.num.removeFirst();		
+		return temp;
+	}
+	public static Num divide(Num a,Num b) {
+		Num tempa = new Num();
+		Num tempb = new Num();
+		for(Long i:a.num) {
+			tempa.num.add(i);
 		}
+		for(Long i:b.num) {
+			tempb.num.add(i);
+		}
+		tempa.base=a.base;
+		tempb.base=b.base;
+		tempa.toDecimal();
+		tempb.toDecimal();
 		Num first = new Num(0);
-		first.setBase(a.base);
 		Num last = new Num();
-		last.base=a.base;
-		for(Long i :a.num) {
+		for(Long i :tempa.num) {
 			last.num.add(i);
 		}
-		last=add(last,new Num(1));// To handle integers.
+		last=add(last,new Num(1));
 		Num med = rightShift(add(first,last));
-		while(!((product(med,b).compareTo(a)<=0)&&(a.compareTo(product(add(med,new Num(1)),b))<0))) {
+		while(!((product(med,tempb).compareTo(tempa)<=0)&&(tempa.compareTo(product(add(med,new Num(1)),tempb))<0))) {
 			if(first.compareTo(last)>=0) {
 				return new Num(0);
 			}
 			else {
-				if (product(med, b).compareTo(a) < 0) {
+				if (product(med, tempb).compareTo(tempa) < 0) {
 					first = med;
 					med = rightShift(add(first, last));
 
@@ -467,50 +477,12 @@ public class Num implements Comparable<Num> {
 				}
 			}
 		}
+		med.setBase(a.base);
 		if(a.negativeSignBit!=b.negativeSignBit) {
 			med.negativeSignBit=true;
 		}
 		return med;
 	}
-
-	private static Num rightShift(Num x) {
-//		long tempBase = x.base;
-//		x.toDecimal();
-//		x.setBase(2);
-//		x.num.remove();
-//		x.toDecimal();
-//		x.setBase(tempBase);
-//		return x;
-		Timer timer = new Timer();
-		Num t2 = new Num(2);
-		t2.setBase(x.base);
-		Num t1 = new Num(1);
-		t1.setBase(x.base);
-		Num temp;
-		if(x.base%2==1) {
-			Num tempX = new Num();
-			tempX.setBase(x.base);
-			for(Long i :x.num) {
-				tempX.num.add(i);
-			}
-			temp = new Num(0);
-			temp.setBase(x.base);
-			while(tempX.compareTo(t2)>0) {
-				tempX=subtract(tempX,t2);
-				temp=add(temp,t1);
-			}
-		}
-		else {
-			Num tb = new Num(x.base/2);
-			tb.setBase(x.base);
-			temp = Num.product(x,tb);
-			temp.num.removeFirst();		
-		}
-		timer.end();
-		System.out.println(timer);
-		return temp;
-	}
-
 	public static Num mod(Num a, Num b) {
 
 		if(b.negativeSignBit)
@@ -555,16 +527,21 @@ public class Num implements Comparable<Num> {
 	}
 
 	public static Num squareRoot(Num a) {
-		Num first = new Num(1);
-		first.setBase(a.base);
+		Num tempa = new Num();
+		for(Long i:a.num) {
+			tempa.num.add(i);
+		}
+		tempa.base=a.base;
+		tempa.toDecimal();
+		Num first = new Num(0);
 		Num last = new Num();
-		last.base=a.base;
-		for(Long i :a.num) {
+		for(Long i :tempa.num) {
 			last.num.add(i);
 		}
+		last=add(last,new Num(1));
 		Num med = rightShift(add(first,last));
-		while (!(power(med, 2).compareTo(a) <= 0 && a.compareTo(power(add(med, new Num(1)), 2)) < 0)) {
-			if (power(med, 2).compareTo(a) < 0) {
+		while (!(power(med, 2).compareTo(tempa) <= 0 && tempa.compareTo(power(add(med, new Num(1)), 2)) < 0)) {
+			if (power(med, 2).compareTo(tempa) < 0) {
 				first = med;
 				med = rightShift(add(first, last));
 
@@ -573,6 +550,7 @@ public class Num implements Comparable<Num> {
 				med = rightShift(add(first, last));
 			}
 		}
+		med.setBase(a.base);
 		return med;
 		
 	}

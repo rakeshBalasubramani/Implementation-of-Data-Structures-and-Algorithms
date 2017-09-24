@@ -6,7 +6,9 @@ public class NumTestL1 {
 //AddNumTest.testAddition(); 
 		//SubNumTest.testSubtract();
 		//ProdNumTest.testProduct();
-		DivideNumTest.testDivision();
+		//DivideNumTest.testDivision();
+		//PowerNumTest.testPower();
+		SquareRootTest.testSquareRoot();
 	}
 
 }
