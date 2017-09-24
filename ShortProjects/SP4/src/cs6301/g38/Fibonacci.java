@@ -19,16 +19,19 @@ public class Fibonacci {
 	// method to calculate fibonacci using linear scan algorithm
 	private static BigInteger linearFibonacci(int num) {
 		
+		if(num == 0){
+			return BigInteger.ZERO;
+		}
+		else if(num == 1){
+			return BigInteger.ONE;
+		}
 		BigInteger [] fib = new BigInteger[num+1];
 		fib[0]= BigInteger.ZERO;
-		
 		fib[1]= BigInteger.ONE;
-		
-		for(int i=2; i<=num ;i++)
+		for(int i=2; i<=num ;i++){
 			fib[i]=fib[i-2].add(fib[i-1]); 
-		
+		}
 		return fib[num];
-		
 	}
 	
 	//method to calculate fibonacci using O(log n) algorithm
@@ -45,25 +48,32 @@ public class Fibonacci {
 	
 	// calculate the matrix power (n-1)
 	private static void calculatePower(BigInteger v[][], int num){
-		BigInteger v1[][] = new BigInteger[][]{{BigInteger.ONE,BigInteger.ONE},{BigInteger.ONE, BigInteger.ZERO}};
-		
-		//multiply the matrix n-1 times 
-		for(int i=1; i<= num-1; i++){
-			multiplyMatrix(v,v1);   
+		if(num == 0 || num == 1){
+			return;
 		}
+		BigInteger v1[][] = new BigInteger[][]{{BigInteger.ONE,BigInteger.ONE},{BigInteger.ONE, BigInteger.ZERO}};
+		calculatePower(v, num/2);
+		multiplyMatrix(v, v);
+		if(num%2 != 0){  // if odd, multiply one more time 
+			multiplyMatrix(v, v1);
+		}
+		
 	}
-	
-	
 	// method to multiply two matrices 
 	private static void multiplyMatrix(BigInteger[][] v, BigInteger[][] v1) {
-		BigInteger a = (v[0][0].multiply(v1[0][0])).add(v[0][1].multiply(v1[1][0]));
-		BigInteger b = (v[0][0].multiply(v1[0][1])).add(v[0][1].multiply(v1[1][1]));
-		BigInteger c = (v[1][0].multiply(v1[0][0])).add(v[1][1].multiply(v1[1][0]));
-		BigInteger d = (v[1][0].multiply(v1[0][1])).add(v[1][1].multiply(v1[1][1]));
-		v[0][0] = a;//store the result back in the same matrix v[][]
-		v[0][1] = b;
-		v[1][0] = c;
-		v[1][1] = d;
+		BigInteger res[][] = new BigInteger[][]{{BigInteger.ZERO,BigInteger.ZERO},{BigInteger.ZERO, BigInteger.ZERO}};
+		for(int i=0; i<2; i++){
+			for(int j=0; j<2; j++){
+				for(int k=0; k<2; k++){
+					res[i][j] =  res[i][j].add(v[i][k].multiply(v1[k][j]));
+				}
+			}
+		}
+		for(int i=0; i<2; i++){
+			for(int j=0; j<2; j++){
+				v[i][j] = res[i][j];
+			}
+		}
 	}
 
 	public static void main(String[] args) {
