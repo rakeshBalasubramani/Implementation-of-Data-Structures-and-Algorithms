@@ -9,11 +9,13 @@ public class LP1L4 {
 
 	public static void main(String[] args) {
 		Scanner in;
-//		if (args.length > 0) {
-//			int base = Integer.parseInt(args[0]);
-//			// Use above base for all numbers (except I/O, which is in base 10)
-//		}
 		ExpressionLvl4 e4 = new ExpressionLvl4();
+		if (args.length > 0) {
+			int base = Integer.parseInt(args[0]);
+			e4.setBase(base);
+			
+			// Use above base for all numbers (except I/O, which is in base 10)
+		}
 //		Expression e3 = new Expression();
 		in = new Scanner(System.in);
 //		LP1L4 x = new LP1L4();

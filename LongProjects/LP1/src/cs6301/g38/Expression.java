@@ -7,6 +7,12 @@ import java.util.HashMap;
 //Input Validation need to be done
 public class Expression {
 	String[] exp;
+	long base;
+
+	public void setBase(long base) {
+		this.base = base;
+	}
+
 	HashMap<String, Num> variables = new HashMap<String, Num>();
 
 	public void eval(String[] word) {
@@ -14,7 +20,7 @@ public class Expression {
 		String numeric = "012132456789";
 		if(exp.length==3) {
 			if(numeric.indexOf(exp[2].charAt(0))>-1) {
-				variables.put(exp[0],new Num(exp[2]));
+				variables.put(exp[0],new Num(exp[2],base));
 			}
 			else {
 				variables.put(exp[0],variables.get(exp[2]));
@@ -35,7 +41,7 @@ public class Expression {
 		ArrayDeque<Num> stack = new ArrayDeque<>();
 		for (String i : expTemp) {
 			if(numeric.indexOf(i.charAt(0))>-1) {
-				stack.push(new Num(i));
+				stack.push(new Num(i,base));
 			}
 			else if (!operatorList.contains(i)) {
 				stack.push(variables.get(i));

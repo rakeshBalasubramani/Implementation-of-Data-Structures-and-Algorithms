@@ -51,7 +51,10 @@ public class Num implements Comparable<Num> {
 		base = defaultBase;
 		parseInputString(s);
 	}
-
+	public Num(String s,long b) {
+		parseInputString(s);
+		setBase(b);
+	}
 	private void parseInputString(String s) {	
 		if(s.charAt(0)=='-') {
 			negativeSignBit=true;

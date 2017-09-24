@@ -28,11 +28,17 @@ class Program {
 public class ExpressionLvl4 {
 	String questionMark="?";
 	String collin=":";
+	long base;
+	public void setBase(long base) {
+		this.base = base;
+	}
+
 	LinkedList<Program> program = new LinkedList<Program>();
 	Expression e = new Expression();
 
 	public void setProgram(String[] code) {
 		program.add(new Program(code));
+		e.setBase(base);
 	}
 
 	public void execute() {
