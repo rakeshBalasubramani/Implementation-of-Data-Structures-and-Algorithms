@@ -31,8 +31,8 @@ try{
 		 na1 = new Num("14466454546545446454846466545444654648674122154441616548484855554564");
 		 na2 = new Num("1");
 		 BigInteger bn1 = new BigInteger("14466454546545446454846466545444654648674122154441616548484855554564");
-		 BigInteger bn2 = new BigInteger("2");
-		System.out.println( bn1.divide(bn2));
+		 BigInteger bn2 = new BigInteger("1");
+		System.out.println("BigInteger " +  bn1.divide(bn2));
 		 System.out.println(System.currentTimeMillis());
 		result = Num.divide(na1, na2);
 		 System.out.println(System.currentTimeMillis());
