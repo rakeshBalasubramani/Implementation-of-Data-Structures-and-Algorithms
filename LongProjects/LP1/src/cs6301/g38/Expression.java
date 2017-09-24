@@ -11,8 +11,15 @@ public class Expression {
 
 	public void eval(String[] word) {
 		exp = word;
+		String numeric = "012132456789";
 		if(exp.length==3) {
-			variables.put(exp[0],new Num(exp[2]));
+			if(numeric.indexOf(exp[2].charAt(0))>-1) {
+				variables.put(exp[0],new Num(exp[2]));
+			}
+			else {
+				variables.put(exp[0],variables.get(exp[2]));
+			}
+			
 		}
 		else if(exp.length>3)  {
 			variables.put(exp[0], postFix());
