@@ -94,8 +94,7 @@ public class BinarySearch {
 		System.out.println("Enter the number to be searched... ");
 		Integer x = new Integer(in.nextInt());
 		int index = recursiveBinarySearch(iarr, x);
-		System.out.println("Index of greater element less than or equal to x: "
-				+ index);
+		System.out.println("Index of greater element less than or equal to x: "	+ index);
 		in.close();
 
 	}

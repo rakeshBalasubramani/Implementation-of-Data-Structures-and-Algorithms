@@ -13,19 +13,22 @@ import java.util.Scanner;
  * */
 public class MergeSort {
 
-	private static int size = 10;
-	private static int threshold = 1;
+	private static int size = 1000000;
+	private static int threshold = 19;
 	
 	
 	/**
 	 * @description Version 1 -merge sort as per text book
-	 * 
 	 * @param arr - array to be sorted
 	 */
 	private static void mergeSortAsPerTextBook(int[] arr) {
 		 mergeSort1(arr, 0, arr.length-1);
-		
 	}
+	/**
+	 * @param A - Array to be sorted
+	 * @param start - start index 
+	 * @param end - end index
+	 */
 	private static void mergeSort1(int[] A, int start, int  end){
 		if(start < end){
 			int mid= (start+end)/2;
@@ -34,8 +37,6 @@ public class MergeSort {
 			merge1(A, start, mid, end);
 		}
 	}
-	
-	
 	/**
 	 * merge method as described in text book
 	 * 
@@ -76,16 +77,23 @@ public class MergeSort {
 	}
 
 	
+
 	/**
 	 * @description  Version 2 - mergesort passing temp array
 	 * 
-	 * @param arr
+	 * @param arr - array to be sorted
 	 */
 	private static void mergeSortwithTemp(int[] arr) {
 		int[] tmp = new int[arr.length];
 		mergeSort2(arr, tmp, 0, arr.length - 1);
 	//	printArray(tmp); // result stored in tmp[]
 	}
+	/**
+	 * @param A - input Array
+	 * @param tmp - tmp array
+	 * @param start - start index
+	 * @param end - end index
+	 */
 	private static void mergeSort2(int[] A, int[] tmp, int start, int end) {
 		if(start<end){
 			int mid = (start+end)/2;
@@ -135,9 +143,7 @@ public class MergeSort {
 	}
 	
 	
-	// -----------------------------------
 	/**
-	 * 
 	 * @description Version 3 Using Insertion Sort when array size is smaller than threshold
 	 * @param arr
 	 */
@@ -146,6 +152,12 @@ public class MergeSort {
 		mergeSort3(arr, tmp, 0, arr.length-1);
 	//	printArray(arr);
 	}
+	/** 
+	 * @param arr - array to be sorted
+	 * @param tmp - tmp array
+	 * @param start - start index
+	 * @param end - end index
+	 */
 	private static void mergeSort3(int[] arr, int[] tmp, int start, int end){
 		if(end-start < threshold){
 			//System.out.println("Using Insertion Sort");
@@ -162,6 +174,13 @@ public class MergeSort {
 		}
 	}
 	
+	/** merge - using insertion sort for elements smaller than threshold
+	 * @param A - input Array
+	 * @param tmp - tmp array
+	 * @param start - start index
+	 * @param mid - mid index
+	 * @param end - end index
+	 */
 	private static void merge3(int[] arr, int[] tmp, int start, int mid, int end) {
 		//copy arr into tmp
 		for(int i=0;i<arr.length;i++){
@@ -183,7 +202,7 @@ public class MergeSort {
 	/**
 	 * 
 	 * @description Version 4 Using Insertion Sort and avoid copying into tmp array
-	 * @param arr
+	 * @param arr - arr to be sorted
 	 */
 	private static void mergeSortAvoidTmpCopy(int[] arr) {
 		int[] tmp = new int[arr.length];
@@ -194,8 +213,12 @@ public class MergeSort {
 		mergeSort4(arr, tmp, 0, arr.length-1);
 	//	printArray(arr);
 	}
-	
-	
+	/**
+	 * @param arr - array to be sorted
+	 * @param tmp - tmp array
+	 * @param start - start index
+	 * @param end - end index
+	 */
 	private static void mergeSort4(int[] arr, int[] tmp, int start, int end) {
 		if(end-start < threshold){
 			//System.out.println("Using Insertion Sort");
@@ -212,6 +235,13 @@ public class MergeSort {
 		}		
 	}
 	
+	/** merge - avoid copying ot tmp array
+	 * @param A - input Array
+	 * @param tmp - tmp array
+	 * @param start - start index
+	 * @param mid - mid index
+	 * @param end - end index
+	 */
 	private static void merge4(int[] arr, int[] tmp, int start, int mid, int end) {
 		int i= start;
 		int j = mid+1;
@@ -227,7 +257,11 @@ public class MergeSort {
 		
 	}
 	
-	//-----------------Insertion Sort------------------
+	
+	/**
+	 * method performing Insertion Sort
+	 * @param arr - arr to be sorted
+	 */
 	public static  void insertionSort(int[] arr) {
 		int size = arr.length;
 		for (int i = 1; i < size; i++) {
