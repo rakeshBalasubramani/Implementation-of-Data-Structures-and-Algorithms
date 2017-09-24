@@ -160,7 +160,6 @@ public class Num implements Comparable<Num> {
 		}
 		
 		removeLeadingZeros(result.num);// For product case;
-		
 		return result;
 	}
 	public void addition(Num a, Num b) {
