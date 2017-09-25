@@ -8,7 +8,7 @@ public class NumTestL1 {
 		//ProdNumTest.testProduct();
 		//DivideNumTest.testDivision();
 		//PowerNumTest.testPower();
-		SquareRootTest.testSquareRoot();
+	//	SquareRootTest.testSquareRoot();
 	}
 
 }

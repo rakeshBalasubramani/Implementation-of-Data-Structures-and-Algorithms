@@ -1,7 +1,3 @@
-// Starter code for lp1.
-
-// Change following line to your group number
-// Changed type of base to long: 1:15 PM, 2017-09-08.
 package cs6301.g38;
 
 import java.util.Iterator;
@@ -13,10 +9,9 @@ import java.util.ListIterator;
  *         Avinash Venkatesh - axv165330 <br>
  *         Rakesh Balasubramani - rxb162130 <br>
  *         HariPriyaa Manian - hum160030
- *
+ * @Description This class is used to store and perform arithmetic operations on
+ *              arbitrarily large integers
  */
-
-//1.divisor (if numerator size is small than deno case.
 public class Num implements Comparable<Num> {
 
 	private static long defaultBase = 10; // This can be changed to what you
@@ -27,71 +22,121 @@ public class Num implements Comparable<Num> {
 	private boolean negativeSignBit = false; // false if positive , else
 												// negative.
 
+	/**
+	 * Function to check if a number is positive or negative.
+	 * 
+	 * @return - True if negative else positive.
+	 */
 	public boolean isNegative() {
 		return negativeSignBit;
 	}
 
+	/**
+	 * Function to set the sign bit of a number.
+	 * 
+	 * @param signBit
+	 *            - Parameter used to set the negativeSignBit of a number.
+	 */
 	public void setNegativeSignBit(boolean signBit) {
 		this.negativeSignBit = signBit;
 	}
 
+	/**
+	 * Function that returns the current base of a number.
+	 * 
+	 * @return - The current base in which the number is stored.
+	 */
 	public long getBase() {
 		return base;
 	}
 
+	/**
+	 * Function to set the base of a number.
+	 * 
+	 * @param base
+	 *            - Parameter used to set the base of a number.
+	 */
 	public void setBase(long base) {
 		this.base = base;
 		toBase();
 	}
 
+	/**
+	 * The list in which the number is stored. For example the number 1234 in base
+	 * 10 is stored as 4->3->2->1.
+	 */
 	private LinkedList<Long> num = new LinkedList<>();
 
-	/* Start of Level 1 */
+	/**
+	 * Constructor to set the base and num list.
+	 * 
+	 * @param s
+	 *            - Parameter used to set the num list.
+	 */
 	public Num(String s) {
 		base = defaultBase;
 		parseInputString(s);
 	}
-	public Num(String s,long b) {
+
+	/**
+	 * Constructor to set the base and store the number.
+	 * @param s - Parameter used to set the num list.
+	 * @param b - Parameter used to store the number's base.
+	 */
+	public Num(String s, long b) {
 		parseInputString(s);
 		setBase(b);
 	}
-	private void parseInputString(String s) {	
-		if(s.charAt(0)=='-') {
-			negativeSignBit=true;
-			s=s.substring(1);
-		}
-		else {
-			negativeSignBit=false;
+
+	/**
+	 * Function to set the negativeSignBit and to remove the leading zeros from the given string.
+	 * @param s - The given number.
+	 */
+	private void parseInputString(String s) {
+		if (s.charAt(0) == '-') {
+			negativeSignBit = true;
+			s = s.substring(1);
+		} else {
+			negativeSignBit = false;
 		}
 		boolean isLeadingZero = true;
 		String[] temp = s.split("");
 		String zeroString = "0";
-		int zeroLength= 0;
+		int zeroLength = 0;
 		for (String i : temp) {
-			if (isLeadingZero && i.equals(zeroString) && temp.length!=1) {
+			if (isLeadingZero && i.equals(zeroString) && temp.length != 1) {
 				zeroLength++;
 				continue;
 			}
 			isLeadingZero = false;
 			num.addFirst(Long.parseLong(i));
 		}
-		
-		if(num.size()==0 && zeroLength==temp.length)
-		{
+
+		if (num.size() == 0 && zeroLength == temp.length) {
 			num.add(0L);
 		}
 	}
 
+	/**
+	 * Constructor to get and store the number.
+	 * @param x - The number that needs to be stored.
+	 */
 	public Num(long x) {
 		base = defaultBase;
 		String s = Long.toString(x);
 		parseInputString(s);
 	}
-	
+
+	/**
+	 * Constructor
+	 */
 	private Num() {
 		base = defaultBase;
 	}
 
+	/**
+	 * Function to convert the base of a number from base 10 to the given base.
+	 */
 	public void toBase() {
 		LinkedList<Long> quotient = new LinkedList<Long>();
 		LinkedList<Long> reminder = new LinkedList<Long>();
@@ -120,9 +165,11 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
+	/**
+	 * Function to convert the number in base n to decimal.
+	 */
 	public void toDecimal() {
-		if(base == 10)
-		{
+		if (base == 10) {
 			return;
 		}
 		long p = 0;
@@ -131,40 +178,47 @@ public class Num implements Comparable<Num> {
 		decimal.setBase(10);
 		Num tBase = new Num(base);
 		for (Long i : num) {
-			temp = product(new Num(i),Num.power(tBase, p++));
+			temp = product(new Num(i), Num.power(tBase, p++));
 			temp.setBase(10);
 			decimal = add(decimal, temp);
 		}
 		num.clear();
-		for (Long i : decimal.num)
-		{
+		for (Long i : decimal.num) {
 			num.add(i);
 		}
 		base = 10;
 	}
-	
-	
-	public static Num add(Num a,Num b) {
+
+	/**
+	 * The helper function to perform addition of two Num objects.
+	 * @param a - Operand one.
+	 * @param b - Operand two.
+	 * @return - The sum of operand one and operand two.
+	 */
+	public static Num add(Num a, Num b) {
 		Num result = new Num();
-		result.base=a.base;
-		if(a.isNegative()==b.isNegative()) {
+		result.base = a.base;
+		if (a.isNegative() == b.isNegative()) {
 			result.addition(a, b);
 			result.setNegativeSignBit(a.negativeSignBit);
-		}
-		else {
-			if(a.compareTo(b)==1) {
+		} else {
+			if (a.compareTo(b) == 1) {
 				result.subtraction(a, b);
 				result.setNegativeSignBit(a.negativeSignBit);
-			}
-			else if(a.compareTo(b)==-1) {
-				result.subtraction(b,a);
+			} else if (a.compareTo(b) == -1) {
+				result.subtraction(b, a);
 				result.setNegativeSignBit(b.negativeSignBit);
 			}
 		}
-		
+
 		removeLeadingZeros(result.num);// For product case;
 		return result;
 	}
+
+	/**Function to perform the addition of two Num objects
+	 * @param a - Operand one. 
+	 * @param b - Operand two.
+	 */
 	public void addition(Num a, Num b) {
 		long carry = 0;
 		long sum = 0;
@@ -176,45 +230,53 @@ public class Num implements Comparable<Num> {
 			carry = sum / a.base;
 		}
 	}
+
 	/**
 	 * Method : helper function to check whether list has next element
 	 * 
 	 * @param it1
 	 *            - List iterator
-	 * @return - returns the next element of the list, if present else, returns
-	 *         null
+	 * @return - returns the next element of the list, if present else, returns 0
 	 */
 	private static long next(ListIterator<Long> it1) {
 		return it1.hasNext() ? it1.next() : 0;
 	}
+
+	/**
+	 * The helper function to perform subtraction of two Num objects.
+	 * @param a - Operand one.
+	 * @param b - Operand two.
+	 * @return - Difference of the two numbers a-b.
+	 */
 	public static Num subtract(Num a, Num b) {
 		Num result = new Num();
-		result.base=a.base;
-		if((a.isNegative()==b.isNegative())) {
+		result.base = a.base;
+		if ((a.isNegative() == b.isNegative())) {
 			result.subtraction(a, b);
-			if(a.compareTo(b)>=0) {
+			if (a.compareTo(b) >= 0) {
 				result.setNegativeSignBit(a.negativeSignBit);
-			}
-			else {
+			} else {
 				result.setNegativeSignBit(!b.negativeSignBit);
 			}
-		}
-		else if(b.negativeSignBit) {
+		} else if (b.negativeSignBit) {
 			result.addition(a, b);
-			result.negativeSignBit=false;
-		}
-		else {
+			result.negativeSignBit = false;
+		} else {
 			result.addition(a, b);
-			result.negativeSignBit=true;
+			result.negativeSignBit = true;
 		}
 		return result;
 	}
+
+	/**Function to perform the subtraction of two Num objects.
+	 * @param a - Operand one.
+	 * @param b - Operand two.
+	 */
 	private void subtraction(Num a, Num b) {
-		if(a.compareTo(b) < 0)
-		{
+		if (a.compareTo(b) < 0) {
 			Num temp = a;
-			a=b;
-			b= temp;
+			a = b;
+			b = temp;
 		}
 		long borrow = 0;
 		long difference = 0;
@@ -237,6 +299,10 @@ public class Num implements Comparable<Num> {
 		removeLeadingZeros(num);
 	}
 
+	/**
+	 * Function to remove the leading zeros.
+	 * @param num - The list in which the number is stored.
+	 */
 	private static void removeLeadingZeros(LinkedList<Long> num) {
 
 		ListIterator<Long> it = num.listIterator(num.size());
@@ -251,7 +317,12 @@ public class Num implements Comparable<Num> {
 		}
 	}
 
-	// Implement Karatsuba algorithm
+	/**
+	 * The helper function to perform the product of two Num objects.
+	 * @param a - Operand one.
+	 * @param b - Operand two.
+	 * @return - The product of two numbers operand one and operand two.
+	 */
 	public static Num product(Num a, Num b) {
 
 		Num al = new Num();
@@ -260,16 +331,16 @@ public class Num implements Comparable<Num> {
 		Num bh = new Num();
 
 		if (b.num.size() > a.num.size()) {
-			boolean setb=a.negativeSignBit;
-			boolean seta= b.negativeSignBit;
-			
+			boolean setb = a.negativeSignBit;
+			boolean seta = b.negativeSignBit;
+
 			Num temp = a;
 			a = b;
 			b = temp;
-			
+
 			a.setNegativeSignBit(seta);
 			b.setNegativeSignBit(setb);
-			
+
 		}
 
 		if (b.num.size() == 0) {
@@ -286,105 +357,100 @@ public class Num implements Comparable<Num> {
 		al.setBase(a.getBase());
 		bl.setBase(b.getBase());
 		bh.setBase(b.getBase());
-		
-		if(a.negativeSignBit)
-		{
+
+		if (a.negativeSignBit) {
 			al.setNegativeSignBit(true);
 			ah.setNegativeSignBit(true);
 		}
-		
-		if(b.negativeSignBit)
-		{
+
+		if (b.negativeSignBit) {
 			bl.setNegativeSignBit(true);
 			bh.setNegativeSignBit(true);
 		}
-		
-		
-		Iterator<Long> iteratora=a.num.iterator();
-		Iterator<Long> iteratorb=b.num.iterator();
-		int count=0;
 
-		while(iteratora.hasNext() && iteratorb.hasNext() && count<k)
-		{
+		Iterator<Long> iteratora = a.num.iterator();
+		Iterator<Long> iteratorb = b.num.iterator();
+		int count = 0;
+
+		while (iteratora.hasNext() && iteratorb.hasNext() && count < k) {
 			al.num.add(iteratora.next());
 			bl.num.add(iteratorb.next());
 			count++;
-			
+
 		}
-		
-//		for (int i = 0; i < k; i++) {
-//			al.num.add(a.num.get(i));
-//			bl.num.add(b.num.get(i));
-//		}
-		
-		while(iteratora.hasNext())
-		{
+
+		// for (int i = 0; i < k; i++) {
+		// al.num.add(a.num.get(i));
+		// bl.num.add(b.num.get(i));
+		// }
+
+		while (iteratora.hasNext()) {
 			ah.num.add(iteratora.next());
 		}
 
-//		for (int j = k; j < b.num.size(); j++) {
-//			bh.num.add(b.num.get(j));
-//		}
+		// for (int j = k; j < b.num.size(); j++) {
+		// bh.num.add(b.num.get(j));
+		// }
 
-		while(iteratorb.hasNext())
-		{
+		while (iteratorb.hasNext()) {
 			bh.num.add(iteratorb.next());
 		}
-//		for (int j = k; j < a.num.size(); j++) {
-//			ah.num.add(a.num.get(j));
-//		}
+		// for (int j = k; j < a.num.size(); j++) {
+		// ah.num.add(a.num.get(j));
+		// }
 
-//		System.out.println();
+		// System.out.println();
 		Num prod1 = product(ah, bh);
-//		System.out.println("prod1");
-//		prod1.printList();
-//		System.out.println();
-//
+		// System.out.println("prod1");
+		// prod1.printList();
+		// System.out.println();
+		//
 		Num prod2 = product(al, bl);
-//		System.out.println("prod2");
-//		prod2.printList();
-//		System.out.println();
-//
+		// System.out.println("prod2");
+		// prod2.printList();
+		// System.out.println();
+		//
 		Num prod3 = product(add(al, ah), add(bl, bh));
-//		System.out.println("prod3");
-//		prod3.printList();
-//		System.out.println();
-//
+		// System.out.println("prod3");
+		// prod3.printList();
+		// System.out.println();
+		//
 		Num sub1 = subtract(prod3, prod1);
-//		System.out.println("sub 1");
-//		sub1.printList();
-//		System.out.println();
-//
+		// System.out.println("sub 1");
+		// sub1.printList();
+		// System.out.println();
+		//
 		Num sub2 = subtract(sub1, prod2);
-//		System.out.println("sub 2");
-//		sub2.printList();
-//		System.out.println();
-//
+		// System.out.println("sub 2");
+		// sub2.printList();
+		// System.out.println();
+		//
 		Num shift1 = shift(prod1, 2 * k);
-//		System.out.println("shifting prod1");
-//		shift1.printList();
-//		System.out.println();
-//
+		// System.out.println("shifting prod1");
+		// shift1.printList();
+		// System.out.println();
+		//
 		Num shift2 = shift(sub2, k);
-//		System.out.println("shifting prod2");
-//		shift2.printList();
-//		System.out.println();
-//
+		// System.out.println("shifting prod2");
+		// shift2.printList();
+		// System.out.println();
+		//
 		Num add1 = add(shift1, shift2);
-//		System.out.println("add 1");
-//		add1.printList();
-//		System.out.println();
-//
+		// System.out.println("add 1");
+		// add1.printList();
+		// System.out.println();
+		//
 		Num add2 = add(add1, prod2);
-//		System.out.println("add 2");
-//		add2.printList();
-//		System.out.println();
+		// System.out.println("add 2");
+		// add2.printList();
+		// System.out.println();
 
-		if(a.negativeSignBit!=b.negativeSignBit) {
+		if (a.negativeSignBit != b.negativeSignBit) {
 			add2.setNegativeSignBit(true);
 		}
-		 return add2;
-		//return add(add(shift(prod1, 2 * k), shift(subtract(subtract(prod3, prod1), prod2), k)), prod2);
+		return add2;
+		// return add(add(shift(prod1, 2 * k), shift(subtract(subtract(prod3, prod1),
+		// prod2), k)), prod2);
 	}
 
 	private static Num multiply(Num a, Num b) {
@@ -405,7 +471,7 @@ public class Num implements Comparable<Num> {
 			res.num.add(carry);
 		}
 
-		if(a.negativeSignBit!=b.negativeSignBit) {
+		if (a.negativeSignBit != b.negativeSignBit) {
 			res.setNegativeSignBit(true);
 		}
 		return res;
@@ -441,35 +507,36 @@ public class Num implements Comparable<Num> {
 	/* Start of Level 2 */
 
 	private static Num rightShift(Num x) {
-		Num temp = Num.product(x,new Num(5));
-		temp.num.removeFirst();		
+		Num temp = Num.product(x, new Num(5));
+		temp.num.removeFirst();
 		return temp;
 	}
-	public static Num divide(Num a,Num b) {
+
+	public static Num divide(Num a, Num b) {
 		Num tempa = new Num();
 		Num tempb = new Num();
-		for(Long i:a.num) {
+		for (Long i : a.num) {
 			tempa.num.add(i);
 		}
-		for(Long i:b.num) {
+		for (Long i : b.num) {
 			tempb.num.add(i);
 		}
-		tempa.base=a.base;
-		tempb.base=b.base;
+		tempa.base = a.base;
+		tempb.base = b.base;
 		tempa.toDecimal();
 		tempb.toDecimal();
 		Num first = new Num(0);
 		Num last = new Num();
-		for(Long i :tempa.num) {
+		for (Long i : tempa.num) {
 			last.num.add(i);
 		}
-		last=add(last,new Num(1));
-		Num med = rightShift(add(first,last));
-		while(!((product(med,tempb).compareTo(tempa)<=0)&&(tempa.compareTo(product(add(med,new Num(1)),tempb))<0))) {
-			if(first.compareTo(last)>=0) {
+		last = add(last, new Num(1));
+		Num med = rightShift(add(first, last));
+		while (!((product(med, tempb).compareTo(tempa) <= 0)
+				&& (tempa.compareTo(product(add(med, new Num(1)), tempb)) < 0))) {
+			if (first.compareTo(last) >= 0) {
 				return new Num(0);
-			}
-			else {
+			} else {
 				if (product(med, tempb).compareTo(tempa) < 0) {
 					first = med;
 					med = rightShift(add(first, last));
@@ -481,30 +548,27 @@ public class Num implements Comparable<Num> {
 			}
 		}
 		med.setBase(a.base);
-		if(a.negativeSignBit!=b.negativeSignBit) {
-			med.negativeSignBit=true;
+		if (a.negativeSignBit != b.negativeSignBit) {
+			med.negativeSignBit = true;
 		}
 		return med;
 	}
+
 	public static Num mod(Num a, Num b) {
 
-		if(b.negativeSignBit)
-		{
+		if (b.negativeSignBit) {
 			throw new ArithmeticException("b should be positive");
 		}
-		if(a.negativeSignBit)
-		{
-			Num prod=product(a,b);
+		if (a.negativeSignBit) {
+			Num prod = product(a, b);
 			prod.printList();
-			return subtract(b,subtract(a, product(divide(a, b), b)));
-		}
-		else
-		{
+			return subtract(b, subtract(a, product(divide(a, b), b)));
+		} else {
 			return subtract(a, product(divide(a, b), b));
 		}
-		
+
 	}
-	
+
 	// Use divide and conquer
 	public static Num power(Num a, Num n) {
 		if (n.compareTo(new Num(1)) == 0) {
@@ -531,18 +595,18 @@ public class Num implements Comparable<Num> {
 
 	public static Num squareRoot(Num a) {
 		Num tempa = new Num();
-		for(Long i:a.num) {
+		for (Long i : a.num) {
 			tempa.num.add(i);
 		}
-		tempa.base=a.base;
+		tempa.base = a.base;
 		tempa.toDecimal();
 		Num first = new Num(0);
 		Num last = new Num();
-		for(Long i :tempa.num) {
+		for (Long i : tempa.num) {
 			last.num.add(i);
 		}
-		last=add(last,new Num(1));
-		Num med = rightShift(add(first,last));
+		last = add(last, new Num(1));
+		Num med = rightShift(add(first, last));
 		while (!(power(med, 2).compareTo(tempa) <= 0 && tempa.compareTo(power(add(med, new Num(1)), 2)) < 0)) {
 			if (power(med, 2).compareTo(tempa) < 0) {
 				first = med;
@@ -555,7 +619,7 @@ public class Num implements Comparable<Num> {
 		}
 		med.setBase(a.base);
 		return med;
-		
+
 	}
 	/* End of Level 2 */
 
@@ -568,11 +632,10 @@ public class Num implements Comparable<Num> {
 		} else if (this.num.size() == other.num.size()) {
 			ListIterator<Long> iterator1 = num.listIterator(num.size());
 			ListIterator<Long> iterator2 = other.num.listIterator(other.num.size());
-			long temp,temp1;
-			while(iterator1.hasPrevious())
-			{
-				temp=iterator1.previous();
-				temp1=iterator2.previous();
+			long temp, temp1;
+			while (iterator1.hasPrevious()) {
+				temp = iterator1.previous();
+				temp1 = iterator2.previous();
 				if (temp > temp1) {
 					return 1;
 				} else if (temp < temp1) {
@@ -586,14 +649,13 @@ public class Num implements Comparable<Num> {
 
 	// Output using the format "base: elements of list ..."
 	// For example, if base=100, and the number stored corresponds to 10965,
-	// then the output is "100: 65 9 1"				// I have a doubt with this output 
+	// then the output is "100: 65 9 1" // I have a doubt with this output
 	public void printList() {
 		System.out.print(base + ": ");
 		for (Long i : num) {
 			System.out.print(i + " ");
 		}
-		if(isNegative())
-		{
+		if (isNegative()) {
 			System.out.print("Negative number");
 		}
 		System.out.println();
@@ -601,25 +663,24 @@ public class Num implements Comparable<Num> {
 
 	// Return number to a string in base 10
 	public String toString() {
-		String zero="0";
+		String zero = "0";
 		Num temp = new Num();
-		temp.base=base;
-		for(Long i : num) {
+		temp.base = base;
+		for (Long i : num) {
 			temp.num.add(i);
 		}
 		temp.toDecimal();
 		temp.setNegativeSignBit(negativeSignBit);
 		StringBuilder strBuild = new StringBuilder();
-		if(num.size()==0) {
+		if (num.size() == 0) {
 			strBuild.insert(0, 0);
 		}
 		for (Long i : temp.num)
 			strBuild.insert(0, i);
-		if(temp.negativeSignBit&&!strBuild.equals(zero)) {
-			strBuild.insert(0,"-");
+		if (temp.negativeSignBit && !strBuild.equals(zero)) {
+			strBuild.insert(0, "-");
 		}
 		return strBuild.toString();
 	}
-
 
 }

@@ -45,7 +45,7 @@ public class ExpressionLvl4 {
 		assignLineNumbers();
 		for (int pc = 0; pc < program.size(); pc++) {
 			if (program.get(pc).code.length > 2 && !program.get(pc).code[1].equals(questionMark)) {
-				shuntingYardAlgo(program.get(pc).code);
+				program.get(pc).code = shuntingYardAlgo(program.get(pc).code);
 				e.eval(program.get(pc).code);
 			} else if (program.get(pc).code.length > 2 && program.get(pc).code[1].equals(questionMark)) {
 				if (e.variables.get(program.get(pc).code[0]).compareTo(new Num(0)) != 0) {
@@ -85,7 +85,7 @@ public class ExpressionLvl4 {
 		e.end();
 	}
 
-	private void shuntingYardAlgo(String[] exp) {
+	private String[] shuntingYardAlgo(String[] exp) {
 		ArrayDeque<String> operatorStack = new ArrayDeque<String>(); // Operator Stack
 		ArrayDeque<String> outputQueue = new ArrayDeque<String>(); // Output Queue
 		ArrayList<String> operatorList = new ArrayList<String>();
@@ -93,13 +93,14 @@ public class ExpressionLvl4 {
 		operatorList.add("-");
 		operatorList.add("*");
 		operatorList.add("/");
+		operatorList.add("%");
 		operatorList.add(")");
 		operatorList.add("(");
 		operatorList.add("^");
 		operatorList.add("|");
-		int j = -1;
+		int j = -1,op=0;
 		for (int i = 0; i < exp.length; i++) {
-			if (exp[i] == "=") {
+			if (exp[i].equals("=")) {
 				j = i;
 				break;
 			}
@@ -110,11 +111,13 @@ public class ExpressionLvl4 {
 			} else {
 				if (operatorStack.isEmpty()) { // If the stack is empty add the operator directly to the stack.
 					operatorStack.push(exp[i]);
-				} else if (exp[i] == "(") { // If the current char is '(' add it to the stack.
+				} else if (exp[i].equals("(")) {
+					;// If the current char is '(' add it to the stack.
 					operatorStack.push(exp[i]);
-				} else if (exp[i] == ")") { // If the current char is ')' pop all the characters from the stack to the
+				} else if (exp[i].equals(")")) {
+					op++;// If the current char is ')' pop all the characters from the stack to the
 											// output queue until a '('
-					while (operatorStack.peek() != "(") {
+					while (!operatorStack.peek().equals("(")) {
 						outputQueue.add(operatorStack.pop());
 					}
 					operatorStack.pop(); // Pop the '('
@@ -134,7 +137,7 @@ public class ExpressionLvl4 {
 					operatorStack.push(exp[i]);
 				} else {// If the current char is an operator pop until the top of the stack has lower
 						// precedence than the current char.
-					while (!operatorStack.isEmpty() && operatorStack.peek() != "("
+					while (!operatorStack.isEmpty() && !operatorStack.peek().equals("(")
 							&& getPrecedence(exp[i]) <= getPrecedence(operatorStack.peek())) {
 						outputQueue.add(operatorStack.pop());
 					}
@@ -145,9 +148,14 @@ public class ExpressionLvl4 {
 		while (!operatorStack.isEmpty()) {
 			outputQueue.add(operatorStack.pop());
 		}
+		String[] temp = new String[exp.length-2*op];
+		for(int p=0;p<=j;p++) {
+			temp[p]=exp[p];
+		}
 		int i = j + 1;
 		while (!outputQueue.isEmpty())
-			exp[i++] = outputQueue.removeFirst();
+			temp[i++] = outputQueue.removeFirst();
+		return temp;
 	}
 
 	/**
@@ -164,6 +172,7 @@ public class ExpressionLvl4 {
 			return 0;
 		case "*":
 		case "/":
+		case "%":
 			return 1;
 		case "^":
 			return 2;
@@ -182,7 +191,7 @@ public class ExpressionLvl4 {
 	 * @return - Associativity of the given operator.
 	 */
 	private static String getAssociativity(String i) {
-		if (i == "+" || i == "-" || i == "*" || i == "/")
+		if (i == "+" || i == "-" || i == "*" || i == "/" ||i == "%")
 			return "left";
 		else if (i == "^")
 			return "right";
