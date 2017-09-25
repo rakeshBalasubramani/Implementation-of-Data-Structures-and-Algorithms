@@ -11,7 +11,9 @@ public class LP1L4 {
 			if (args.length > 0) {
 				int base = Integer.parseInt(args[0]);
 				e4.setBase(base);
-
+			}
+			else {
+				e4.setBase(10);
 			}
 			String word;
 			String line = "";

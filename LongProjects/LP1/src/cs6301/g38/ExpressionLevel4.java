@@ -5,38 +5,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-
 /**
  * @author Rajkumar PanneerSelvam - rxp162130 <br>
  *         Avinash Venkatesh - axv165330 <br>
  *         Rakesh Balasubramani - rxb162130 <br>
  *         HariPriyaa Manian - hum160030
  * 
- * @Description This class is used to store the input with line numbers and the code.
+ * @Description This class is used to store the input with line numbers and the
+ *              code.
  */
 class Program {
 	/**
-	 * @param inputLine - The input line.
+	 * @param inputLine
+	 *            - The input line.
 	 */
 	Program(String[] inputLine) {
-		if(checkLineNo(inputLine[0])) {
-			lineNo=Long.parseLong(inputLine[0]);
-			code = Arrays.copyOfRange(inputLine,1,inputLine.length);
-		}
-		else {
-			lineNo=-1;
+		if (checkLineNo(inputLine[0])) {
+			lineNo = Long.parseLong(inputLine[0]);
+			code = Arrays.copyOfRange(inputLine, 1, inputLine.length);
+		} else {
+			lineNo = -1;
 			code = inputLine;
 		}
-		
+
 	}
+
 	/**
 	 * Function to check if the current line has line number.
-	 * @param currentLine - The current line.
+	 * 
+	 * @param currentLine
+	 *            - The current line.
 	 * @return - True if it contains line number else false.
 	 */
 	private boolean checkLineNo(String currentLine) {
 		return currentLine.matches("\\d+");
 	}
+
 	/**
 	 * Individual lines of the input.
 	 */
@@ -57,12 +61,16 @@ class Program {
  *              the input.
  */
 public class ExpressionLevel4 {
-	String questionMark="?";
-	String collin=":";
+	String questionMark = "?";
+	String collin = ":";
 	long base;
+
 	/**
 	 * Function to set the base of the numbers.
-	 * @param base - The value passed as the base that needs to be used as the base of all numbers in this class.
+	 * 
+	 * @param base
+	 *            - The value passed as the base that needs to be used as the base
+	 *            of all numbers in this class.
 	 */
 	public void setBase(long base) {
 		this.base = base;
@@ -74,8 +82,11 @@ public class ExpressionLevel4 {
 	LinkedList<Program> program = new LinkedList<Program>();
 	Expression e = new Expression();
 
-	/**Function to add the input to the list.
-	 * @param input - The input line.
+	/**
+	 * Function to add the input to the list.
+	 * 
+	 * @param input
+	 *            - The input line.
 	 */
 	public void setProgram(String[] input) {
 		program.add(new Program(input));
@@ -89,31 +100,58 @@ public class ExpressionLevel4 {
 		assignLineNumbers();
 		for (int pc = 0; pc < program.size(); pc++) {
 			if (program.get(pc).code.length > 2 && !program.get(pc).code[1].equals(questionMark)) {
-				program.get(pc).code = shuntingYardAlgo(program.get(pc).code);
+				if (checkInfix(program.get(pc).code)) {
+					program.get(pc).code = shuntingYardAlgo(program.get(pc).code);
+				}
 				e.eval(program.get(pc).code);
 			} else if (program.get(pc).code.length > 2 && program.get(pc).code[1].equals(questionMark)) {
 				if (e.variables.get(program.get(pc).code[0]).compareTo(new Num(0)) != 0) {
-					pc=Integer.parseInt(program.get(pc).code[2])-1;
-				}
-				else if(program.get(pc).code.length > 3 && program.get(pc).code[3].equals(collin)) {
-					pc=Integer.parseInt(program.get(pc).code[4])-1;
+					pc = Integer.parseInt(program.get(pc).code[2]) - 1;
+				} else if (program.get(pc).code.length > 3 && program.get(pc).code[3].equals(collin)) {
+					pc = Integer.parseInt(program.get(pc).code[4]) - 1;
 				}
 			} else {
 				e.eval(program.get(pc).code);
 			}
 		}
 	}
-	
+
+	/**
+	 * Function to check if the expression is in infix or postfix.
+	 * 
+	 * @param expression
+	 *            - Given expression
+	 * @return - True if expression is in infix else false.
+	 */
+	private boolean checkInfix(String[] expression) {
+		String operatorList = "/*-+^%|()";
+		int j = -1;
+		for (int i = 0; i < expression.length; i++) {
+			if (expression[i].equals("=")) {
+				j = i;
+				break;
+			}
+		}
+		if (expression.length > j + 2) {
+			if (!operatorList.contains(expression[j + 1]) && !operatorList.contains(expression[j + 2]))
+				return false;
+			else
+				return true;
+		} else {
+			return true;
+		}
+	}
+
 	/**
 	 * Function to assign line numbers for the program.
 	 */
 	public void assignLineNumbers() {
-		
-		for(Program p : program) {
-			if(p.code.length>1&&p.code[1].equals(questionMark)) {
-				p.code[2]=getLineNo(p.code[2]);
-				if(p.code.length>3&&p.code[3].equals(collin)) {
-					p.code[4]=getLineNo(p.code[4]);
+
+		for (Program p : program) {
+			if (p.code.length > 1 && p.code[1].equals(questionMark)) {
+				p.code[2] = getLineNo(p.code[2]);
+				if (p.code.length > 3 && p.code[3].equals(collin)) {
+					p.code[4] = getLineNo(p.code[4]);
 				}
 			}
 		}
@@ -121,12 +159,14 @@ public class ExpressionLevel4 {
 
 	/**
 	 * Function to get the line number of the given line.
-	 * @param line - The given line.
+	 * 
+	 * @param line
+	 *            - The given line.
 	 * @return - The line number of the given line.
 	 */
 	private String getLineNo(String line) {
-		for(Program p :program) {
-			if(p.lineNo==Long.parseLong(line)) {
+		for (Program p : program) {
+			if (p.lineNo == Long.parseLong(line)) {
 				return Integer.toString(program.indexOf(p));
 			}
 		}
@@ -142,7 +182,9 @@ public class ExpressionLevel4 {
 
 	/**
 	 * Function to convert the infix expression to postfix expression.
-	 * @param exp - The expression given in the input.
+	 * 
+	 * @param exp
+	 *            - The expression given in the input.
 	 * @return - The resultant postfix expression.
 	 */
 	private String[] shuntingYardAlgo(String[] exp) {
@@ -158,7 +200,7 @@ public class ExpressionLevel4 {
 		operatorList.add("(");
 		operatorList.add("^");
 		operatorList.add("|");
-		int j = -1,op=0;
+		int j = -1, op = 0;
 		for (int i = 0; i < exp.length; i++) {
 			if (exp[i].equals("=")) {
 				j = i;
@@ -176,7 +218,7 @@ public class ExpressionLevel4 {
 					operatorStack.push(exp[i]);
 				} else if (exp[i].equals(")")) {
 					op++;// If the current char is ')' pop all the characters from the stack to the
-											// output queue until a '('
+							// output queue until a '('
 					while (!operatorStack.peek().equals("(")) {
 						outputQueue.add(operatorStack.pop());
 					}
@@ -208,9 +250,9 @@ public class ExpressionLevel4 {
 		while (!operatorStack.isEmpty()) {
 			outputQueue.add(operatorStack.pop());
 		}
-		String[] temp = new String[exp.length-2*op];
-		for(int p=0;p<=j;p++) {
-			temp[p]=exp[p];
+		String[] temp = new String[exp.length - 2 * op];
+		for (int p = 0; p <= j; p++) {
+			temp[p] = exp[p];
 		}
 		int i = j + 1;
 		while (!outputQueue.isEmpty())
@@ -251,7 +293,7 @@ public class ExpressionLevel4 {
 	 * @return - Associativity of the given operator.
 	 */
 	private static String getAssociativity(String i) {
-		if (i == "+" || i == "-" || i == "*" || i == "/" ||i == "%")
+		if (i == "+" || i == "-" || i == "*" || i == "/" || i == "%")
 			return "left";
 		else if (i == "^")
 			return "right";
