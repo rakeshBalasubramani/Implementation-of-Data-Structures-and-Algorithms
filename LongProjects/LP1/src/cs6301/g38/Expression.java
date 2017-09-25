@@ -26,7 +26,9 @@ public class Expression {
 	public void setBase(long base) {
 		this.base = base;
 	}
-
+	public Expression() {
+		base=10;
+	}
 	/**
 	 * A hashmap used to store the variables and the corresponding values given in
 	 * the iput program.

@@ -73,6 +73,7 @@ public class ExpressionLevel4 {
 	 *            of all numbers in this class.
 	 */
 	public void setBase(long base) {
+		e.setBase(base);
 		this.base = base;
 	}
 
@@ -119,7 +120,7 @@ public class ExpressionLevel4 {
 	/**
 	 * Function to check if the expression is in infix or postfix.
 	 * 
-	 * @param expression
+	 * @param expression 
 	 *            - Given expression
 	 * @return - True if expression is in infix else false.
 	 */
