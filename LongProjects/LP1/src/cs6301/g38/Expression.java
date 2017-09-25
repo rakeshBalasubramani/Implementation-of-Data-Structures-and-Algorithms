@@ -16,6 +16,7 @@ import java.util.HashMap;
 public class Expression {
 	String[] exp;
 	long base;
+	boolean print=true;
 
 	/**
 	 * Function to set the base of the numbers used in this operation.
@@ -50,11 +51,14 @@ public class Expression {
 			} else {
 				variables.put(exp[0], variables.get(exp[2]));
 			}
+			System.out.println(variables.get(exp[0]));
 
 		} else if (exp.length > 3) {
 			variables.put(exp[0], postFix());
 		}
+		if(print) {
 		System.out.println(variables.get(exp[0]));
+		}
 	}
 
 	/**

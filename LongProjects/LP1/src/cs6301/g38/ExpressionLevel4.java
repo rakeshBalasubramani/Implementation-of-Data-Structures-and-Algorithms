@@ -99,12 +99,16 @@ public class ExpressionLevel4 {
 	 */
 	public void execute() {
 		assignLineNumbers();
+		String temp[];
 		for (int pc = 0; pc < program.size(); pc++) {
+			e.print=true;
 			if (program.get(pc).code.length > 2 && !program.get(pc).code[1].equals(questionMark)) {
+				temp=program.get(pc).code;
 				if (checkInfix(program.get(pc).code)) {
-					program.get(pc).code = shuntingYardAlgo(program.get(pc).code);
+					e.print=false;
+					temp = shuntingYardAlgo(program.get(pc).code);
 				}
-				e.eval(program.get(pc).code);
+				e.eval(temp);
 			} else if (program.get(pc).code.length > 2 && program.get(pc).code[1].equals(questionMark)) {
 				if (e.variables.get(program.get(pc).code[0]).compareTo(new Num(0)) != 0) {
 					pc = Integer.parseInt(program.get(pc).code[2]) - 1;
