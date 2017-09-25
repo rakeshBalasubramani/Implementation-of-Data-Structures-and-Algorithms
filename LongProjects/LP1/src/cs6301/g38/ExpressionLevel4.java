@@ -6,41 +6,85 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ * 
+ * @Description This class is used to store the input with line numbers and the code.
+ */
 class Program {
-	Program(String[] code2) {
-		if(checkLineNo(code2[0])) {
-			lineNo=Long.parseLong(code2[0]);
-			code = Arrays.copyOfRange(code2,1,code2.length);
+	/**
+	 * @param inputLine - The input line.
+	 */
+	Program(String[] inputLine) {
+		if(checkLineNo(inputLine[0])) {
+			lineNo=Long.parseLong(inputLine[0]);
+			code = Arrays.copyOfRange(inputLine,1,inputLine.length);
 		}
 		else {
 			lineNo=-1;
-			code = code2;
+			code = inputLine;
 		}
 		
 	}
-	private boolean checkLineNo(String string) {
-		return string.matches("\\d+");
+	/**
+	 * Function to check if the current line has line number.
+	 * @param currentLine - The current line.
+	 * @return - True if it contains line number else false.
+	 */
+	private boolean checkLineNo(String currentLine) {
+		return currentLine.matches("\\d+");
 	}
+	/**
+	 * Individual lines of the input.
+	 */
 	String[] code;
+	/**
+	 * Line number of each line.
+	 */
 	long lineNo;
 }
 
-public class ExpressionLvl4 {
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ * 
+ * @Description This class is used to perform the execution of each line from
+ *              the input.
+ */
+public class ExpressionLevel4 {
 	String questionMark="?";
 	String collin=":";
 	long base;
+	/**
+	 * Function to set the base of the numbers.
+	 * @param base - The value passed as the base that needs to be used as the base of all numbers in this class.
+	 */
 	public void setBase(long base) {
 		this.base = base;
 	}
 
+	/**
+	 * Linkedlist of program objects to store each line of the input.
+	 */
 	LinkedList<Program> program = new LinkedList<Program>();
 	Expression e = new Expression();
 
-	public void setProgram(String[] code) {
-		program.add(new Program(code));
+	/**Function to add the input to the list.
+	 * @param input - The input line.
+	 */
+	public void setProgram(String[] input) {
+		program.add(new Program(input));
 		e.setBase(base);
 	}
 
+	/**
+	 * The function that executes the lines stored in the program list.
+	 */
 	public void execute() {
 		assignLineNumbers();
 		for (int pc = 0; pc < program.size(); pc++) {
@@ -52,7 +96,7 @@ public class ExpressionLvl4 {
 					pc=Integer.parseInt(program.get(pc).code[2])-1;
 				}
 				else if(program.get(pc).code.length > 3 && program.get(pc).code[3].equals(collin)) {
-					pc=Integer.parseInt(program.get(pc).code[4]);
+					pc=Integer.parseInt(program.get(pc).code[4])-1;
 				}
 			} else {
 				e.eval(program.get(pc).code);
@@ -60,6 +104,9 @@ public class ExpressionLvl4 {
 		}
 	}
 	
+	/**
+	 * Function to assign line numbers for the program.
+	 */
 	public void assignLineNumbers() {
 		
 		for(Program p : program) {
@@ -72,19 +119,32 @@ public class ExpressionLvl4 {
 		}
 	}
 
-	private String getLineNo(String lno) {
+	/**
+	 * Function to get the line number of the given line.
+	 * @param line - The given line.
+	 * @return - The line number of the given line.
+	 */
+	private String getLineNo(String line) {
 		for(Program p :program) {
-			if(p.lineNo==Long.parseLong(lno)) {
+			if(p.lineNo==Long.parseLong(line)) {
 				return Integer.toString(program.indexOf(p));
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * Function to print the contents of the list that was last processed.
+	 */
 	public void end() {
 		e.end();
 	}
 
+	/**
+	 * Function to convert the infix expression to postfix expression.
+	 * @param exp - The expression given in the input.
+	 * @return - The resultant postfix expression.
+	 */
 	private String[] shuntingYardAlgo(String[] exp) {
 		ArrayDeque<String> operatorStack = new ArrayDeque<String>(); // Operator Stack
 		ArrayDeque<String> outputQueue = new ArrayDeque<String>(); // Output Queue

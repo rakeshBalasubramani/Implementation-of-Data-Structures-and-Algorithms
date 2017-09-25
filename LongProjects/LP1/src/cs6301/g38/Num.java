@@ -9,6 +9,7 @@ import java.util.ListIterator;
  *         Avinash Venkatesh - axv165330 <br>
  *         Rakesh Balasubramani - rxb162130 <br>
  *         HariPriyaa Manian - hum160030
+ * 
  * @Description This class is used to store and perform arithmetic operations on
  *              arbitrarily large integers
  */
@@ -80,8 +81,11 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * Constructor to set the base and store the number.
-	 * @param s - Parameter used to set the num list.
-	 * @param b - Parameter used to store the number's base.
+	 * 
+	 * @param s
+	 *            - Parameter used to set the num list.
+	 * @param b
+	 *            - Parameter used to store the number's base.
 	 */
 	public Num(String s, long b) {
 		parseInputString(s);
@@ -89,8 +93,11 @@ public class Num implements Comparable<Num> {
 	}
 
 	/**
-	 * Function to set the negativeSignBit and to remove the leading zeros from the given string.
-	 * @param s - The given number.
+	 * Function to set the negativeSignBit and to remove the leading zeros from the
+	 * given string.
+	 * 
+	 * @param s
+	 *            - The given number.
 	 */
 	private void parseInputString(String s) {
 		if (s.charAt(0) == '-') {
@@ -119,7 +126,9 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * Constructor to get and store the number.
-	 * @param x - The number that needs to be stored.
+	 * 
+	 * @param x
+	 *            - The number that needs to be stored.
 	 */
 	public Num(long x) {
 		base = defaultBase;
@@ -191,8 +200,11 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * The helper function to perform addition of two Num objects.
-	 * @param a - Operand one.
-	 * @param b - Operand two.
+	 * 
+	 * @param a
+	 *            - Operand one.
+	 * @param b
+	 *            - Operand two.
 	 * @return - The sum of operand one and operand two.
 	 */
 	public static Num add(Num a, Num b) {
@@ -215,9 +227,13 @@ public class Num implements Comparable<Num> {
 		return result;
 	}
 
-	/**Function to perform the addition of two Num objects
-	 * @param a - Operand one. 
-	 * @param b - Operand two.
+	/**
+	 * Function to perform the addition of two Num objects
+	 * 
+	 * @param a
+	 *            - Operand one.
+	 * @param b
+	 *            - Operand two.
 	 */
 	public void addition(Num a, Num b) {
 		long carry = 0;
@@ -244,8 +260,11 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * The helper function to perform subtraction of two Num objects.
-	 * @param a - Operand one.
-	 * @param b - Operand two.
+	 * 
+	 * @param a
+	 *            - Operand one.
+	 * @param b
+	 *            - Operand two.
 	 * @return - Difference of the two numbers a-b.
 	 */
 	public static Num subtract(Num a, Num b) {
@@ -268,9 +287,13 @@ public class Num implements Comparable<Num> {
 		return result;
 	}
 
-	/**Function to perform the subtraction of two Num objects.
-	 * @param a - Operand one.
-	 * @param b - Operand two.
+	/**
+	 * Function to perform the subtraction of two Num objects.
+	 * 
+	 * @param a
+	 *            - Operand one.
+	 * @param b
+	 *            - Operand two.
 	 */
 	private void subtraction(Num a, Num b) {
 		if (a.compareTo(b) < 0) {
@@ -301,7 +324,9 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * Function to remove the leading zeros.
-	 * @param num - The list in which the number is stored.
+	 * 
+	 * @param num
+	 *            - The list in which the number is stored.
 	 */
 	private static void removeLeadingZeros(LinkedList<Long> num) {
 
@@ -319,8 +344,11 @@ public class Num implements Comparable<Num> {
 
 	/**
 	 * The helper function to perform the product of two Num objects.
-	 * @param a - Operand one.
-	 * @param b - Operand two.
+	 * 
+	 * @param a
+	 *            - Operand one.
+	 * @param b
+	 *            - Operand two.
 	 * @return - The product of two numbers operand one and operand two.
 	 */
 	public static Num product(Num a, Num b) {
@@ -353,10 +381,10 @@ public class Num implements Comparable<Num> {
 
 		int k = (b.num.size() / 2);
 
-		ah.setBase(a.getBase());
-		al.setBase(a.getBase());
-		bl.setBase(b.getBase());
-		bh.setBase(b.getBase());
+		ah.base = a.getBase();
+		al.base = a.getBase();
+		bl.base = b.getBase();
+		bh.base = b.getBase();
 
 		if (a.negativeSignBit) {
 			al.setNegativeSignBit(true);
@@ -378,81 +406,36 @@ public class Num implements Comparable<Num> {
 			count++;
 
 		}
-
-		// for (int i = 0; i < k; i++) {
-		// al.num.add(a.num.get(i));
-		// bl.num.add(b.num.get(i));
-		// }
-
 		while (iteratora.hasNext()) {
 			ah.num.add(iteratora.next());
 		}
-
-		// for (int j = k; j < b.num.size(); j++) {
-		// bh.num.add(b.num.get(j));
-		// }
-
 		while (iteratorb.hasNext()) {
 			bh.num.add(iteratorb.next());
 		}
-		// for (int j = k; j < a.num.size(); j++) {
-		// ah.num.add(a.num.get(j));
-		// }
-
-		// System.out.println();
 		Num prod1 = product(ah, bh);
-		// System.out.println("prod1");
-		// prod1.printList();
-		// System.out.println();
-		//
 		Num prod2 = product(al, bl);
-		// System.out.println("prod2");
-		// prod2.printList();
-		// System.out.println();
-		//
 		Num prod3 = product(add(al, ah), add(bl, bh));
-		// System.out.println("prod3");
-		// prod3.printList();
-		// System.out.println();
-		//
 		Num sub1 = subtract(prod3, prod1);
-		// System.out.println("sub 1");
-		// sub1.printList();
-		// System.out.println();
-		//
 		Num sub2 = subtract(sub1, prod2);
-		// System.out.println("sub 2");
-		// sub2.printList();
-		// System.out.println();
-		//
 		Num shift1 = shift(prod1, 2 * k);
-		// System.out.println("shifting prod1");
-		// shift1.printList();
-		// System.out.println();
-		//
 		Num shift2 = shift(sub2, k);
-		// System.out.println("shifting prod2");
-		// shift2.printList();
-		// System.out.println();
-		//
 		Num add1 = add(shift1, shift2);
-		// System.out.println("add 1");
-		// add1.printList();
-		// System.out.println();
-		//
 		Num add2 = add(add1, prod2);
-		// System.out.println("add 2");
-		// add2.printList();
-		// System.out.println();
-
 		if (a.negativeSignBit != b.negativeSignBit) {
 			add2.setNegativeSignBit(true);
 		}
 		return add2;
-		// return add(add(shift(prod1, 2 * k), shift(subtract(subtract(prod3, prod1),
-		// prod2), k)), prod2);
 	}
 
+	/**
+	 * Function to perform product of two numbers.
+	 * 
+	 * @param a
+	 *            - Operand one.
+	 * @param b
+	 *            - Operand two.
+	 * @return - Product of a and b.
+	 */
 	private static Num multiply(Num a, Num b) {
 
 		Num res = new Num();
@@ -477,6 +460,16 @@ public class Num implements Comparable<Num> {
 		return res;
 	}
 
+	/**
+	 * Performs the shift operation.
+	 * 
+	 * @param prod
+	 *            - The given number object on which the shift operation is
+	 *            performed.
+	 * @param bits
+	 *            - The number of bits needs to be shifted.
+	 * @return - The number after the shift operation has been completed.
+	 */
 	private static Num shift(Num prod, int bits) {
 
 		for (int i = 0; i < bits; i++) {
@@ -486,7 +479,15 @@ public class Num implements Comparable<Num> {
 		return prod;
 	}
 
-	// Use divide and conquer
+	/**
+	 * Function to perform exponent calculation.
+	 * 
+	 * @param a
+	 *            - Base
+	 * @param n
+	 *            - Exponent.
+	 * @return - The result of a to the power n here n is of long data type.
+	 */
 	public static Num power(Num a, long n) {
 
 		if (n == 0) {
@@ -502,16 +503,29 @@ public class Num implements Comparable<Num> {
 			}
 		}
 	}
-	/* End of Level 1 */
 
-	/* Start of Level 2 */
-
+	/**
+	 * Function to perform right shift or division by the base operation.
+	 * 
+	 * @param x
+	 *            - The number on which the operation is performed.
+	 * @return - The result of the operation
+	 */
 	private static Num rightShift(Num x) {
-		Num temp = Num.product(x, new Num(5));
-		temp.num.removeFirst();
-		return temp;
+		Num result = Num.product(x, new Num(5));
+		result.num.removeFirst();
+		return result;
 	}
 
+	/**
+	 * Function to perform the division of two numbers.
+	 * 
+	 * @param a
+	 *            - Dividend
+	 * @param b
+	 *            - Divisor
+	 * @return - The quotient when a is divided by b. (b!=0).
+	 */
 	public static Num divide(Num a, Num b) {
 		Num tempa = new Num();
 		Num tempb = new Num();
@@ -554,6 +568,15 @@ public class Num implements Comparable<Num> {
 		return med;
 	}
 
+	/**
+	 * Function to perform the modulo operation.
+	 * 
+	 * @param a
+	 *            - Dividend
+	 * @param b
+	 *            - Divisor
+	 * @return - The remainder when a is divided by b. (b>0).
+	 */
 	public static Num mod(Num a, Num b) {
 
 		if (b.negativeSignBit) {
@@ -569,7 +592,16 @@ public class Num implements Comparable<Num> {
 
 	}
 
-	// Use divide and conquer
+	/**
+	 * Function to perform exponent calculation when both base and exponent are Num
+	 * objects.
+	 * 
+	 * @param a
+	 *            - Base.
+	 * @param n
+	 *            - Exponent.
+	 * @return - The result of a to the power of n.
+	 */
 	public static Num power(Num a, Num n) {
 		if (n.compareTo(new Num(1)) == 0) {
 			return a;
@@ -589,10 +621,22 @@ public class Num implements Comparable<Num> {
 		return product(power(power(a, tempn), n.base), power(a, s));
 	}
 
+	/**
+	 * Function to get the items of the exponent one by one.
+	 * 
+	 * @return - The number after the first digit is removed.
+	 */
 	private long shift() {
 		return num.removeFirst();
 	}
 
+	/**
+	 * Function to the perform the square root operation.
+	 * 
+	 * @param a
+	 *            - The given number.
+	 * @return - The closest possible square root of the given number.
+	 */
 	public static Num squareRoot(Num a) {
 		Num tempa = new Num();
 		for (Long i : a.num) {
@@ -621,11 +665,14 @@ public class Num implements Comparable<Num> {
 		return med;
 
 	}
-	/* End of Level 2 */
 
-	// Utility functions
-	// compare "this" to "other": return +1 if this is greater, 0 if equal, -1
-	// otherwise
+	/**
+	 * Function to compare two num objects
+	 * 
+	 * @param a
+	 *            - The other number with which it has to be compared.
+	 * @return - 0 if equal, 1 if the other number is lesser else -1..
+	 */
 	public int compareTo(Num other) {
 		if (this.num.size() > other.num.size()) {
 			return 1;
@@ -647,9 +694,9 @@ public class Num implements Comparable<Num> {
 		return -1;
 	}
 
-	// Output using the format "base: elements of list ..."
-	// For example, if base=100, and the number stored corresponds to 10965,
-	// then the output is "100: 65 9 1" // I have a doubt with this output
+	/**
+	 * Function to print the number as it stored in the list.
+	 */
 	public void printList() {
 		System.out.print(base + ": ");
 		for (Long i : num) {
@@ -661,9 +708,10 @@ public class Num implements Comparable<Num> {
 		System.out.println();
 	}
 
-	// Return number to a string in base 10
+	/**
+	 * Function to print the number in base 10.
+	 */
 	public String toString() {
-		String zero = "0";
 		Num temp = new Num();
 		temp.base = base;
 		for (Long i : num) {
@@ -677,7 +725,7 @@ public class Num implements Comparable<Num> {
 		}
 		for (Long i : temp.num)
 			strBuild.insert(0, i);
-		if (temp.negativeSignBit && !strBuild.equals(zero)) {
+		if (temp.negativeSignBit && temp.compareTo(new Num(0))!=0) {
 			strBuild.insert(0, "-");
 		}
 		return strBuild.toString();
