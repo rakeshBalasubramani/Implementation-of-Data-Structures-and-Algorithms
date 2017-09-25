@@ -525,8 +525,9 @@ public class Num implements Comparable<Num> {
 	 * @param b
 	 *            - Divisor
 	 * @return - The quotient when a is divided by b. (b!=0).
+	 *
 	 */
-	public static Num divide(Num a, Num b) {
+	public static Num divide(Num a, Num b)  {
 		Num tempa = new Num();
 		Num tempb = new Num();
 		for (Long i : a.num) {
@@ -539,8 +540,15 @@ public class Num implements Comparable<Num> {
 		tempb.base = b.base;
 		tempa.toDecimal();
 		tempb.toDecimal();
+		
+		
 		Num first = new Num(0);
 		Num last = new Num();
+		if (tempb.compareTo(first)==0)
+		{
+			return new Num (0);
+		}
+		
 		for (Long i : tempa.num) {
 			last.num.add(i);
 		}
