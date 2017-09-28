@@ -17,7 +17,7 @@ import java.util.Set;
  * @Description  SP5- Question1 - Class to compare the two versions of partitions of Quick Sort
  * 
  * */
-public class QuickSort {
+public class QuickSortPartition {
 
 	/**
 	 * Quick Sort implementing partition 1
