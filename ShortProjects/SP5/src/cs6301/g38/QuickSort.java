@@ -8,13 +8,13 @@ import java.util.Random;
  *         Rakesh Balasubramani - rxb162130 <br>
  *         HariPriyaa Manian - hum160030
  * 
- * @Description This class is used to implement Quick Sort.
+ * @Description Class used to implement Quick Sort.
  * 
  */
 public class QuickSort {
 
 	/**
-	 * Function to implement quick sort with dual pivot.
+	 *  Helper function to implement quick sort with dual pivots.
 	 * 
 	 * @param quickArray
 	 *            - The input array that needs to be sorted.
@@ -24,14 +24,14 @@ public class QuickSort {
 	}
 
 	/**
-	 * Recursive function to implement quick sort with dual pivot.
+	 * Recursive function to implement quick sort with dual pivots.
 	 * 
 	 * @param quickArray
-	 *            - Input array.
+	 *            - Input array to be sorted.
 	 * @param p
-	 *            - start.
+	 *            - starting position of the array.
 	 * @param r
-	 *            - end.
+	 *            - ending position of the array.
 	 */
 	private static <T extends Comparable<? super T>> void dualPivotQuickSort(T[] quickArray, int p, int r) {
 
@@ -45,13 +45,13 @@ public class QuickSort {
 		i = generateRandomNumber(p, r);
 		j = generateRandomNumber(p, r);
 
-		swap(quickArray, i, p);
+		swap(quickArray, i, p); 
 		swap(quickArray, j, r);
 
 		x1 = quickArray[p];
 		x2 = quickArray[r];
 
-		if (x1.compareTo(x2) > 0) {
+		if (x1.compareTo(x2) > 0) { // If left pivot is greater than right pivot, swap them.
 			swap(quickArray, p, r);
 			x1 = quickArray[p];
 			x2 = quickArray[r];
@@ -63,14 +63,14 @@ public class QuickSort {
 
 		while (i <= j) {
 
-			if (quickArray[i].compareTo(x1) < 0) {
+			if (quickArray[i].compareTo(x1) < 0) {  // If element is less than left pivot
 				swap(quickArray, i, k);
 				i++;
 				k++;
-			} else if (quickArray[i].compareTo(x2) > 0) {
+			} else if (quickArray[i].compareTo(x2) > 0) { // If element is greater than right pivot
 				swap(quickArray, i, j);
 				j--;
-			} else {
+			} else { // If element is in between the two pivots (inclusive)
 				i++;
 			}
 		}
@@ -81,30 +81,30 @@ public class QuickSort {
 		dualPivotQuickSort(quickArray, p, k - 1);
 		dualPivotQuickSort(quickArray, j + 1, r);
 
-		if (x1.compareTo(x2) != 0) {
+		if (x1.compareTo(x2) != 0) { // If pivots are not equal, do quicksort for the elements between the two pivots
 			dualPivotQuickSort(quickArray, k + 1, i - 1);
 		}
 	}
 
 	/**
-	 * Fucntion to implement quick sort.
+	 * Helper function to implement quick sort with single partition.
 	 * 
 	 * @param quickArray
-	 *            - Input array.
+	 *            - Input array to be sorted.
 	 */
 	public static <T extends Comparable<? super T>> void quickSort(T[] quickArray) {
 		quickSort(quickArray, 0, quickArray.length - 1);
 	}
 
 	/**
-	 * Recursive function to implement quick sort.
+	 * Recursive function to implement quick sort using single pivot partition.
 	 * 
 	 * @param quickArray
-	 *            - Input array.
+	 *            - Input array to be sorted.
 	 * @param p
-	 *            - start.
+	 *            - starting position of the array.
 	 * @param r
-	 *            - end.
+	 *            - ending position of the array.
 	 */
 	private static <T extends Comparable<? super T>> void quickSort(T[] quickArray, int p, int r) {
 		int q;
@@ -116,15 +116,16 @@ public class QuickSort {
 	}
 
 	/**
-	 * Function to partition the input array based on the required condition.
+	 * Function to partition the input array with a single pivot.
 	 * 
 	 * @param quickArray
 	 *            - Input array.
 	 * @param p
-	 *            - start.
+	 *            - starting position of the array.
 	 * @param r
-	 *            - end.
-	 * @return - //Aviansh fill this as i have no idea what it is.
+	 *            - ending position of the array.
+	 * 
+	 * @return - position of the pivot element.
 	 */
 	private static <T extends Comparable<? super T>> int partition(T[] quickArray, int p, int r) {
 
@@ -133,6 +134,7 @@ public class QuickSort {
 		i = generateRandomNumber(p, r);
 		swap(quickArray, i, r);
 		x = quickArray[r];
+
 		i = p - 1;
 		for (int j = p; j < r; j++) {
 
@@ -169,7 +171,7 @@ public class QuickSort {
 	}
 
 	/**
-	 * Fucntion to generate a random number between p and r.
+	 * Function to generate a random number between p and r.
 	 * 
 	 * @param p
 	 *            - start.
