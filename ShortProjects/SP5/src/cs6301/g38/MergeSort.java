@@ -1,5 +1,7 @@
 package cs6301.g38;
 
+import java.util.Arrays;
+
 /**
  * @author Rajkumar PanneerSelvam - rxp162130 <br>
  *         Avinash Venkatesh - axv165330 <br>
@@ -20,10 +22,7 @@ public class MergeSort {
 	 *            - Array to be sorted
 	 */
 	public static <T extends Comparable<? super T>> void mergeSortAvoidTmpCopy(T[] mergeArray) {
-		T[] temp = mergeArray;
-		for (int i = 0; i < mergeArray.length; i++) {
-			temp[i] = mergeArray[i];
-		}
+		T[] temp=Arrays.copyOf(mergeArray,mergeArray.length);
 		mergeSort4(mergeArray, temp, 0, mergeArray.length - 1);
 	}
 
@@ -44,7 +43,7 @@ public class MergeSort {
 			int mid = (start + end) / 2;
 			mergeSort4(mergeArray, temp, start, mid);
 			mergeSort4(mergeArray, temp, mid + 1, end);
-			merge4(temp, mergeArray, start, mid, end);
+			merge4(mergeArray, temp, start, mid, end);
 
 		}
 	}
@@ -63,15 +62,15 @@ public class MergeSort {
 	 * @param end
 	 *            - end index
 	 */
-	private static <T extends Comparable<? super T>> void merge4(T[] tmp, T[] mergeArray, int start, int mid, int end) {
+	private static <T extends Comparable<? super T>> void merge4(T[] mergeArray, T[] tmp, int start, int mid, int end) {
 		int i = start;
 		int j = mid + 1;
 
 		for (int k = start; k < end; k++) {
-			if ((j > end) || (i <= mid && tmp[i].compareTo(tmp[j]) <= 0)) {
-				mergeArray[k] = tmp[i++];
+			if ((j > end) || (i <= mid && mergeArray[i].compareTo(mergeArray[j]) <= 0)) {
+				tmp[k] = mergeArray[i++];
 			} else {
-				mergeArray[k] = tmp[j++];
+				tmp[k] = mergeArray[j++];
 			}
 		}
 

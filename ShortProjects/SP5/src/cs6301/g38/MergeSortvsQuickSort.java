@@ -1,6 +1,5 @@
 package cs6301.g38;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -18,13 +17,12 @@ public class MergeSortvsQuickSort {
 		Integer[] quickArray = new Integer[arrSize];
 		Timer mergeTimer = new Timer();
 		Timer quickTimer = new Timer();
-		List<Integer> temp = IntStream.range(0, arrSize).boxed().collect(Collectors.toList()); // Generate arrSize unique
+		List<Integer> temp = IntStream.range(0,arrSize).boxed().collect(Collectors.toList()); // Generate arrSize unique
 																								// numbers.
-		Collections.shuffle(temp);
-		int p = 0;
+		int p = arrSize-1;
 		for (int x : temp) {
 			mergeArray[p] = x;
-			quickArray[p++] = x;
+			quickArray[p--] = x;
 		}
 		mergeTimer.start(); // start timer
 		MergeSort.mergeSortAvoidTmpCopy(mergeArray);
