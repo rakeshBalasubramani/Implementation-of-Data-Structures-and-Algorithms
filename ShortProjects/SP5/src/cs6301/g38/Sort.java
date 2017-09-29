@@ -25,15 +25,16 @@ public class Sort {
 		int arrSize = in.nextInt();
 		arrSize = arrSize * size;
 
+		int[] qSort=new int[arrSize];
 		Integer[] qSortSinglePivot = new Integer[arrSize];
 		Integer[] qSortDualPivot = new Integer[arrSize];
 		Timer qSortSP = new Timer();
 		Timer qSortDP = new Timer();
 
 		// Populating arrays with distinct elements
-		for (int i = arrSize - 1; i >= 0; i--) {
-			qSortSinglePivot[i] = new Integer(i);
-			qSortDualPivot[i] = new Integer(i);
+		for (int i = 0,p=arrSize-1; i <arrSize ; i++,p--) {
+			qSortSinglePivot[p] = new Integer(i);
+			qSortDualPivot[p] = new Integer(i);
 		}
 
 		System.out.println("\nQuick Sort with single pivot partition for distinct values:");
@@ -48,8 +49,9 @@ public class Sort {
 
 		// Populating elements with duplicate values
 		for (int i = 0; i < arrSize; i++) {
-			qSortSinglePivot[i] = (int) (Math.random() * arrSize);
-			qSortDualPivot[i] = (int) (Math.random() * arrSize);
+			qSort[i]=(int) (Math.random() * arrSize);
+			qSortSinglePivot[i] = new Integer(qSort[i]);
+			qSortDualPivot[i] = new Integer(qSort[i]);
 		}
 
 		System.out.println("\nQuick Sort with single pivot partition for duplicate values:");
