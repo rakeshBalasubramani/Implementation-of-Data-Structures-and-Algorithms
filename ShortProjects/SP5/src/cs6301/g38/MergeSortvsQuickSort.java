@@ -22,14 +22,12 @@ public class MergeSortvsQuickSort {
 		Timer quickTimer = new Timer();
 		Random r = new Random();
 		Set<Integer> uniqueNumbers = new HashSet<>();
-		while (uniqueNumbers.size()< arrSize){
-			uniqueNumbers.add(r.nextInt(arrSize*2));
+		while (uniqueNumbers.size() < arrSize) {
+			uniqueNumbers.add(r.nextInt(arrSize * 2));
 		}
 		Integer[] arr = uniqueNumbers.toArray(new Integer[uniqueNumbers.size()]);
-		List<Integer> temp = Arrays.asList(arr);// unique
-		mergeTimer.start();
-		Collections.shuffle(temp);// numbers.
-		System.out.println("c:"+mergeTimer.end());
+		List<Integer> temp = Arrays.asList(arr);
+		Collections.shuffle(temp);
 		temp.toArray(mergeArray);
 		temp.toArray(quickArray);
 		mergeTimer.start(); // start timer
