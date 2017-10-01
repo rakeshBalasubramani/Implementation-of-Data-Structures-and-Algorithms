@@ -9,11 +9,11 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class MergeSortvsQuickSort {
-	private static int size = 1000000;
+	private static int size = 1000;
 
 	public static void main(String[] args) {
 		Scanner in = new Scanner(System.in);
-		System.out.println("Enter the array size in millions");
+		System.out.println("Enter the array size in thousands");
 		int arrSize = in.nextInt();
 		arrSize = arrSize * size;
 		Integer[] mergeArray = new Integer[arrSize];
