@@ -1,9 +1,12 @@
 package cs6301.g38;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Set;
 
 public class MergeSortvsQuickSort {
 	private static int size = 1000000;
@@ -17,13 +20,18 @@ public class MergeSortvsQuickSort {
 		Integer[] quickArray = new Integer[arrSize];
 		Timer mergeTimer = new Timer();
 		Timer quickTimer = new Timer();
-		List<Integer> temp = IntStream.range(0,arrSize).boxed().collect(Collectors.toList()); // Generate arrSize unique
-																								// numbers.
-		int p = arrSize-1;
-		for (int x : temp) {
-			mergeArray[p] = x;
-			quickArray[p--] = x;
+		Random r = new Random();
+		Set<Integer> uniqueNumbers = new HashSet<>();
+		while (uniqueNumbers.size()< arrSize){
+			uniqueNumbers.add(r.nextInt(arrSize*2));
 		}
+		Integer[] arr = uniqueNumbers.toArray(new Integer[uniqueNumbers.size()]);
+		List<Integer> temp = Arrays.asList(arr);// unique
+		mergeTimer.start();
+		Collections.shuffle(temp);// numbers.
+		System.out.println("c:"+mergeTimer.end());
+		temp.toArray(mergeArray);
+		temp.toArray(quickArray);
 		mergeTimer.start(); // start timer
 		MergeSort.mergeSortAvoidTmpCopy(mergeArray);
 		mergeTimer.end();

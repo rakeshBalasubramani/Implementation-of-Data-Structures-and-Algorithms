@@ -22,7 +22,7 @@ public class MergeSort {
 	 *            - Array to be sorted
 	 */
 	public static <T extends Comparable<? super T>> void mergeSortAvoidTmpCopy(T[] mergeArray) {
-		T[] temp=Arrays.copyOf(mergeArray,mergeArray.length);
+		T[] temp = Arrays.copyOf(mergeArray, mergeArray.length);
 		mergeSort4(mergeArray, temp, 0, mergeArray.length - 1);
 	}
 
