@@ -52,20 +52,8 @@ public class QuickSortPartition {
 	 * @return - parition index
 	 */
 	private static<T extends Comparable<? super T>> int partition1(T[] A, int p, int r){
-		Random ran = new Random();
-		Integer i = ran.nextInt(r-p) + p; // select i randomly between A[p...r]
-		exchange(A,i,r);
-		T x = A[r]; //pivot
-		i=p-1;
-
-		for(int j=p; j<=r-1; j++){
-			if(A[j].compareTo(x) == -1){
-				i+=1;
-				exchange(A, i, j);
-			}
-		}
-		exchange(A,i+1,r); //bring pivot back to middle
-		return i+1;
+		
+		return QuickSort.partition(A, p, r);
 	}
 	
 

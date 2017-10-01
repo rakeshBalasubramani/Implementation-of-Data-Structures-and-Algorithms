@@ -1,7 +1,6 @@
 package cs6301.g38;
 
 import java.util.Arrays;
-import java.util.Random;
 /**
  * @author Rajkumar PanneerSelvam - rxp162130 <br>
  *         Avinash Venkatesh - axv165330 <br>
@@ -13,9 +12,6 @@ import java.util.Random;
  */
 public class LinearTimeSelection {
 	
-	private static Random random = new Random();
-
-
 	/**Method used to find K largest elements in the given array.
 	 * @param arr - Given array
 	 * @param k - number of largest element needed from the given array.
@@ -86,51 +82,12 @@ public class LinearTimeSelection {
 	 * @return - Partitioned array.
 	 */
 	private static <T extends Comparable<? super T>> int partition(T[] arr,
-			int p, int r) {
-		int i =  generateRandomNumber(p, r);
-		swap(arr, i, r);
-		T x = arr[r];
-		i = p - 1;
+			int p, int r) {		
+		
+		return QuickSort.partition(arr, p, r);
 
-		for (int j = p; j < r; j++) {
-			if (arr[j].compareTo(x) == -1) {
-				i = i + 1;
-				swap(arr, i, j);
-
-			}
-
-		}
-
-		swap(arr, i + 1, r);
-		return i + 1;
 	}
 	
-	/**
-	 * Function to generate a random number between start and end numbers.
-	 * 
-	 * @param p
-	 *            - start number.
-	 * @param r
-	 *            - end number.
-	 * @return - Random number between p and r.
-	 */
-	private static int generateRandomNumber(int p, int r) {
-		int res = random.nextInt(r - p) + p;
-		return res;
-	}
-
-	/**Method used for swapping elements in the array.
-	 * @param arr - Given array.
-	 * @param i - swapping index.  
-	 * @param r - swapping index.
-	 */
-	private static <T> void swap(T[] arr, int i, int r) {
-		T temp = arr[i];
-		arr[i] = arr[r];
-		arr[r] = temp;
-
-	}
-
 	/**Insertion sort algorithm.
 	 * @param arr - Given array
 	 * @param k - Starting index of the array used for sorting.
