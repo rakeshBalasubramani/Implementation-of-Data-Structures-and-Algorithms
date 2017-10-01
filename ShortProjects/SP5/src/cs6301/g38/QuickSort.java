@@ -127,7 +127,7 @@ public class QuickSort {
 	 * 
 	 * @return - position of the pivot element.
 	 */
-	private static <T extends Comparable<? super T>> int partition(T[] quickArray, int p, int r) {
+	 static <T extends Comparable<? super T>> int partition(T[] quickArray, int p, int r) {
 
 		int i;
 		T x;
