@@ -1,6 +1,7 @@
 // Ver 1.0:  Starter code for Indexed heaps
 
 package cs6301.g38;
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class IndexedHeap<T extends Index> extends BinaryHeap<T> {

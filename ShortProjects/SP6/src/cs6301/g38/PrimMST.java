@@ -3,6 +3,7 @@
 
 package cs6301.g38;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
 
@@ -42,6 +43,12 @@ public class PrimMST {
     	public int getIndex() {
     		return index;
     	}
+    	
+    	public String toString()
+    	{
+			return vertex.name + " " + "distance" + " " + d + " index " + index + "\n";
+    		
+    	}
     } 
 
 	private PrimVertex[] primVertex;
@@ -49,6 +56,7 @@ public class PrimMST {
     	primVertex = new PrimVertex[g.size()];
     	for(Graph.Vertex u : g){
        		primVertex[u.name] = new PrimVertex(u); 
+       		primVertex[u.name].index = u.name;
     	}
     	
     	
@@ -69,19 +77,26 @@ public class PrimMST {
         src.d=0;
         
         // SP6.Q6: Prim's algorithm using IndexedHeap<PrimVertex>:
-        IndexedHeap<PrimVertex> indexedHeap = new IndexedHeap<PrimVertex>(primVertex , primVertex[0] , primVertex.length);
-        indexedHeap.buildHeap();
+     
 
+        
+        IndexedHeap<PrimVertex> indexedHeap = new IndexedHeap<PrimVertex>(Arrays.copyOf(primVertex, primVertex.length) , primVertex[0] , primVertex.length);
+        indexedHeap.buildHeap();
+        indexedHeap.print();
+        
         while(indexedHeap.peek() != null){
         	PrimVertex u = indexedHeap.remove();
         	u.seen = true;
            	wmst = wmst + u.d;
+            indexedHeap.print();
         	for(Graph.Edge ee : u.vertex){
         		Graph.Vertex v = ee.otherEnd(u.vertex);
         		if(!primVertex[v.name].seen && ee.weight < primVertex[v.name].d){
         			primVertex[v.name].d = ee.weight;
         			primVertex[v.name].parent = u.vertex;
-        			indexedHeap.percolateUp(primVertex[v.name].index);
+        			indexedHeap.percolateUp(primVertex[v.name].getIndex());
+        	        indexedHeap.print();
+
         		}
         		
         	}

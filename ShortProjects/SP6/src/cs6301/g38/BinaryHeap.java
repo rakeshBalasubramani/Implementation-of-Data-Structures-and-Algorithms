@@ -139,6 +139,15 @@ public class BinaryHeap<T> {
     	}
     }
     
+    public void print()
+    {
+    	int in=0;
+    	for(T i:pq)
+    	{
+    		System.out.print(i + " " + " index " + in);
+    	}
+    	System.out.println("---------------");
+    }
      int parent( int child)
     {
     	return (child-1)/2;
@@ -160,11 +169,13 @@ public class BinaryHeap<T> {
     	BinaryHeap<T> heap = new BinaryHeap<T>(A, comp, A.length);
     	
     	heap.buildHeap();
+    	heap.print();
     	int len = A.length-1;
     	while(heap.peek()!=null)
     	{
     		A[len]=(heap.remove());
     		len--;
+    		heap.print();
     	}
     	
     
