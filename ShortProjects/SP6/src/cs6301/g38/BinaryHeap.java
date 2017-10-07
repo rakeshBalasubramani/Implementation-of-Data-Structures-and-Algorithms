@@ -167,10 +167,7 @@ public class BinaryHeap<T> {
     		len--;
     	}
     	
-    	for(T va: A)
-    	{
-    		System.out.println(va);
-    	}
+    
     	
     	
     }
