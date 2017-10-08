@@ -14,7 +14,7 @@ public class BinaryHeap<T> {
     public BinaryHeap(T[] q, Comparator<T> comp, int n) {
 	pq = q;
 	c = comp;
-	size=n-1;
+	size=n;
     }
 
     public void insert(T x) throws Exception {
@@ -42,18 +42,19 @@ public class BinaryHeap<T> {
 
     public T remove() { /* TO DO. Throw exception if q is empty. */
     	
-    	if(size < 0)
+    	if(size == 0)
     	{
     		return null;
     	}
     	T min = pq[0];
-    	if (size ==0)
+    	if (size ==1)
     	{
     		size--;
     	}
     	else
     	{
-        move(0,pq[size--]);//	pq[0]= pq[size--];
+        move(0,pq[--size]);//	pq[0]= pq[size--];
+        //move(size+1,null);
         	percolateDown(0);
     	}
 	return min;
@@ -62,7 +63,7 @@ public class BinaryHeap<T> {
     public T peek() { /* TO DO. Throw exception if q is empty. */
     	
     	// handle empty case
-    	if(size < 0)
+    	if(size < 1)
     	{
     		return null;
     	}
@@ -77,7 +78,7 @@ public class BinaryHeap<T> {
 	     (smaller) than root, and restore heap order.  Otherwise do nothing. 
 	   This operation is used in finding largest k elements in a stream.
 	 */
-    	if(size < 0)
+    	if(size < 1)
     	{
     		pq[0]=x;
     		size++;
@@ -169,13 +170,13 @@ public class BinaryHeap<T> {
     	BinaryHeap<T> heap = new BinaryHeap<T>(A, comp, A.length);
     	
     	heap.buildHeap();
-    	heap.print();
+    //	heap.print();
     	int len = A.length-1;
     	while(heap.peek()!=null)
     	{
     		A[len]=(heap.remove());
     		len--;
-    		heap.print();
+    		//heap.print();
     	}
     	
     
