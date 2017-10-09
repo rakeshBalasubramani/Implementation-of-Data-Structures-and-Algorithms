@@ -17,55 +17,73 @@ size = size * million;
 		System.out.println("Enter the value of k :");
 		int k = in.nextInt();
 		Integer arr[] = new Integer[size];
+		System.out.println("----------------------------------");
+
+		System.out.println("For Random order inputs");
 		Random rand = new Random();
 		for (int i = 0; i < size; i++)
 			arr[i] = (rand.nextInt(i + 1));
 
-//		System.out.println("Input array :");
-//		for (int i : arr) {
-//			System.out.print(i + " ");
-//		}
+		//printArray(arr);
 		System.out.println();
 
 		Timer time = new Timer();
 		time.start();
-		Integer r[] = PriorityQueueSelection.minHeapSelectAlgo(arr, k);
+	 PriorityQueueSelection.minHeapSelectAlgo(arr, k);
 		time.end();
 		System.out.println("----------------------------------");
 		System.out.println("Selection using Java Priority Queue");
 		System.out.println(time);
 
-		for (int i : r) {
-			System.out.print(i + " ");
-		}
-System.out.println();
-		time.start();
+		
+
+		
 	   	Comparator<Integer> comp = new Comparator<Integer>() {
 
 				@Override
 				public int compare(Integer o1, Integer o2) {
-					// TODO Auto-generated method stub
-					return -1*Integer.compare(o1, o2);
+					return Integer.compare(o1, o2);
 				}
 	    		
 			};
-	    	
-PriorityQueueSelection.binaryHeapSelectAlgo(arr, k, comp);	    	
-	    	
+			time.start();
+	    	PriorityQueueSelection.binaryHeapSelectAlgo(arr, k, comp);	    	
+
 	    	time.end();
 		System.out.println("----------------------------------");
 
-		System.out.println("Selection using Min heap");
+		System.out.println("Selection using Binary Min heap");
 		System.out.println(time);
 
-		for (int i : r) {
-			System.out.print(i + " ");
-		}
+		
 
+		System.out.println("----------------------------------");
 
-//		for (int i : r) {
-//			System.out.print(i + " ");
-//		}
+		System.out.println("For increasing order inputs");
+		System.out.println("----------------------------------");
+
+		for (int i = 0; i < size; i++)
+			arr[i] = i;
+
+		time.start();
+	PriorityQueueSelection.minHeapSelectAlgo(arr, k);
+		time.end();
+	
+		System.out.println("----------------------------------");
+		System.out.println("Selection using Java Priority Queue");
+		System.out.println(time);
+		
+
+		time.start();
+
+	    	PriorityQueueSelection.binaryHeapSelectAlgo(arr, k, comp);	    	
+	    	
+	    	time.end();
+	    		System.out.println("----------------------------------");
+
+		System.out.println("Selection using Binary Min heap");
+		System.out.println(time);
+	
 
 		in.close();
 	}

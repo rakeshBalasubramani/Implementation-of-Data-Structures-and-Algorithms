@@ -15,7 +15,6 @@ public class BinaryHeap<T> {
 	pq = q;
 	c = comp;
 	size=n;
-	buildHeap();
     }
 
     public void insert(T x) throws Exception {
@@ -87,7 +86,7 @@ public class BinaryHeap<T> {
     		size++;
     	}
     	
-    	if(c.compare(x, peek())<0)
+    	if(c.compare(peek(),x )<0)
     	{
     		pq[0]=x;
     		percolateDown(0);
