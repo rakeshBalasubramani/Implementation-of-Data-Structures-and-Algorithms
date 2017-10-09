@@ -15,6 +15,7 @@ public class BinaryHeap<T> {
 	pq = q;
 	c = comp;
 	size=n;
+	buildHeap();
     }
 
     public void insert(T x) throws Exception {
@@ -30,6 +31,8 @@ public class BinaryHeap<T> {
     }
 
     public void add(T x) throws Exception { /* TO DO. Throw exception if q is full. */
+    	
+    	
     	if(size==pq.length)
     	{
     		throw new Exception( " Queue is Full");
@@ -143,6 +146,7 @@ public class BinaryHeap<T> {
     public void print()
     {
     	int in=0;
+    	System.out.println("Size  " + size);
     	for(T i:pq)
     	{
     		System.out.print(i + " " + " index " + in);
@@ -170,7 +174,7 @@ public class BinaryHeap<T> {
     	BinaryHeap<T> heap = new BinaryHeap<T>(A, comp, A.length);
     	
     	heap.buildHeap();
-    //	heap.print();
+    	//heap.print();
     	int len = A.length-1;
     	while(heap.peek()!=null)
     	{

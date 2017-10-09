@@ -161,6 +161,8 @@ public class PrimMST {
 			}
 			
 		}
+		resetPrimVertex();
+
 		return wmst;
 	}
 

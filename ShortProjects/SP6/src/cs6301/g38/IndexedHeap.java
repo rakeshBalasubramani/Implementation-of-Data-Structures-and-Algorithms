@@ -1,7 +1,15 @@
 // Ver 1.0:  Starter code for Indexed heaps
 
 package cs6301.g38;
-import java.util.Arrays;
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ * 
+ * @Desc Class used to Build IndexedHeap
+ */
+
 import java.util.Comparator;
 
 public class IndexedHeap<T extends Index> extends BinaryHeap<T> {
@@ -12,7 +20,7 @@ public class IndexedHeap<T extends Index> extends BinaryHeap<T> {
 	
     }
 
-   
+   /** performs move operation */
    public void move(int i, T x)
     {
     	super.move(i, x);
