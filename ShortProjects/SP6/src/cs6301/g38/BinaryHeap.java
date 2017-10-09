@@ -31,7 +31,7 @@ public class BinaryHeap<T> {
     }
 
     public void add(T x) throws Exception { /* TO DO. Throw exception if q is full. */
-    	print();
+    	
     	
     	if(size==pq.length)
     	{
@@ -45,7 +45,6 @@ public class BinaryHeap<T> {
 
     public T remove() { /* TO DO. Throw exception if q is empty. */
     	
-    	print();
     	if(size == 0)
     	{
     		return null;

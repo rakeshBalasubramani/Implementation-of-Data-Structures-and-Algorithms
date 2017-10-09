@@ -25,6 +25,16 @@ public class PrimMST {
 			d = Infinity;
 			seen = false;
 		}
+		
+		public void resetEntries()
+		{
+
+			parent = null;
+			d = Infinity;
+			seen = false;
+		
+			
+		}
 
 		public int compare(PrimVertex u, PrimVertex v) {
 			if (u.d < v.d) {
@@ -79,6 +89,18 @@ public class PrimMST {
 		}
 
 	}
+	
+	private void resetPrimVertex() {
+		
+		if(primVertex!=null)
+		{
+			for(PrimVertex pv: primVertex)
+			{
+				pv.resetEntries();
+			}
+		}
+		
+	}
 
 	public int prim1(Graph.Vertex s) throws Exception {
 		int wmst = 0;
@@ -116,6 +138,8 @@ public class PrimMST {
 			}
 			
 		}
+		resetPrimVertex();
+
 		return wmst;
 	}
 
@@ -135,21 +159,22 @@ public class PrimMST {
 			PrimVertex u = indexedHeap.remove();
 			u.seen = true;
 			wmst = wmst + u.d;
-			indexedHeap.print();
 			for (Graph.Edge ee : u.vertex) {
 				Graph.Vertex v = ee.otherEnd(u.vertex);
 				if (!primVertex[v.name].seen && ee.weight < primVertex[v.name].d) {
 					primVertex[v.name].d = ee.weight;
 					primVertex[v.name].parent = u.vertex;
 					indexedHeap.percolateUp(primVertex[v.name].getIndex());
-					indexedHeap.print();
-
 				}
 
 			}
 		}
+		resetPrimVertex();
+
 		return wmst;
 	}
+
+
 
 	public static void main(String[] args) throws Exception {
 		Scanner in;
@@ -169,5 +194,13 @@ public class PrimMST {
 		int wmst = mst.prim1(s);
 		timer.end();
 		System.out.println(wmst);
+		System.out.println(timer);
+
+		timer.start();
+		 wmst = mst.prim2(s);
+		timer.end();
+		System.out.println(wmst);
+		System.out.println(timer);
+
 	}
 }
