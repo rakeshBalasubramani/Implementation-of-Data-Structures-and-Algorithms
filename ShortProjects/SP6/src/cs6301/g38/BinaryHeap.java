@@ -62,9 +62,9 @@ public class BinaryHeap<T> {
 	return min;
     }
 
-    public T peek() { /* TO DO. Throw exception if q is empty. */
+    public T peek() { 
     	
-    	// handle empty case
+    	
     	if(size < 1)
     	{
     		return null;
@@ -76,10 +76,7 @@ public class BinaryHeap<T> {
     }
 
     public void replace(T x) {
-	/* TO DO.  Replaces root of binary heap by x if x has higher priority
-	     (smaller) than root, and restore heap order.  Otherwise do nothing. 
-	   This operation is used in finding largest k elements in a stream.
-	 */
+
     	if(size < 1)
     	{
     		pq[0]=x;
@@ -144,13 +141,13 @@ public class BinaryHeap<T> {
     
     public void print()
     {
-    	int in=0;
-    	System.out.println("Size  " + size);
+    	
+    	
     	for(T i:pq)
     	{
-    		System.out.print(i + " " + " index " + in);
+    		System.out.print(i + " ");
     	}
-    	System.out.println("---------------");
+    	
     }
      int parent( int child)
     {
@@ -179,11 +176,11 @@ public class BinaryHeap<T> {
     	{
     		A[len]=(heap.remove());
     		len--;
-    		//heap.print();
+    		
     	}
     	
     
-    	
+    	heap.print();
     	
     }
     
@@ -197,11 +194,26 @@ public class BinaryHeap<T> {
 			@Override
 			public int compare(Integer o1, Integer o2) {
 				// TODO Auto-generated method stub
+				return Integer.compare(o1, o2);
+			}
+    		
+		};
+    	System.out.println("Descending sort array");
+    	BinaryHeap.heapSort(a, c);
+    	System.out.println();
+    	Comparator<Integer> c1 = new Comparator<Integer>() {
+
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				// TODO Auto-generated method stub
 				return -1*Integer.compare(o1, o2);
 			}
     		
 		};
+    	System.out.println("Ascending sort array");
+
+    	BinaryHeap.heapSort(a, c1);
     	
-    	BinaryHeap.heapSort(a, c);
+    	
     }
 }
