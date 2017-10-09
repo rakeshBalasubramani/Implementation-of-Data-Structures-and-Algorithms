@@ -63,6 +63,11 @@ public class PrimMST {
 		private PrimEdge(Edge e) {
 			edge=e;
 		}
+		
+		public String toString()
+		{
+			return edge.stringWithSpaces();
+		}
 	}
 	private PrimVertex[] primVertex;
 
@@ -124,8 +129,7 @@ public class PrimMST {
 
 		IndexedHeap<PrimVertex> indexedHeap = new IndexedHeap<PrimVertex>(Arrays.copyOf(primVertex, primVertex.length),
 				primVertex[0], primVertex.length);
-		indexedHeap.buildHeap();
-		indexedHeap.print();
+		
 
 		while (indexedHeap.peek() != null) {
 			PrimVertex u = indexedHeap.remove();
