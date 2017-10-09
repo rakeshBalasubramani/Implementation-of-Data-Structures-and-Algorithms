@@ -3,6 +3,15 @@
 
 package cs6301.g38;
 
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ * 
+ * @Desc Class used to implement Prim's Algorithm
+ */
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Scanner;
@@ -13,6 +22,10 @@ import java.io.File;
 public class PrimMST {
 	static final int Infinity = Integer.MAX_VALUE;
 
+	/**
+	 * @Desc Class used to store the properties for Prim Vertex
+	 *
+	 */
 	class PrimVertex implements Comparator<PrimVertex>, Index {
 		int d, index;
 		public boolean seen;
@@ -26,14 +39,10 @@ public class PrimMST {
 			seen = false;
 		}
 		
-		public void resetEntries()
-		{
-
+		public void resetEntries()	{
 			parent = null;
 			d = Infinity;
 			seen = false;
-		
-			
 		}
 
 		public int compare(PrimVertex u, PrimVertex v) {
@@ -59,6 +68,10 @@ public class PrimMST {
 
 		}
 	}
+	/**
+	 * @Desc Class used to store the properties for Prim Edge
+	 *
+	 */
 	class PrimEdge implements Comparator<PrimEdge>{
 		Edge edge;
 		public int compare(PrimEdge e1, PrimEdge e2) {
@@ -81,6 +94,10 @@ public class PrimMST {
 	}
 	private PrimVertex[] primVertex;
 
+	/**
+	 * Constructor of PrimMST
+	 * @param g - input graph
+	 */
 	public PrimMST(Graph g) {
 		primVertex = new PrimVertex[g.size()];
 		for (Graph.Vertex u : g) {
@@ -90,18 +107,23 @@ public class PrimMST {
 
 	}
 	
+	/** 
+	 * Method to reset the properties of PrimVertex
+	 */
 	private void resetPrimVertex() {
-		
 		if(primVertex!=null)
 		{
-			for(PrimVertex pv: primVertex)
-			{
+			for(PrimVertex pv: primVertex){
 				pv.resetEntries();
 			}
 		}
-		
 	}
 
+	/**
+	 * Method implementing Prim1
+	 * @param s - source vertex of the graph
+	 * @return - returns the calculated wmst
+	 */
 	public int prim1(Graph.Vertex s) throws Exception {
 		int wmst = 0;
 		// SP6.Q4: Prim's algorithm using PriorityQueue<Edge>:
@@ -143,18 +165,22 @@ public class PrimMST {
 		return wmst;
 	}
 
+	/**
+	 * Method implementing Prim2
+	 * @param s - source vertex of the graph
+	 * @return - returns the calculated wmst
+	 */
 	public int prim2(Graph.Vertex s) {
-		int wmst = 0;
-
-		PrimVertex src = primVertex[s.name];
-		src.d = 0;
-
 		// SP6.Q6: Prim's algorithm using IndexedHeap<PrimVertex>:
 
+		int wmst = 0;
+		PrimVertex src = primVertex[s.name];
+		src.d = 0;
+		
+		//build IndexedHeap using the Prim vertices of the graph
 		IndexedHeap<PrimVertex> indexedHeap = new IndexedHeap<PrimVertex>(Arrays.copyOf(primVertex, primVertex.length),
 				primVertex[0], primVertex.length);
 		
-
 		while (indexedHeap.peek() != null) {
 			PrimVertex u = indexedHeap.remove();
 			u.seen = true;
@@ -170,7 +196,6 @@ public class PrimMST {
 			}
 		}
 		resetPrimVertex();
-
 		return wmst;
 	}
 
@@ -188,14 +213,16 @@ public class PrimMST {
 
 		Graph g = Graph.readGraph(in);
 		Graph.Vertex s = g.getVertex(1);
-
 		Timer timer = new Timer();
+		
+		// Calcualtion of wmst using Prim1
 		PrimMST mst = new PrimMST(g);
 		int wmst = mst.prim1(s);
 		timer.end();
 		System.out.println(wmst);
 		System.out.println(timer);
 
+		// Calculation of wmst using Prim2
 		timer.start();
 		 wmst = mst.prim2(s);
 		timer.end();
