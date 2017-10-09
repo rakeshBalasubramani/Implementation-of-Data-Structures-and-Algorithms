@@ -39,8 +39,8 @@ public class PrimMST {
 			d = Infinity;
 			seen = false;
 		}
-		
-		public void resetEntries()	{
+
+		public void resetEntries() {
 			parent = null;
 			d = Infinity;
 			seen = false;
@@ -69,12 +69,14 @@ public class PrimMST {
 
 		}
 	}
+
 	/**
 	 * @Desc Class used to store the properties for Prim Edge
 	 *
 	 */
-	class PrimEdge implements Comparator<PrimEdge>{
+	class PrimEdge implements Comparator<PrimEdge> {
 		Edge edge;
+
 		public int compare(PrimEdge e1, PrimEdge e2) {
 			if (e1.edge.weight < e2.edge.weight) {
 				return -1;
@@ -84,21 +86,26 @@ public class PrimMST {
 				return 1;
 			}
 		}
-		private PrimEdge() {}
-		private PrimEdge(Edge e) {
-			edge=e;
+
+		private PrimEdge() {
 		}
-		
-		public String toString()
-		{
+
+		private PrimEdge(Edge e) {
+			edge = e;
+		}
+
+		public String toString() {
 			return edge.stringWithSpaces();
 		}
 	}
+
 	private PrimVertex[] primVertex;
 
 	/**
 	 * Constructor of PrimMST
-	 * @param g - input graph
+	 * 
+	 * @param g
+	 *            - input graph
 	 */
 	public PrimMST(Graph g) {
 		primVertex = new PrimVertex[g.size()];
@@ -108,14 +115,13 @@ public class PrimMST {
 		}
 
 	}
-	
-	/** 
+
+	/**
 	 * Method to reset the properties of PrimVertex
 	 */
 	private void resetPrimVertex() {
-		if(primVertex!=null)
-		{
-			for(PrimVertex pv: primVertex){
+		if (primVertex != null) {
+			for (PrimVertex pv : primVertex) {
 				pv.resetEntries();
 			}
 		}
@@ -123,17 +129,20 @@ public class PrimMST {
 
 	/**
 	 * Method implementing Prim1
-	 * @param s - source vertex of the graph
+	 * 
+	 * @param s
+	 *            - source vertex of the graph
 	 * @return - returns the calculated wmst
 	 */
 	public int prim1(Graph.Vertex s) throws Exception {
 		int wmst = 0;
 		// SP6.Q4: Prim's algorithm using PriorityQueue<Edge>:
 		PrimVertex src = primVertex[s.name];
-		src.seen=true;
-		//BinaryHeap<PrimEdge> binaryHeap=new BinaryHeap<PrimEdge>(Arrays.copyOf(pE, pE.length),pE[0],i);
-		PriorityQueue<PrimEdge> binaryHeap = new PriorityQueue<PrimEdge>(10,new PrimEdge());
-		for(Edge e:src.vertex) {
+		src.seen = true;
+		// BinaryHeap<PrimEdge> binaryHeap=new BinaryHeap<PrimEdge>(Arrays.copyOf(pE,
+		// pE.length),pE[0],i);
+		PriorityQueue<PrimEdge> binaryHeap = new PriorityQueue<PrimEdge>(10, new PrimEdge());
+		for (Edge e : src.vertex) {
 			binaryHeap.add(new PrimEdge(e));
 		}
 		while (binaryHeap.peek() != null) {
@@ -141,34 +150,32 @@ public class PrimMST {
 			PrimVertex pV;
 			PrimVertex pV1 = primVertex[e.edge.otherEnd(e.edge.from).name];
 			PrimVertex pV2 = primVertex[e.edge.otherEnd(e.edge.to).name];
-			if(pV1.seen&&pV2.seen) {
+			if (pV1.seen && pV2.seen) {
 				continue;
+			} else if (pV1.seen) {
+				pV = pV2;
+			} else {
+				pV = pV1;
 			}
-			else if(pV1.seen) {
-				pV=pV2;
-			}
-			else
-			{
-				pV=pV1;
-			}
-			pV.seen=true;
-			pV.parent=e.edge.from;
-			wmst=wmst+e.edge.weight;
-			for(Edge e2:pV.vertex) {
-				if(!primVertex[e2.otherEnd(pV.vertex).name].seen) {
+			pV.seen = true;
+			pV.parent = e.edge.from;
+			wmst = wmst + e.edge.weight;
+			for (Edge e2 : pV.vertex) {
+				if (!primVertex[e2.otherEnd(pV.vertex).name].seen) {
 					binaryHeap.add(new PrimEdge(e2));
 				}
 			}
-			
+
 		}
 		resetPrimVertex();
-
 		return wmst;
 	}
 
 	/**
 	 * Method implementing Prim2
-	 * @param s - source vertex of the graph
+	 * 
+	 * @param s
+	 *            - source vertex of the graph
 	 * @return - returns the calculated wmst
 	 */
 	public int prim2(Graph.Vertex s) {
@@ -177,11 +184,11 @@ public class PrimMST {
 		int wmst = 0;
 		PrimVertex src = primVertex[s.name];
 		src.d = 0;
-		
-		//build IndexedHeap using the Prim vertices of the graph
+
+		// build IndexedHeap using the Prim vertices of the graph
 		IndexedHeap<PrimVertex> indexedHeap = new IndexedHeap<PrimVertex>(Arrays.copyOf(primVertex, primVertex.length),
 				primVertex[0], primVertex.length);
-		
+		indexedHeap.buildHeap();
 		while (indexedHeap.peek() != null) {
 			PrimVertex u = indexedHeap.remove();
 			u.seen = true;
@@ -200,8 +207,6 @@ public class PrimMST {
 		return wmst;
 	}
 
-
-
 	public static void main(String[] args) throws Exception {
 		Scanner in;
 
@@ -215,17 +220,17 @@ public class PrimMST {
 		Graph g = Graph.readGraph(in);
 		Graph.Vertex s = g.getVertex(1);
 		Timer timer = new Timer();
-		
+
 		// Calcualtion of wmst using Prim1
 		PrimMST mst = new PrimMST(g);
-		int wmst = mst.prim1(s);
+		int wmst= mst.prim1(s);
 		timer.end();
 		System.out.println(wmst);
 		System.out.println(timer);
 
 		// Calculation of wmst using Prim2
 		timer.start();
-		 wmst = mst.prim2(s);
+		wmst = mst.prim2(s);
 		timer.end();
 		System.out.println(wmst);
 		System.out.println(timer);
