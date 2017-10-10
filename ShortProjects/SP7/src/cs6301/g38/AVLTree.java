@@ -17,5 +17,23 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
     AVLTree() {
 	super();
     }
+    private int height(BST.Entry<T> u) {
+    	if(u==null) {
+    		return -1;
+    	}
+    	int leftHeight = height(u.left);
+    	int rightHeight = height(u.right);
+    	if(leftHeight>rightHeight) {
+    		return 1+leftHeight;
+    	}
+    	else {
+    		return 1+rightHeight;
+    	}
+    }
+    
+    public boolean add(T x) {
+    	super.add(x);
+    	return false;
+    }
 }
 
