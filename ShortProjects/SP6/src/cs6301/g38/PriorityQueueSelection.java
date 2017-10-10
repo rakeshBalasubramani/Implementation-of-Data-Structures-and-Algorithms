@@ -130,7 +130,7 @@ public class PriorityQueueSelection<T> {
 			return arr;
 		}
 
-		BinaryHeap<T> minPq = new BinaryHeap<>(arr,comp,arr.length);
+		BinaryHeap<T> minPq = new BinaryHeap<>( Arrays.copyOf(arr, k),comp,0);
 		
 
 		for (int i = 0; i < k; i++) {
@@ -144,10 +144,9 @@ public class PriorityQueueSelection<T> {
 		}
 
 		for (int i = k; i < arr.length; i++) {
-			if (minPq.peek()!=null && (minPq.peek().compareTo(arr[i]) < 0)) {
 				minPq.replace(arr[i]);
 				
-			}
+			
 		}
 
 	 T val;
