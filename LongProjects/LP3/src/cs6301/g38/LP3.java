@@ -59,6 +59,13 @@ public class LP3 {
      *  The function should return the total weight of the MST it found.
      */  
     public static int directedMST(Graph g, Vertex start, List<Edge> dmst) {
+    	
+    	DMSTGraph dg=new DMSTGraph(g);
+    	List<Integer>minWeights=dg.findShortestIncomingEdge(start);
+    	dg.updateEdgeWeights(g,start,minWeights);
+    	dg.printGraph();
+    	dg.createZeroEdgeGraph();
+    	
 	return 0;
     }
 }
