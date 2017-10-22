@@ -18,18 +18,35 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 		public String toString() {
 			return super.toString() + " Height: " + height;
 		}
+
+		public void setHeight() {
+			height = height(this);
+		}
+
+		private int height(Entry<T> entry) {
+			if (entry == null) {
+				return -1;
+			}
+			int leftHeight = height((Entry<T>) entry.left);
+			int rightHeight = height((Entry<T>) entry.right);
+			if (leftHeight > rightHeight) {
+				return 1 + leftHeight;
+			} else {
+				return 1 + rightHeight;
+			}
+		}
 	}
 
 	AVLTree() {
 		super();
 	}
 
-	private int height(Entry<T> right) {
-		if (right == null) {
+	private int height(Entry<T> entry) {
+		if (entry == null) {
 			return -1;
 		}
-		int leftHeight = height((Entry<T>) right.left);
-		int rightHeight = height((Entry<T>) right.right);
+		int leftHeight = height((Entry<T>) entry.left);
+		int rightHeight = height((Entry<T>) entry.right);
 		if (leftHeight > rightHeight) {
 			return 1 + leftHeight;
 		} else {
@@ -65,21 +82,17 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			int heightDiff = balance(currentNode);
 			if (heightDiff > 1 && x.compareTo(currentNode.left.element) < 0) {
 				rightRotate(currentNode);
-			}
-			else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
+			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
 				leftRotate(currentNode);
-			}
-			else if (heightDiff > 1 && x.compareTo(currentNode.left.element) > 0) {
+			} else if (heightDiff > 1 && x.compareTo(currentNode.left.element) > 0) {
 				leftRotate((Entry<T>) currentNode.left);
 				rightRotate(currentNode);
-			}
-			else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
+			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
 				rightRotate((Entry<T>) currentNode.right);
 				leftRotate(currentNode);
 			}
-			currentNode.height = height(currentNode);
-		}	
-		currentNode.height = height(currentNode);
+		}
+		currentNode.setHeight();
 	}
 
 	protected Entry<T> newEntry(T x) {
@@ -97,9 +110,12 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			} else {
 				stack.peek().left = temp1;
 			}
+		} else {
+			root = temp1;
 		}
-		else {
-			root=temp1;
+		temp1.setHeight();
+		if (temp2 != null) {
+			temp2.setHeight();
 		}
 	}
 
@@ -114,9 +130,12 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			} else {
 				stack.peek().left = temp1;
 			}
+		} else {
+			root = temp1;
 		}
-		else {
-			root=temp1;
+		temp1.setHeight();
+		if (temp2 != null) {
+			temp2.setHeight();
 		}
 	}
 
