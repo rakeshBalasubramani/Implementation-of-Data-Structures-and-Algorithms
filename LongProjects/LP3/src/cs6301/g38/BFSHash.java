@@ -99,7 +99,7 @@ public class BFSHash extends GraphHash<BFSHash.BFSVertex,Boolean> {
 	getVertex(u).setDistance(d);
     }
 
-    // Visit a node v from u
+    // Visit a node v from u	
     void visit(Vertex u, Vertex v) {
 	BFSVertex bv = getVertex(v);
 	bv.set(true, u, getDistance(u) + 1);

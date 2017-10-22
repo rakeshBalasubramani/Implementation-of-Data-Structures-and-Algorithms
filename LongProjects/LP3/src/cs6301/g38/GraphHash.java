@@ -9,7 +9,7 @@ public class GraphHash<V,E> {
     Graph g;
     // Algorithm uses hash tables for storing information about vertices and edges
     HashMap<Vertex,V> vertexMap;
-    HashMap<Edge,E> edgeMap;
+    HashMap<Edge,E> edgeMap; 
 
     public GraphHash(Graph g) {
 	this.g = g;
