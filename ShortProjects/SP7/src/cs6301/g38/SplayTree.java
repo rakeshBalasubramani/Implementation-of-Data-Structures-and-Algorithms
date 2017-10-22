@@ -101,39 +101,6 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 		}
 	}
 
-	private void leftRotate(Entry<T> node) {
-		Entry<T> temp1 = (Entry<T>) node.right;
-		Entry<T> temp2 = (Entry<T>) temp1.left;
-		temp1.left = node;
-		node.right = temp2;
-		if (!stack.isEmpty()) {
-			if (stack.peek().element.compareTo(temp1.element) < 0) {
-				stack.peek().right = temp1;
-			} else {
-				stack.peek().left = temp1;
-			}
-
-		} else {
-			root = temp1;
-		}
-	}
-
-	private void rightRotate(Entry<T> node) {
-		Entry<T> temp1 = (Entry<T>) node.left;
-		Entry<T> temp2 = (Entry<T>) temp1.right;
-		temp1.right = node;
-		node.left = temp2;
-		if (!stack.isEmpty()) {
-			if (stack.peek().element.compareTo(temp1.element) < 0) {
-				stack.peek().right = temp1;
-			} else {
-				stack.peek().left = temp1;
-			}
-		} else {
-			root = temp1;
-		}
-	}
-
 	public T get(T x) {
 		Entry<T> temp = find(x);
 		if (temp != null && temp.element == x) {

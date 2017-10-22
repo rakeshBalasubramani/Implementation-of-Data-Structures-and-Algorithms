@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
 
+import cs6301.g38.BST.Entry;
+
 public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	static class Entry<T> implements Comparable<T> {
 		T element;
@@ -53,7 +55,38 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		size = 0;
 		stack = new Stack<Entry<T>>();
 	}
+	protected void leftRotate(Entry<T> node) {
+		Entry<T> temp1 = (Entry<T>) node.right;
+		Entry<T> temp2 = (Entry<T>) temp1.left;
+		temp1.left = node;
+		node.right = temp2;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
 
+		} else {
+			root = temp1;
+		}
+	}
+
+	protected void rightRotate(Entry<T> node) {
+		Entry<T> temp1 = (Entry<T>) node.left;
+		Entry<T> temp2 = (Entry<T>) temp1.right;
+		temp1.right = node;
+		node.left = temp2;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
+		} else {
+			root = temp1;
+		}
+	}
 	public boolean contains(T x) {
 		Entry<T> t = find(x);
 		return (t != null && t.element == x);

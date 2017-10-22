@@ -36,11 +36,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			}
 		}
 	}
-
-	AVLTree() {
-		super();
-	}
-
+	
 	private int height(Entry<T> entry) {
 		if (entry == null) {
 			return -1;
@@ -52,6 +48,10 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 		} else {
 			return 1 + rightHeight;
 		}
+	}
+
+	AVLTree() {
+		super();
 	}
 
 	private int balance(Entry<T> t) {
@@ -69,6 +69,9 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	public T remove(T x) {
 		T result = super.remove(x);
 		if (result != null) {
+			if(root==null) {
+				return result;
+			}
 			balanceTree(x);
 			return result;
 		}
@@ -93,6 +96,14 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			}
 		}
 		currentNode.setHeight();
+		if(currentNode.right!=null) {
+			currentNode=(Entry<T>) currentNode.right;
+			currentNode.setHeight();
+		}
+		if(currentNode.left!=null) {
+			currentNode=(Entry<T>) currentNode.left;
+			currentNode.setHeight();
+		}
 	}
 
 	protected Entry<T> newEntry(T x) {
