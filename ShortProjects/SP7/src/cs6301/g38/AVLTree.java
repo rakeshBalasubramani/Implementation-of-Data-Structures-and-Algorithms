@@ -96,13 +96,14 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			}
 		}
 		currentNode.setHeight();
+		Entry<T> temp;
 		if(currentNode.right!=null) {
-			currentNode=(Entry<T>) currentNode.right;
-			currentNode.setHeight();
+			temp=(Entry<T>) currentNode.right;
+			temp.setHeight();
 		}
 		if(currentNode.left!=null) {
-			currentNode=(Entry<T>) currentNode.left;
-			currentNode.setHeight();
+			temp=(Entry<T>) currentNode.left;
+			temp.setHeight();
 		}
 	}
 
