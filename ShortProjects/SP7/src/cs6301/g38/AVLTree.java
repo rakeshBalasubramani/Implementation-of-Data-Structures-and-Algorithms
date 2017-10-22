@@ -59,8 +59,9 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	}
 
 	private void balanceTree(T x) {
+		Entry<T> currentNode = (Entry<T>) root;
 		while (!stack.isEmpty()) {
-			Entry<T> currentNode = (Entry<T>) stack.pop();
+			currentNode = (Entry<T>) stack.pop();
 			int heightDiff = balance(currentNode);
 			if (heightDiff > 1 && x.compareTo(currentNode.left.element) < 0) {
 				rightRotate(currentNode);
@@ -77,7 +78,8 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 				leftRotate(currentNode);
 			}
 			currentNode.height = height(currentNode);
-		}		
+		}	
+		currentNode.height = height(currentNode);
 	}
 
 	protected Entry<T> newEntry(T x) {
