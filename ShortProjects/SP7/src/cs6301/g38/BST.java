@@ -1,8 +1,11 @@
 package cs6301.g38;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
+
+import cs6301.g38.BST.Entry;
 
 public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	static class Entry<T> implements Comparable<T> {
@@ -52,7 +55,38 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		size = 0;
 		stack = new Stack<Entry<T>>();
 	}
+	protected void leftRotate(Entry<T> node) {
+		Entry<T> temp1 = (Entry<T>) node.right;
+		Entry<T> temp2 = (Entry<T>) temp1.left;
+		temp1.left = node;
+		node.right = temp2;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
 
+		} else {
+			root = temp1;
+		}
+	}
+
+	protected void rightRotate(Entry<T> node) {
+		Entry<T> temp1 = (Entry<T>) node.left;
+		Entry<T> temp2 = (Entry<T>) temp1.right;
+		temp1.right = node;
+		node.left = temp2;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
+		} else {
+			root = temp1;
+		}
+	}
 	public boolean contains(T x) {
 		Entry<T> t = find(x);
 		return (t != null && t.element == x);
@@ -174,7 +208,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		}
 	}
 
-	T min() {
+	Entry<T> min() {
 		if (root == null) {
 			return null;
 		}
@@ -182,10 +216,10 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		while (temp.left != null) {
 			temp = temp.left;
 		}
-		return temp.element;
+		return temp;
 	}
 
-	T max() {
+	Entry<T> max() {
 		if (root == null) {
 			return null;
 		}
@@ -193,7 +227,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		while (temp.right != null) {
 			temp = temp.right;
 		}
-		return temp.element;
+		return temp;
 	}
 
 	/**
@@ -232,18 +266,22 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	// TODO: Create an array with the elements using in-order traversal of tree
 	public Comparable[] toArray() {
 		Comparable[] arr = new Comparable[size];
-		int i = 0;
-		inOrder(arr, i, root);
+		ArrayList<T> temp = new ArrayList<T>();
+		inOrder(temp,root);
+		int j=0;
+		for(T i:temp) {
+			arr[j++]=i;
+		}
 		return arr;
 	}
 
-	private void inOrder(Comparable[] arr, int i, Entry<T> root2) {
+	private void inOrder(ArrayList<T>temp, Entry<T> root2) {
 		if (root2 == null) {
 			return;
 		}
-		inOrder(arr, i, root2.left);
-		arr[i++] = root2.element;
-		inOrder(arr, i, root2.right);
+		inOrder(temp, root2.left);
+		temp.add(root2.element);
+		inOrder(temp, root2.right);
 	}
 
 	public void printTree() {

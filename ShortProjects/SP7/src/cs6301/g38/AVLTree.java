@@ -15,30 +15,43 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			height = 0;
 		}
 
-		public Entry(BST.Entry<T> t) {
-			super(t);
-		}
-
 		public String toString() {
 			return super.toString() + " Height: " + height;
 		}
-	}
 
-	AVLTree() {
-		super();
-	}
+		public void setHeight() {
+			height = height(this);
+		}
 
-	private int height(Entry<T> right) {
-		if (right == null) {
+		private int height(Entry<T> entry) {
+			if (entry == null) {
+				return -1;
+			}
+			int leftHeight = height((Entry<T>) entry.left);
+			int rightHeight = height((Entry<T>) entry.right);
+			if (leftHeight > rightHeight) {
+				return 1 + leftHeight;
+			} else {
+				return 1 + rightHeight;
+			}
+		}
+	}
+	
+	private int height(Entry<T> entry) {
+		if (entry == null) {
 			return -1;
 		}
-		int leftHeight = height((Entry<T>) right.left);
-		int rightHeight = height((Entry<T>) right.right);
+		int leftHeight = height((Entry<T>) entry.left);
+		int rightHeight = height((Entry<T>) entry.right);
 		if (leftHeight > rightHeight) {
 			return 1 + leftHeight;
 		} else {
 			return 1 + rightHeight;
 		}
+	}
+
+	AVLTree() {
+		super();
 	}
 
 	private int balance(Entry<T> t) {
@@ -56,6 +69,9 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	public T remove(T x) {
 		T result = super.remove(x);
 		if (result != null) {
+			if(root==null) {
+				return result;
+			}
 			balanceTree(x);
 			return result;
 		}
@@ -63,59 +79,76 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	}
 
 	private void balanceTree(T x) {
+		Entry<T> currentNode = (Entry<T>) root;
 		while (!stack.isEmpty()) {
-			Entry<T> currentNode = (Entry<T>) stack.pop();
-			int flag = 0;
-			if (root == currentNode) {
-				flag = 1;
-			}
+			currentNode = (Entry<T>) stack.pop();
 			int heightDiff = balance(currentNode);
 			if (heightDiff > 1 && x.compareTo(currentNode.left.element) < 0) {
-				currentNode = (Entry<T>) rightRotate(currentNode);
+				rightRotate(currentNode);
+			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
+				leftRotate(currentNode);
+			} else if (heightDiff > 1 && x.compareTo(currentNode.left.element) > 0) {
+				leftRotate((Entry<T>) currentNode.left);
+				rightRotate(currentNode);
+			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
+				rightRotate((Entry<T>) currentNode.right);
+				leftRotate(currentNode);
 			}
-			if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
-				currentNode = (Entry<T>) leftRotate(currentNode);
-			}
-			if (heightDiff > 1 && x.compareTo(currentNode.left.element) > 0) {
-				currentNode.left = leftRotate((Entry<T>) currentNode.left);
-				currentNode = (Entry<T>) rightRotate(currentNode);
-			}
-			if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
-				currentNode.right = rightRotate((Entry<T>) currentNode.right);
-				currentNode = (Entry<T>) leftRotate(currentNode);
-			}
-			if (flag == 1) {
-				root = currentNode;
-			}
-			if (!stack.isEmpty()) {
-				if (stack.peek().element.compareTo(currentNode.element) < 0) {
-					stack.peek().right = currentNode;
-				} else {
-					stack.peek().left = currentNode;
-				}
-			}
-			currentNode.height = height(currentNode);
-		}		
+		}
+		currentNode.setHeight();
+		Entry<T> temp;
+		if(currentNode.right!=null) {
+			temp=(Entry<T>) currentNode.right;
+			temp.setHeight();
+		}
+		if(currentNode.left!=null) {
+			temp=(Entry<T>) currentNode.left;
+			temp.setHeight();
+		}
 	}
 
 	protected Entry<T> newEntry(T x) {
 		return new Entry<T>(x, null, null);
 	}
 
-	private Entry<T> leftRotate(Entry<T> node) {
+	private void leftRotate(Entry<T> node) {
 		Entry<T> temp1 = (Entry<T>) node.right;
 		Entry<T> temp2 = (Entry<T>) temp1.left;
 		temp1.left = node;
 		node.right = temp2;
-		return temp1;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
+		} else {
+			root = temp1;
+		}
+		temp1.setHeight();
+		if (temp2 != null) {
+			temp2.setHeight();
+		}
 	}
 
-	private Entry<T> rightRotate(Entry<T> node) {
+	private void rightRotate(Entry<T> node) {
 		Entry<T> temp1 = (Entry<T>) node.left;
 		Entry<T> temp2 = (Entry<T>) temp1.right;
 		temp1.right = node;
 		node.left = temp2;
-		return temp1;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
+		} else {
+			root = temp1;
+		}
+		temp1.setHeight();
+		if (temp2 != null) {
+			temp2.setHeight();
+		}
 	}
 
 	public static void main(String[] args) {
