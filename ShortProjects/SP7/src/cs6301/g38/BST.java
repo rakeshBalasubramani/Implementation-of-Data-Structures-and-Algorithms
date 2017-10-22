@@ -1,10 +1,5 @@
-/** @author 
- *  Binary search tree (starter code)
- **/
-
 package cs6301.g38;
 
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
@@ -20,6 +15,12 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 			this.right = right;
 		}
 
+		public Entry(Entry<T> t) {
+			element = t.element;
+			left = t.left;
+			right = t.right;
+		}
+
 		public int compareTo(T o) {
 			if (element == o) {
 				return 0;
@@ -29,6 +30,17 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 				return 1;
 		}
 
+		public String toString() {
+			if (left != null && right != null) {
+				return "Left: " + left.element + " Element: " + element + " Right: " + right.element;
+			} else if (right != null) {
+				return "Element: " + element + " Right: " + right.element;
+			} else if(left != null){
+				return "Left: " + left.element + " Element: " + element;
+			}
+			else
+				return "Element: "+element;
+		}
 	}
 
 	Entry<T> root;
@@ -38,11 +50,9 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	public BST() {
 		root = null;
 		size = 0;
+		stack = new Stack<Entry<T>>();
 	}
 
-	/**
-	 * TO DO: Is x contained in tree?
-	 */
 	public boolean contains(T x) {
 		Entry<T> t = find(x);
 		return (t != null && t.element == x);
@@ -61,13 +71,13 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		}
 	}
 
-	private Entry<T> find(T x) {
-		stack = new Stack<Entry<T>>();
-		stack.push(null);
+	protected Entry<T> find(T x) {
+		stack.clear();
+		//stack.push(null);
 		return find(root, x);
 	}
 
-	private Entry<T> find(Entry<T> t, T x) {
+	protected Entry<T> find(Entry<T> t, T x) {
 		if (t == null || t.element == x) {
 			return t;
 		}
@@ -99,7 +109,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	 */
 	public boolean add(T x) {
 		if (root == null) {
-			root = new Entry<T>(x, null, null);
+			root = newEntry(x);
 			size = 1;
 			return true;
 		}
@@ -108,12 +118,16 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 			temp.element = x;
 			return false;
 		} else if (x.compareTo(temp.element) < 0) {
-			temp.left = new Entry<T>(x, null, null);
+			temp.left = newEntry(x);
 		} else {
-			temp.right = new Entry<T>(x, null, null);
+			temp.right = newEntry(x);
 		}
 		size++;
 		return true;
+	}
+
+	protected Entry<T> newEntry(T x) {
+		return new Entry<T>(x, null, null);
 	}
 
 	/**
@@ -141,7 +155,10 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	}
 
 	private void bypass(Entry<T> temp) {
-		Entry<T> pt = stack.peek();
+		Entry<T> pt=null;
+		if(!stack.isEmpty()) {
+			pt = stack.peek();
+		}
 		Entry<T> c;
 		if (temp.left == null) {
 			c = temp.right;
@@ -230,7 +247,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	}
 
 	public void printTree() {
-		System.out.print("[" + size + "]");
+		//System.out.print("[" + size + "]");
 		printTree(root);
 		System.out.println();
 	}
@@ -239,7 +256,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	void printTree(Entry<T> node) {
 		if (node != null) {
 			printTree(node.left);
-			System.out.print(" " + node.element);
+			System.out.println(node);
 			printTree(node.right);
 		}
 	}

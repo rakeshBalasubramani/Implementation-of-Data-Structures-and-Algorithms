@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class DMSTGraph extends Graph {
 
@@ -12,14 +13,19 @@ public class DMSTGraph extends Graph {
 	public static class DMSTVertex extends Vertex {
 
 		boolean disabled;
-		List<DMSTEdge> dmstAdj, dmstRevAdj;
+		List<DMSTEdge> dmstAdj, dmstRevAdj,dmstZeroAdj,dmstZeroRevAdj;
+		int cno;
+		
 
 		public DMSTVertex(Vertex u) {
 			super(u);
+			cno=-1;
 			disabled = false;
 			dmstAdj = new LinkedList<>();
 			dmstRevAdj = new LinkedList<>();
-
+			dmstZeroAdj= new LinkedList<>();
+			dmstZeroRevAdj= new LinkedList<>();
+			
 		}
 
 		boolean isDisabled() {
@@ -216,11 +222,14 @@ public class DMSTGraph extends Graph {
 		for (DMSTVertex dv : dmst) {
 			int weight = MAX;
 
-			if (dv.getName() == start.getName()) {
+			if (dv == null) {
+				break;
+			}
+			if (dv.getName() == start.getName() || dv.disabled) {
 				continue;
 			}
 
-			for (Edge de : dv.revAdj) {
+			for (DMSTEdge de : dv.dmstRevAdj) {
 				if (de.getWeight() < weight) {
 					weight = de.getWeight();
 				}
@@ -232,21 +241,106 @@ public class DMSTGraph extends Graph {
 		return shortestEdge;
 	}
 
-	void updateEdgeWeights(List<Integer> minweights) {
+	void updateEdgeWeights(Graph g, Vertex start, List<Integer> minweights) {
 
+		GraphHash<Edge, DMSTEdge> gh = new GraphHash<Edge, DMSTEdge>(g);
 		int count = 0;
 
 		for (DMSTVertex dv : dmst) {
+
+			if (dv == null) {
+				break;
+			}
+
+			if (dv.getName() == start.getName() || dv.disabled) {
+				continue;
+			}
+
 			int min = minweights.get(count);
 			count++;
-			for (Edge de : dv.revAdj) {
+
+			for (DMSTEdge de : dv.dmstRevAdj) {
 				int newWeight = de.getWeight() - min;
 				DMSTVertex du = (DMSTVertex) de.otherEnd(dv);
-				dv.revAdj.add(new Edge(dv, du, newWeight));
-				du.adj.add(new Edge(du, dv, newWeight));
+
+				for (DMSTEdge adj : du.dmstAdj) {
+					if ((adj.to.getName() == dv.getName()) && (adj.getWeight() == de.getWeight())) {
+						gh.edgeMap.put(adj, new DMSTEdge(dv, du, newWeight));
+					}
+				}
+
+				du.dmstAdj.add(new DMSTEdge(du, dv, newWeight));
+				de.disabled = true;
+
 			}
+		}
+
+		update(gh);
+
+	}
+
+	private void update(GraphHash<Edge, DMSTEdge> gh) {
+
+		for (Map.Entry<Edge, DMSTEdge> map : gh.edgeMap.entrySet()) {
+			Edge e = map.getKey();
+			DMSTEdge revEdge = map.getValue();
+
+			DMSTEdge adj = (DMSTEdge) e;
+			adj.disabled = true;
+			DMSTVertex dFrom = (DMSTVertex) revEdge.from;
+			DMSTVertex dTo = (DMSTVertex) revEdge.to;
+			dFrom.dmstRevAdj.add(new DMSTEdge(dFrom, dTo, revEdge.getWeight()));
+
 		}
 
 	}
 
+	public void printGraph() {
+
+		System.out.println("reduced graph:");
+		for (DMSTVertex dv : dmst) {
+
+			if (dv == null) {
+				break;
+			}
+
+			if (dv.disabled) {
+				continue;
+			}
+
+			for (DMSTEdge e : dv.dmstAdj) {
+				if (!e.disabled)
+					System.out.println(e.stringWithSpaces());
+			}
+		}
+	}
+
+	void createZeroEdgeGraph() {
+		
+		System.out.println("Zero edge graph:");
+		for(DMSTVertex du:dmst)
+		{
+			if (du == null) {
+				break;
+			}
+
+			if (du.disabled) {
+				continue;
+			}
+
+			for(DMSTEdge dme:du.dmstAdj)
+			{
+				if((!dme.disabled)&&(dme.getWeight()==0))
+				{
+					System.out.println("000 edges");
+					dme.stringWithSpaces();
+					DMSTVertex dv=(DMSTVertex)dme.otherEnd(du);
+					du.dmstZeroAdj.add(dme);
+					dv.dmstZeroRevAdj.add(new DMSTEdge(dv,du,dme.getWeight()));
+				}
+			}
+		}
+		
+
+	}
 }
