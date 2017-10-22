@@ -15,10 +15,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			height = 0;
 		}
 
-		public Entry(BST.Entry<T> t) {
-			super(t);
-		}
-
 		public String toString() {
 			return super.toString() + " Height: " + height;
 		}
