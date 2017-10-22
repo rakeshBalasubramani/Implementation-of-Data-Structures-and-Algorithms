@@ -61,34 +61,20 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	private void balanceTree(T x) {
 		while (!stack.isEmpty()) {
 			Entry<T> currentNode = (Entry<T>) stack.pop();
-			int flag = 0;
-			if (root == currentNode) {
-				flag = 1;
-			}
 			int heightDiff = balance(currentNode);
 			if (heightDiff > 1 && x.compareTo(currentNode.left.element) < 0) {
-				currentNode = (Entry<T>) rightRotate(currentNode);
+				rightRotate(currentNode);
 			}
-			if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
-				currentNode = (Entry<T>) leftRotate(currentNode);
+			else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
+				leftRotate(currentNode);
 			}
-			if (heightDiff > 1 && x.compareTo(currentNode.left.element) > 0) {
-				currentNode.left = leftRotate((Entry<T>) currentNode.left);
-				currentNode = (Entry<T>) rightRotate(currentNode);
+			else if (heightDiff > 1 && x.compareTo(currentNode.left.element) > 0) {
+				leftRotate((Entry<T>) currentNode.left);
+				rightRotate(currentNode);
 			}
-			if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
-				currentNode.right = rightRotate((Entry<T>) currentNode.right);
-				currentNode = (Entry<T>) leftRotate(currentNode);
-			}
-			if (flag == 1) {
-				root = currentNode;
-			}
-			if (!stack.isEmpty()) {
-				if (stack.peek().element.compareTo(currentNode.element) < 0) {
-					stack.peek().right = currentNode;
-				} else {
-					stack.peek().left = currentNode;
-				}
+			else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
+				rightRotate((Entry<T>) currentNode.right);
+				leftRotate(currentNode);
 			}
 			currentNode.height = height(currentNode);
 		}		
@@ -98,20 +84,38 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 		return new Entry<T>(x, null, null);
 	}
 
-	private Entry<T> leftRotate(Entry<T> node) {
+	private void leftRotate(Entry<T> node) {
 		Entry<T> temp1 = (Entry<T>) node.right;
 		Entry<T> temp2 = (Entry<T>) temp1.left;
 		temp1.left = node;
 		node.right = temp2;
-		return temp1;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
+		}
+		else {
+			root=temp1;
+		}
 	}
 
-	private Entry<T> rightRotate(Entry<T> node) {
+	private void rightRotate(Entry<T> node) {
 		Entry<T> temp1 = (Entry<T>) node.left;
 		Entry<T> temp2 = (Entry<T>) temp1.right;
 		temp1.right = node;
 		node.left = temp2;
-		return temp1;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
+		}
+		else {
+			root=temp1;
+		}
 	}
 
 	public static void main(String[] args) {
