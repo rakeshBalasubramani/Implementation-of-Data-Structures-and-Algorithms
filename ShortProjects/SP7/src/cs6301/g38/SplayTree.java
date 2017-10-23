@@ -1,5 +1,3 @@
-/** Starter code for Splay Tree
- */
 package cs6301.g38;
 
 import java.util.Comparator;
@@ -127,7 +125,8 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 		}
 		return result;
 	}
-
+	
+	
 	private Entry<T> findParent(T element) {
 		Entry<T> t1= stack.pop();
 		while(t1.element!=element) {
@@ -135,12 +134,27 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 		}
 		return t1;
 	}
+	
+	Entry<T> min() {
+		Entry<T> temp = super.min();
+		splay(temp);
+		return temp;
+	}
+
+	Entry<T> max() {
+		Entry<T> temp = super.max();
+		splay(temp);
+		return temp;
+	}
+	
+
 
 	public static void main(String[] args) {
 		SplayTree<Integer> t = new SplayTree<>();
 		Scanner in = new Scanner(System.in);
 		while (in.hasNext()) {
 			int x = in.nextInt();
+			
 			if (x > 0) {
 				System.out.print("Add " + x + " : ");
 				t.add(x);
@@ -150,10 +164,11 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 				t.remove(-x);
 				t.printTree();
 			} else {
-				Comparable[] arr = t.toArray();
-				System.out.print("Final: ");
-				for (int i = 0; i < t.size; i++) {
-					System.out.print(arr[i] + " ");
+				
+				System.out.println("Final :");
+				for(int i : t)
+				{
+					System.out.print(i + " ");
 				}
 				System.out.println();
 				return;
