@@ -11,6 +11,7 @@ import cs6301.g38.AVLTree.Entry;
 public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
 	static class Entry<T> extends BST.Entry<T> {
 		boolean isRed;
+
 		Entry(T x, Entry<T> left, Entry<T> right) {
 			super(x, left, right);
 			isRed = true;
@@ -54,11 +55,11 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
 		}
 		return false;
 	}
-	
+
 	public T remove(T x) {
 		T result = super.remove(x);
 		if (result != null) {
-			if(root==null) {
+			if (root == null) {
 				return result;
 			}
 			fix(x);
@@ -68,31 +69,102 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
 	}
 
 	private void fix(T x) {
-		Entry<T> pt,t,st;
-		pt=(Entry<T>) stack.pop();
-		if(x.compareTo(pt.element)<0) {
-			t=(Entry<T>) pt.left;
-			st=(Entry<T>) pt.right;
+		Entry<T> pt, t, st;
+		pt = (Entry<T>) stack.pop();
+		if (x.compareTo(pt.element) < 0) {
+			t = (Entry<T>) pt.left;
+			st = (Entry<T>) pt.right;
+		} else {
+			t = (Entry<T>) pt.right;
+			st = (Entry<T>) pt.left;
 		}
-		else {
-			t=(Entry<T>) pt.right;
-			st=(Entry<T>) pt.left;
-		}
-		if(t.isRed()) {
-			t.setBlack();
-			return;
-		}
-		else if(st.isBlack()) {
-			if(st.left==null&&st.right==null) {
-				st.setRed();
+		while (st == null || st.isBlack()) {
+			if(t==null) {
+				return;
 			}
-			else if(st.left!=null&&st.right!=null&&st.isBlack()&&st.isBlack()) {
-				st.setRed();
-			}
-			else if(st.left!=null) {
-				
+			if (t.isRed()) {
+				t.setBlack();
+				return;
+			} else if (st != null) {
+				if ((st.isBlack())
+						&& ((st.left != null && st.right != null) || (st.left != null && ((Entry<T>) st.left).isBlack())
+								|| (st.right != null && ((Entry<T>) st.right).isBlack())
+								|| (((Entry<T>) st.left).isBlack() && ((Entry<T>) st.right).isBlack()))) {
+					st.setRed();
+					t = pt;
+					if (!stack.isEmpty()) {
+						pt = (Entry<T>) stack.pop();
+						if (t == pt.left) {
+							st = (Entry<T>) pt.right;
+						} else {
+							st = (Entry<T>) pt.left;
+						}
+					}
+				}
+			} else if (st == null) {
+				t = pt;
+				if (!stack.isEmpty()) {
+					pt = (Entry<T>) stack.pop();
+					if (t == pt.left) {
+						st = (Entry<T>) pt.right;
+					} else {
+						st = (Entry<T>) pt.left;
+					}
+				}
 			}
 		}
+		while (st.isBlack()) {
+			if (st.isBlack()) {
+				if (st.left != null && ((Entry<T>) st.left).isRed() && pt.left == st) {
+					rightRotate(pt);
+					pt.setBlack();
+					st.setRed();
+					((Entry<T>) st.left).setBlack();
+					return;
+				} else if (st.right != null && ((Entry<T>) st.right).isRed() && pt.right == st) {
+					leftRotate(pt);
+					pt.setBlack();
+					st.setRed();
+					((Entry<T>) st.right).setBlack();
+					return;
+				} else if (st.left != null && ((Entry<T>) st.left).isRed() && pt.right == st) {
+					stack.push(pt);
+					rightRotate(st);
+					st.setRed();
+					((Entry<T>) st.left).setBlack();
+					stack.pop();
+					leftRotate(pt);
+					pt.setBlack();
+					((Entry<T>) st.left).setRed();
+					st.setBlack();
+					return;
+				} else {
+					stack.push(pt);
+					leftRotate(st);
+					st.setRed();
+					((Entry<T>) st.right).setBlack();
+					stack.pop();
+					rightRotate(pt);
+					pt.setBlack();
+					((Entry<T>) st.right).setRed();
+					st.setBlack();
+					return;
+				}
+			} else {
+				if (pt.left == t) {
+					leftRotate(pt);
+					pt.setRed();
+					st.setBlack();
+					st = (Entry<T>) pt.right;
+				} else {
+					rightRotate(pt);
+					pt.setRed();
+					st.setBlack();
+					st = (Entry<T>) pt.left;
+				}
+			}
+		}
+
 	}
 
 	private void repair(T x) {
