@@ -1,0 +1,187 @@
+BST
+--------------------------------------------------------------------------
+
+1 3 5 7 9 2 4 6 8 10 -3 -6 -3 0
+
+Add 1 : Element: 1
+
+Add 3 : Element: 1 Right: 3
+Element: 3
+
+Add 5 : Element: 1 Right: 3
+Element: 3 Right: 5
+Element: 5
+
+Add 7 : Element: 1 Right: 3
+Element: 3 Right: 5
+Element: 5 Right: 7
+Element: 7
+
+Add 9 : Element: 1 Right: 3
+Element: 3 Right: 5
+Element: 5 Right: 7
+Element: 7 Right: 9
+Element: 9
+
+Add 2 : Element: 1 Right: 3
+Element: 2
+Left: 2 Element: 3 Right: 5
+Element: 5 Right: 7
+Element: 7 Right: 9
+Element: 9
+
+Add 4 : Element: 1 Right: 3
+Element: 2
+Left: 2 Element: 3 Right: 5
+Element: 4
+Left: 4 Element: 5 Right: 7
+Element: 7 Right: 9
+Element: 9
+
+Add 6 : Element: 1 Right: 3
+Element: 2
+Left: 2 Element: 3 Right: 5
+Element: 4
+Left: 4 Element: 5 Right: 7
+Element: 6
+Left: 6 Element: 7 Right: 9
+Element: 9
+
+Add 8 : Element: 1 Right: 3
+Element: 2
+Left: 2 Element: 3 Right: 5
+Element: 4
+Left: 4 Element: 5 Right: 7
+Element: 6
+Left: 6 Element: 7 Right: 9
+Element: 8
+Left: 8 Element: 9
+
+Add 10 : Element: 1 Right: 3
+Element: 2
+Left: 2 Element: 3 Right: 5
+Element: 4
+Left: 4 Element: 5 Right: 7
+Element: 6
+Left: 6 Element: 7 Right: 9
+Element: 8
+Left: 8 Element: 9 Right: 10
+Element: 10
+
+Remove -3 : Element: 1 Right: 4
+Element: 2
+Left: 2 Element: 4 Right: 5
+Element: 5 Right: 7
+Element: 6
+Left: 6 Element: 7 Right: 9
+Element: 8
+Left: 8 Element: 9 Right: 10
+Element: 10
+
+Remove -6 : Element: 1 Right: 4
+Element: 2
+Left: 2 Element: 4 Right: 5
+Element: 5 Right: 7
+Element: 7 Right: 9
+Element: 8
+Left: 8 Element: 9 Right: 10
+Element: 10
+
+Remove -3 : Element: 1 Right: 4
+Element: 2
+Left: 2 Element: 4 Right: 5
+Element: 5 Right: 7
+Element: 7 Right: 9
+Element: 8
+Left: 8 Element: 9 Right: 10
+Element: 10
+
+Final: 1 4 5 7 9 10 null null 
+---------------------------------------------------------------------------
+1 2 3 4 5 6 7 8 
+Add 1 : Element: 1
+
+Add 2 : Element: 1 Right: 2
+Element: 2
+
+Add 3 : Element: 1 Right: 2
+Element: 2 Right: 3
+Element: 3
+
+Add 4 : Element: 1 Right: 2
+Element: 2 Right: 3
+Element: 3 Right: 4
+Element: 4
+
+Add 5 : Element: 1 Right: 2
+Element: 2 Right: 3
+Element: 3 Right: 4
+Element: 4 Right: 5
+Element: 5
+
+Add 6 : Element: 1 Right: 2
+Element: 2 Right: 3
+Element: 3 Right: 4
+Element: 4 Right: 5
+Element: 5 Right: 6
+Element: 6
+
+Add 7 : Element: 1 Right: 2
+Element: 2 Right: 3
+Element: 3 Right: 4
+Element: 4 Right: 5
+Element: 5 Right: 6
+Element: 6 Right: 7
+Element: 7
+
+Add 8 : Element: 1 Right: 2
+Element: 2 Right: 3
+Element: 3 Right: 4
+Element: 4 Right: 5
+Element: 5 Right: 6
+Element: 6 Right: 7
+Element: 7 Right: 8
+Element: 8
+
+-------------------------------------------------------------------
+9 8 7 6 3 2 1
+Add 9 : Element: 9
+
+Add 8 : Element: 8
+Left: 8 Element: 9
+
+Add 7 : Element: 7
+Left: 7 Element: 8
+Left: 8 Element: 9
+
+Add 6 : Element: 6
+Left: 6 Element: 7
+Left: 7 Element: 8
+Left: 8 Element: 9
+
+Add 3 : Element: 3
+Left: 3 Element: 6
+Left: 6 Element: 7
+Left: 7 Element: 8
+Left: 8 Element: 9
+
+Add 2 : Element: 2
+Left: 2 Element: 3
+Left: 3 Element: 6
+Left: 6 Element: 7
+Left: 7 Element: 8
+Left: 8 Element: 9
+
+Add 1 : Element: 1
+Left: 1 Element: 2
+Left: 2 Element: 3
+Left: 3 Element: 6
+Left: 6 Element: 7
+Left: 7 Element: 8
+Left: 8 Element: 9
+
+------------------------------------------------------------------------
+
+
+
+
