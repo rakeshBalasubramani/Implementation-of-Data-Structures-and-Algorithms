@@ -1,10 +1,16 @@
 package cs6301.g38;
 
-import java.util.Comparator;
 import java.util.Scanner;
 
-import cs6301.g38.BST.Entry;
-
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ *
+ * @Desc Class used to implement SplayTree
+ * @param <T> - Type of element stored in the tree.
+ */
 public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 	SplayTree() {
 		super();
