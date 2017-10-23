@@ -88,10 +88,14 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
 				leftRotate(currentNode);
 			} else if (heightDiff > 1 && x.compareTo(currentNode.left.element) > 0) {
+				stack.push(currentNode);
 				leftRotate((Entry<T>) currentNode.left);
+				stack.pop();
 				rightRotate(currentNode);
-			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
+			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) < 0) {
+				stack.push(currentNode);
 				rightRotate((Entry<T>) currentNode.right);
+				stack.pop();
 				leftRotate(currentNode);
 			}
 		}
