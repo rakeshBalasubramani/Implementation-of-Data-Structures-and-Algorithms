@@ -133,6 +133,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			root = temp1;
 		}
 		temp1.setHeight();
+		node.setHeight();
 		if (temp2 != null) {
 			temp2.setHeight();
 		}
@@ -153,6 +154,7 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			root = temp1;
 		}
 		temp1.setHeight();
+		node.setHeight();
 		if (temp2 != null) {
 			temp2.setHeight();
 		}
