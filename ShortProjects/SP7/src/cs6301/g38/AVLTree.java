@@ -98,7 +98,11 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 				stack.pop();
 				leftRotate(currentNode);
 			}
+			adjustHeight(currentNode);
 		}
+		adjustHeight(currentNode);
+	}
+	private void adjustHeight(Entry<T> currentNode) {
 		currentNode.setHeight();
 		Entry<T> temp;
 		if(currentNode.right!=null) {
@@ -110,7 +114,6 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			temp.setHeight();
 		}
 	}
-
 	protected Entry<T> newEntry(T x) {
 		return new Entry<T>(x, null, null);
 	}
