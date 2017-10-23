@@ -19,7 +19,7 @@ public class PairsSum {
 	 * @param X - sum value
 	 * @return - count of pairs in array that sums to X
 	 */
-	private static int howMany(int[] arr, int X){
+	public static int howMany(int[] arr, int X){
    
 		//initialize the start and end index of the array
 	    int startIndex = 0;

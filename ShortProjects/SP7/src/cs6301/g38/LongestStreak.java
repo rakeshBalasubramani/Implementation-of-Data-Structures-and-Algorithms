@@ -19,7 +19,7 @@ public class LongestStreak {
 	 * @param A - input array
 	 * @return - length of lonegst streak of consecutive integers
 	 */
-	private static int longestStreak(int[] A) {
+	public static int longestStreak(int[] A) {
 		 // RT = O(nlogn).
 	     // Ex: A = {1,7,9,4,1,7,4,8,7,1}.  longestStreak(A) return 3,
 	     //    corresponding to the streak {7,8,9} of consecutive integers

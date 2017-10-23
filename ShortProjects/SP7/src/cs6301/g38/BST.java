@@ -7,6 +7,7 @@ import java.util.Stack;
 
 import cs6301.g38.BST.Entry;
 
+
 public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	static class Entry<T> implements Comparable<T> {
 		T element;
@@ -234,7 +235,37 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	 * TO DO: Iterate elements in sorted order of keys
 	 */
 	public Iterator<T> iterator() {
-		return null;
+		return new TreeIterator(root);
+	}
+	
+	class TreeIterator implements Iterator<T> {
+		Stack<Entry<T>> stack;
+		 
+		public TreeIterator(Entry<T> root) {
+			stack = new Stack<Entry<T>>();
+			while (root != null) {
+				stack.push(root);
+				root = root.left;
+			}
+		}
+	 
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+	 
+		public T next() {
+			Entry<T> entry = stack.pop();
+			T result = entry.element;
+			if (entry.right != null) {
+				entry = entry.right;
+				while (entry != null) {
+					stack.push(entry);
+					entry = entry.left;
+				}
+			}
+			return result;
+		}
+		
 	}
 
 	public static void main(String[] args) {
@@ -259,6 +290,11 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 				System.out.println();
 				return;
 			}
+		}
+		
+		for(int i : t)
+		{
+			System.out.println(i);
 		}
 		in.close();
 	}

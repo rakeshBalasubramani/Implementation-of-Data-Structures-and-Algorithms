@@ -184,6 +184,11 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 				return;
 			}
 		}
+		
+		for(int element:t)
+		{
+		System.out.println(element);	
+		}
 		in.close();
 	}
 }
