@@ -278,24 +278,22 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 				t.add(x);
 				t.printTree();
 			} else if (x < 0) {
-				System.out.print("Remove " + x + " : ");
+				System.out.print("Remove " + -x + " : ");
 				t.remove(-x);
 				t.printTree();
 			} else {
-				Comparable[] arr = t.toArray();
-				System.out.print("Final: ");
-				for (int i = 0; i < t.size; i++) {
-					System.out.print(arr[i] + " ");
+				
+				System.out.println("Final: ");
+				for(int i : t)
+				{
+					System.out.print(i + " ");
 				}
 				System.out.println();
 				return;
 			}
 		}
 		
-		for(int i : t)
-		{
-			System.out.println(i);
-		}
+
 		in.close();
 	}
 
@@ -330,7 +328,7 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 	void printTree(Entry<T> node) {
 		if (node != null) {
 			printTree(node.left);
-			System.out.println(node);
+			System.out.print(node.element+ " ");
 			printTree(node.right);
 		}
 	}

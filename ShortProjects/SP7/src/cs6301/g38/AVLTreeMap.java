@@ -3,7 +3,6 @@ package cs6301.g38;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Stack;
-import java.util.TreeMap;
 
 /**
  * @author Rajkumar PanneerSelvam - rxp162130 <br>
@@ -342,7 +341,7 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements
 	private void printTree(Entry<K, V> node) {
 		if (node != null) {
 			printTree(node.left);
-			System.out.println(node);
+			System.out.print(node.key+ " ");
 			printTree(node.right);
 		}
 	}
@@ -383,7 +382,6 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements
 	}
 
 	public static void main(String args[]) {
-		TreeMap<Integer, Integer> maooo = new TreeMap<Integer, Integer>();
 
 		AVLTreeMap<Integer, Integer> map = new AVLTreeMap<Integer, Integer>();
 		Scanner in = new Scanner(System.in);
@@ -394,24 +392,23 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements
 				int value = in.nextInt();
 				System.out.print("Add " + key + " : " + value);
 				map.put(key, value);
-				System.out.println("Tree:");
 				map.printTree();
 			} else if (key < 0) {
 				System.out.print("Remove " + key + " : ");
 				map.remove(-key);
 				map.printTree();
 			} else {
+				System.out.println("Print: ");
 				map.printTree();
 				break;
 			}
 		}
-		
-	System.out.println(map.lastKey());
-	System.out.println(map.firstKey());
+		System.out.println();
+System.out.println("Final : ");
 	
 	for(int i : map)
 	{
-		System.out.println("key " + i  + " vlaue " + map.get(i));
+		System.out.println("key " + i  + " value " + map.get(i));
 	}
 
 		
