@@ -112,14 +112,11 @@ public class SplayTree<T extends Comparable<? super T>> extends BST<T> {
 	}
 
 	public T remove(T x) {
+		Entry<T> t = find(x);
 		T result = super.remove(x);
 		if (root == null) {
 			return result;
 		} else {
-			Entry<T> t = stack.pop();
-			if (!stack.isEmpty()) {
-				stack.pop();
-			}
 			splay(t);
 		}
 		return result;
