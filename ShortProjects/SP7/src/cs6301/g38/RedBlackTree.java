@@ -58,6 +58,9 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
 	public T remove(T x) {
 		T result = super.remove(x);
 		if (result != null) {
+			if(root==null) {
+				return result;
+			}
 			fix(x);
 			return result;
 		}
@@ -65,8 +68,30 @@ public class RedBlackTree<T extends Comparable<? super T>> extends BST<T> {
 	}
 
 	private void fix(T x) {
-		if(((Entry<T>) stack.pop()).isRed()) {
-			
+		Entry<T> pt,t,st;
+		pt=(Entry<T>) stack.pop();
+		if(x.compareTo(pt.element)<0) {
+			t=(Entry<T>) pt.left;
+			st=(Entry<T>) pt.right;
+		}
+		else {
+			t=(Entry<T>) pt.right;
+			st=(Entry<T>) pt.left;
+		}
+		if(t.isRed()) {
+			t.setBlack();
+			return;
+		}
+		else if(st.isBlack()) {
+			if(st.left==null&&st.right==null) {
+				st.setRed();
+			}
+			else if(st.left!=null&&st.right!=null&&st.isBlack()&&st.isBlack()) {
+				st.setRed();
+			}
+			else if(st.left!=null) {
+				
+			}
 		}
 	}
 
