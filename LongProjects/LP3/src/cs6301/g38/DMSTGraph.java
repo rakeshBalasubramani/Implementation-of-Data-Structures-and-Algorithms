@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import cs6301.g38.DMSTGraph.DMSTVertex.DMSTVertexReverseIterator;
+
 
 public class DMSTGraph extends Graph {
 
@@ -12,7 +14,7 @@ public class DMSTGraph extends Graph {
 
 	public static class DMSTVertex extends Vertex {
 
-		boolean disabled;
+		boolean disabled,seen;
 		List<DMSTEdge> dmstAdj, dmstRevAdj;
 		int cno;
 		
@@ -20,6 +22,7 @@ public class DMSTGraph extends Graph {
 			super(u);
 			cno=-1;
 			disabled = false;
+			seen=false;
 			dmstAdj = new LinkedList<>();
 			dmstRevAdj = new LinkedList<>();
 			
@@ -93,7 +96,7 @@ public class DMSTGraph extends Graph {
 			DMSTVertexReverseIterator(DMSTVertex u) {
 				this.revIt = u.dmstRevAdj.iterator();
 				ready = false; 
-				isZero=false;
+				isZero=true;
 			}
 
 			public boolean hasNext() {
@@ -107,19 +110,33 @@ public class DMSTGraph extends Graph {
 				
 				if(isZero())
 				{
-					while (cur.isDisabled() && revIt.hasNext()|| cur.tempWeight!=0 && revIt.hasNext()) { 
+					while (cur.isDisabled() && revIt.hasNext()|| cur.tempWeight>0 && revIt.hasNext()) { 
 						cur = revIt.next();
 					}	
+					
+					ready =true;
+					
+					if(cur.tempWeight>0)
+					{
+						return false;
+					}
+					else
+					{
+						return !cur.isDisabled();
+					}
+					 
 				}
 				else
 				{
 					while (cur.isDisabled() && revIt.hasNext()) { 
 						cur = revIt.next();
 					}
+					
+					ready = true;
+					return !cur.isDisabled();
 				}
 				
-				ready = true;
-				return !cur.isDisabled();
+				
 			}
 
 			public Edge next() {
@@ -136,9 +153,9 @@ public class DMSTGraph extends Graph {
 				throw new java.lang.UnsupportedOperationException();
 			}
 			
-			public void setZero()
+			public void disableZero()
 			{
-				isZero=true;
+				isZero=false;
 			}
 			
 			public boolean isZero()
@@ -252,15 +269,21 @@ public class DMSTGraph extends Graph {
 				continue;
 			}
 
-			for (DMSTEdge de : dv.dmstRevAdj) {
+			DMSTVertexReverseIterator dvi= (DMSTVertexReverseIterator)dv.reverseIterator();
+			dvi.disableZero();
+			
+			while(dvi.hasNext())
+			{
+				DMSTEdge de=(DMSTEdge)dvi.next();
+//			for (DMSTEdge de : dv.dmstRevAdj) {
 				if (de.tempWeight<minWeight){
 					minWeight=de.tempWeight;
 				}
-
+					
 			}
 
 			shortestEdge.add(minWeight);
-		}
+	}		
 			return shortestEdge;
 	
 }
@@ -280,8 +303,15 @@ public class DMSTGraph extends Graph {
 
 			int min = minWeights.get(count);
 			count++;
+			
+			DMSTVertexReverseIterator dvri= (DMSTVertexReverseIterator)dv.reverseIterator();
+			dvri.disableZero();
 
-			for (DMSTEdge de : dv.dmstRevAdj) {
+			while(dvri.hasNext())
+			{
+				DMSTEdge de=(DMSTEdge)dvri.next();
+			
+	//		for (DMSTEdge de : dv.dmstRevAdj) {
 				
 				int newWeight = de.tempWeight - min;
 				de.tempWeight=newWeight;
@@ -292,14 +322,17 @@ public class DMSTGraph extends Graph {
 					if ((adj.to.getName() == dv.getName()) && (adj.getWeight() == de.getWeight())) {
 						
 						adj.tempWeight=newWeight;
-
+						break;
 					}
 				}
 
 			}
 		}
 
-
+		
+		CC cc=new CC();
+		int noOfComponents=cc.findCC(dmst);
+		System.out.println("No of components:"+ noOfComponents);
 	}
 
 //	private void update(GraphHash<Edge, DMSTEdge> gh) {
@@ -345,6 +378,7 @@ public class DMSTGraph extends Graph {
 
 	private void printZeroEdges() {
 	
+		System.out.println("Zero edges...");
 		// how to set the boolean in the iterator from caller function?
 		for (DMSTVertex dv : dmst) {
 
@@ -356,9 +390,13 @@ public class DMSTGraph extends Graph {
 				continue;
 			}
   
-			//DMSTVertexReverseIterator<DMSTEdge> zeroEdges= new DMSTVertexReverseIterator<DMSTEdge>(dv.dmstRevAdj);
+			DMSTVertexReverseIterator zeroEdges= (DMSTVertexReverseIterator)dv.reverseIterator();
 			
-			for (DMSTEdge e : dv.dmstAdj) {
+			while(zeroEdges.hasNext())
+			{
+				DMSTEdge e=(DMSTEdge)zeroEdges.next();
+			
+	//		for (DMSTEdge e : dv.dmstRevAdj) {
 				if (!e.disabled)
 				{
 					System.out.println(e.fromVertex()+" "+ e.toVertex()+" "+e.tempWeight);
