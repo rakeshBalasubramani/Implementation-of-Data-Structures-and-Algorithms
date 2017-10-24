@@ -1,0 +1,76 @@
+	public static Num divide(Num a, Num b) {
+		Num zeroNum = new Num(0);
+		zeroNum.setBase(a.base);
+		if(b.compareTo(zeroNum)==0)
+		{
+			throw new IllegalArgumentException("Divisor is 0");
+		}
+		Num first = new Num(0);
+		first.setBase(a.base);
+		Num last = new Num();
+		last.base=a.base;
+		for(Long i :a.num) {
+			last.num.add(i);
+		}
+		last=add(last,new Num(1));// To handle integers.
+		Num med = rightShift(add(first,last));
+		while(!((product(med,b).compareTo(a)<=0)&&(a.compareTo(product(add(med,new Num(1)),b))<0))) {
+			if(first.compareTo(last)>=0) {
+				return new Num(0);
+			}
+			else {
+				if (product(med, b).compareTo(a) < 0) {
+					first = med;
+					med = rightShift(add(first, last));
+
+				} else {
+					last = med;
+					med = rightShift(add(first, last));
+				}
+			}
+		}
+		if(a.negativeSignBit!=b.negativeSignBit) {
+			med.negativeSignBit=true;
+		}
+		return med;
+	}
+
+	private static Num rightShift(Num x) {
+//		long tempBase = x.base;
+//		x.toDecimal();
+//		x.setBase(2);
+//		x.num.remove();
+//		x.toDecimal();
+//		x.setBase(tempBase);
+//		return x;
+//		Timer timer = new Timer();
+		Num t2 = new Num(2);
+		t2.setBase(x.base);
+		Num t1 = new Num(1);
+		t1.setBase(x.base);
+		Num temp;
+		if(x.base%2==1) {
+			Num tempX = new Num();
+			tempX.setBase(x.base);
+			for(Long i :x.num) {
+				tempX.num.add(i);
+			}
+			temp = new Num(0);
+			temp.setBase(x.base);
+			while(tempX.compareTo(t2)>0) {
+				tempX=subtract(tempX,t2);
+				temp=add(temp,t1);
+			}
+		}
+		else {
+			Num tb = new Num(x.base/2);
+			tb.setBase(x.base);
+			temp = Num.product(x,tb);
+			temp.num.removeFirst();		
+		}
+//		timer.end();
+//		System.out.println(timer);
+		return temp;
+	}
+	
+	

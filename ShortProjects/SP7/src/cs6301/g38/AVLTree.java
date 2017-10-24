@@ -1,11 +1,16 @@
 package cs6301.g38;
 
-import java.util.Comparator;
 import java.util.Scanner;
-import java.util.Stack;
 
-import cs6301.g38.BST.Entry;
-
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ *
+ * @Desc Class used to implement AVL Tree
+ * @param <T> - Type of element stored in the tree.
+ */
 public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 	static class Entry<T> extends BST.Entry<T> {
 		int height;
@@ -15,25 +20,34 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			height = 0;
 		}
 
-		public Entry(BST.Entry<T> t) {
-			super(t);
-		}
-
 		public String toString() {
 			return super.toString() + " Height: " + height;
 		}
-	}
-	//Entry<T> root;
-	AVLTree() {
-		super();
-	}
 
-	private int height(BST.Entry<T> node) {
-		if (node == null) {
+		public void setHeight() {
+			height = height(this);
+		}
+
+		private int height(Entry<T> entry) {
+			if (entry == null) {
+				return -1;
+			}
+			int leftHeight = height((Entry<T>) entry.left);
+			int rightHeight = height((Entry<T>) entry.right);
+			if (leftHeight > rightHeight) {
+				return 1 + leftHeight;
+			} else {
+				return 1 + rightHeight;
+			}
+		}
+	}
+	
+	private int height(Entry<T> entry) {
+		if (entry == null) {
 			return -1;
 		}
-		int leftHeight = height(node.left);
-		int rightHeight = height(node.right);
+		int leftHeight = height((Entry<T>) entry.left);
+		int rightHeight = height((Entry<T>) entry.right);
 		if (leftHeight > rightHeight) {
 			return 1 + leftHeight;
 		} else {
@@ -41,83 +55,113 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 		}
 	}
 
-	private boolean isBalanced(Entry<T> t) {
-		int lh = height(t.left);
-		int rh = height(t.right);
-		if (lh - rh >= 2 || rh - lh >= 2) {
-			return false;
-		} else
-			return true;
+	AVLTree() {
+		super();
+	}
+
+	private int balance(Entry<T> t) {
+		return height((Entry<T>) t.left) - height((Entry<T>) t.right);
 	}
 
 	public boolean add(T x) {
 		if (super.add(x)) {
-			while (!stack.isEmpty()) {
-				BST.Entry<T> temp = stack.pop();
-				if (temp != null) {
-					temp = new Entry<T>(temp);
-					Entry<T> temp1 = (Entry<T>) temp;
-					temp1.height = height(temp);
-					if (!isBalanced(temp1)) {
-						if (height(temp1.left) > height(temp1.right)) {
-							temp = new Entry<T>(rightRotate(temp1));
-							temp1 = (Entry<T>) temp;
-						} else {
-							temp = new Entry<T>(leftRotate(temp1));
-							temp1 = (Entry<T>) temp;
-						}
-					}
-					System.out.println(temp1);
-				}
-			}
+			balanceTree(x);
+			return true;
 		}
 		return false;
 	}
-	private BST.Entry<T> newEntry(T x) {
+
+	public T remove(T x) {
+		T result = super.remove(x);
+		if (result != null) {
+			if(root==null) {
+				return result;
+			}
+			balanceTree(x);
+			return result;
+		}
+		return null;
+	}
+
+	private void balanceTree(T x) {
+		Entry<T> currentNode = (Entry<T>) root;
+		while (!stack.isEmpty()) {
+			currentNode = (Entry<T>) stack.pop();
+			int heightDiff = balance(currentNode);
+			if (heightDiff > 1 && x.compareTo(currentNode.left.element) < 0) {
+				rightRotate(currentNode);
+			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) > 0) {
+				leftRotate(currentNode);
+			} else if (heightDiff > 1 && x.compareTo(currentNode.left.element) > 0) {
+				stack.push(currentNode);
+				leftRotate((Entry<T>) currentNode.left);
+				stack.pop();
+				rightRotate(currentNode);
+			} else if (heightDiff < -1 && x.compareTo(currentNode.right.element) < 0) {
+				stack.push(currentNode);
+				rightRotate((Entry<T>) currentNode.right);
+				stack.pop();
+				leftRotate(currentNode);
+			}
+			adjustHeight(currentNode);
+		}
+		adjustHeight(currentNode);
+	}
+	private void adjustHeight(Entry<T> currentNode) {
+		currentNode.setHeight();
+		Entry<T> temp;
+		if(currentNode.right!=null) {
+			temp=(Entry<T>) currentNode.right;
+			temp.setHeight();
+		}
+		if(currentNode.left!=null) {
+			temp=(Entry<T>) currentNode.left;
+			temp.setHeight();
+		}
+	}
+	protected Entry<T> newEntry(T x) {
 		return new Entry<T>(x, null, null);
 	}
-	
-	private BST.Entry<T> leftRotate(Entry<T> node) {
-		BST.Entry<T> temp1 = node.right;
-		BST.Entry<T> temp2 = temp1.left;
+
+	private void leftRotate(Entry<T> node) {
+		Entry<T> temp1 = (Entry<T>) node.right;
+		Entry<T> temp2 = (Entry<T>) temp1.left;
 		temp1.left = node;
 		node.right = temp2;
-		return temp1;
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
+			}
+		} else {
+			root = temp1;
+		}
+		temp1.setHeight();
+		node.setHeight();
+		if (temp2 != null) {
+			temp2.setHeight();
+		}
 	}
 
-	private BST.Entry<T> rightRotate(Entry<T> node) {
-		BST.Entry<T> temp1 = node.left;
-		BST.Entry<T> temp2 = temp1.right;
+	private void rightRotate(Entry<T> node) {
+		Entry<T> temp1 = (Entry<T>) node.left;
+		Entry<T> temp2 = (Entry<T>) temp1.right;
 		temp1.right = node;
 		node.left = temp2;
-		return temp1;
-	}
-
-	public void printTree() {
-		System.out.print("[" + size + "]");
-		BST.Entry<T> r = new Entry<T>(root);
-		Entry<T> t = (Entry<T>) r;
-		t.height = height(r);
-		printTree(t);
-		System.out.println();
-	}
-
-	// Inorder traversal of tree
-	void printTree(Entry<T> node) {
-		if (node != null) {
-			if (node.left != null) {
-				BST.Entry<T> l = new Entry<T>(node.left);
-				Entry<T> tempL = (Entry<T>) l;
-				tempL.height = height(l);
-				printTree(tempL);
+		if (!stack.isEmpty()) {
+			if (stack.peek().element.compareTo(temp1.element) < 0) {
+				stack.peek().right = temp1;
+			} else {
+				stack.peek().left = temp1;
 			}
-			System.out.print(" " + node.element + " " + node.height);
-			if (node.right != null) {
-				BST.Entry<T> l = new Entry<T>(node.right);
-				Entry<T> tempL = (Entry<T>) l;
-				tempL.height = height(l);
-				printTree(tempL);
-			}
+		} else {
+			root = temp1;
+		}
+		temp1.setHeight();
+		node.setHeight();
+		if (temp2 != null) {
+			temp2.setHeight();
 		}
 	}
 
@@ -129,20 +173,27 @@ public class AVLTree<T extends Comparable<? super T>> extends BST<T> {
 			if (x > 0) {
 				System.out.print("Add " + x + " : ");
 				t.add(x);
-				//t.printTree();
+				
+				t.printTree();
 			} else if (x < 0) {
-				System.out.print("Remove " + x + " : ");
+				System.out.print("Remove " + -x + " : ");
 				t.remove(-x);
 				t.printTree();
 			} else {
-				Comparable[] arr = t.toArray();
-				System.out.print("Final: ");
-				for (int i = 0; i < t.size; i++) {
-					System.out.print(arr[i] + " ");
-				}
+				System.out.println("Final: ");
+			for(int i : t)
+			{
+				System.out.print(i + " ");
+			}
+				
 				System.out.println();
 				return;
 			}
+		}
+		
+		for(int element:t)
+		{
+		System.out.println(element);	
 		}
 		in.close();
 	}
