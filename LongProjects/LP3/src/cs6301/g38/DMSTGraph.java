@@ -4,27 +4,24 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
 
 public class DMSTGraph extends Graph {
 
-	static int MAX = 100000;
+	static int MAX = Integer.MAX_VALUE;
 
 	public static class DMSTVertex extends Vertex {
 
 		boolean disabled;
-		List<DMSTEdge> dmstAdj, dmstRevAdj,dmstZeroAdj,dmstZeroRevAdj;
+		List<DMSTEdge> dmstAdj, dmstRevAdj;
 		int cno;
 		
-
 		public DMSTVertex(Vertex u) {
 			super(u);
 			cno=-1;
 			disabled = false;
 			dmstAdj = new LinkedList<>();
 			dmstRevAdj = new LinkedList<>();
-			dmstZeroAdj= new LinkedList<>();
-			dmstZeroRevAdj= new LinkedList<>();
 			
 		}
 
@@ -45,7 +42,8 @@ public class DMSTGraph extends Graph {
 		public Iterator<Edge> reverseIterator() {
 			return new DMSTVertexReverseIterator(this);
 		}
-
+		
+		
 		class DMSTVertexIterator implements Iterator<Edge> {
 			DMSTEdge cur;
 			Iterator<DMSTEdge> it;
@@ -90,11 +88,12 @@ public class DMSTGraph extends Graph {
 		class DMSTVertexReverseIterator implements Iterator<Edge> {
 			DMSTEdge cur;
 			Iterator<DMSTEdge> revIt;
-			boolean ready;
+			boolean ready,isZero;
 
 			DMSTVertexReverseIterator(DMSTVertex u) {
 				this.revIt = u.dmstRevAdj.iterator();
-				ready = false;
+				ready = false; 
+				isZero=false;
 			}
 
 			public boolean hasNext() {
@@ -105,9 +104,20 @@ public class DMSTGraph extends Graph {
 					return false;
 				}
 				cur = revIt.next();
-				while (cur.isDisabled() && revIt.hasNext()) {
-					cur = revIt.next();
+				
+				if(isZero())
+				{
+					while (cur.isDisabled() && revIt.hasNext()|| cur.tempWeight!=0 && revIt.hasNext()) { 
+						cur = revIt.next();
+					}	
 				}
+				else
+				{
+					while (cur.isDisabled() && revIt.hasNext()) { 
+						cur = revIt.next();
+					}
+				}
+				
 				ready = true;
 				return !cur.isDisabled();
 			}
@@ -125,16 +135,29 @@ public class DMSTGraph extends Graph {
 			public void remove() {
 				throw new java.lang.UnsupportedOperationException();
 			}
+			
+			public void setZero()
+			{
+				isZero=true;
+			}
+			
+			public boolean isZero()
+			{
+				return isZero;
+			}
 
 		}
+		
 
 	}
 
 	static class DMSTEdge extends Edge {
 		boolean disabled;
+		int tempWeight;
 
 		DMSTEdge(DMSTVertex from, DMSTVertex to, int weight) {
 			super(from, to, weight);
+			tempWeight=weight;
 			disabled = false;
 		}
 
@@ -220,7 +243,7 @@ public class DMSTGraph extends Graph {
 		List<Integer> shortestEdge = new ArrayList<Integer>();
 
 		for (DMSTVertex dv : dmst) {
-			int weight = MAX;
+			int minWeight = MAX;
 
 			if (dv == null) {
 				break;
@@ -230,20 +253,19 @@ public class DMSTGraph extends Graph {
 			}
 
 			for (DMSTEdge de : dv.dmstRevAdj) {
-				if (de.getWeight() < weight) {
-					weight = de.getWeight();
+				if (de.tempWeight<minWeight){
+					minWeight=de.tempWeight;
 				}
 
 			}
 
-			shortestEdge.add(weight);
+			shortestEdge.add(minWeight);
 		}
-		return shortestEdge;
-	}
+			return shortestEdge;
+	
+}
+	void updateEdgeWeights(Graph g, Vertex start, List<Integer> minWeights) {
 
-	void updateEdgeWeights(Graph g, Vertex start, List<Integer> minweights) {
-
-		GraphHash<Edge, DMSTEdge> gh = new GraphHash<Edge, DMSTEdge>(g);
 		int count = 0;
 
 		for (DMSTVertex dv : dmst) {
@@ -256,44 +278,45 @@ public class DMSTGraph extends Graph {
 				continue;
 			}
 
-			int min = minweights.get(count);
+			int min = minWeights.get(count);
 			count++;
 
 			for (DMSTEdge de : dv.dmstRevAdj) {
-				int newWeight = de.getWeight() - min;
+				
+				int newWeight = de.tempWeight - min;
+				de.tempWeight=newWeight;
+				
 				DMSTVertex du = (DMSTVertex) de.otherEnd(dv);
 
 				for (DMSTEdge adj : du.dmstAdj) {
 					if ((adj.to.getName() == dv.getName()) && (adj.getWeight() == de.getWeight())) {
-						gh.edgeMap.put(adj, new DMSTEdge(dv, du, newWeight));
+						
+						adj.tempWeight=newWeight;
+
 					}
 				}
-
-				du.dmstAdj.add(new DMSTEdge(du, dv, newWeight));
-				de.disabled = true;
 
 			}
 		}
 
-		update(gh);
 
 	}
 
-	private void update(GraphHash<Edge, DMSTEdge> gh) {
-
-		for (Map.Entry<Edge, DMSTEdge> map : gh.edgeMap.entrySet()) {
-			Edge e = map.getKey();
-			DMSTEdge revEdge = map.getValue();
-
-			DMSTEdge adj = (DMSTEdge) e;
-			adj.disabled = true;
-			DMSTVertex dFrom = (DMSTVertex) revEdge.from;
-			DMSTVertex dTo = (DMSTVertex) revEdge.to;
-			dFrom.dmstRevAdj.add(new DMSTEdge(dFrom, dTo, revEdge.getWeight()));
-
-		}
-
-	}
+//	private void update(GraphHash<Edge, DMSTEdge> gh) {
+//
+//		for (Map.Entry<Edge, DMSTEdge> map : gh.edgeMap.entrySet()) {
+//			Edge e = map.getKey();
+//			DMSTEdge revEdge = map.getValue();
+//
+//			DMSTEdge adj = (DMSTEdge) e;
+//			adj.disabled = true;
+//			DMSTVertex dFrom = (DMSTVertex) revEdge.from;
+//			DMSTVertex dTo = (DMSTVertex) revEdge.to;
+//			dFrom.dmstRevAdj.add(new DMSTEdge(dFrom, dTo, revEdge.getWeight()));
+//
+//		}
+//
+//	}
 
 	public void printGraph() {
 
@@ -310,37 +333,43 @@ public class DMSTGraph extends Graph {
 
 			for (DMSTEdge e : dv.dmstAdj) {
 				if (!e.disabled)
-					System.out.println(e.stringWithSpaces());
+				{
+					System.out.println(e.fromVertex()+" "+ e.toVertex()+" "+e.tempWeight);
+				}
+					
 			}
+			
 		}
+		printZeroEdges();
 	}
 
-	void createZeroEdgeGraph() {
-		
-		System.out.println("Zero edge graph:");
-		for(DMSTVertex du:dmst)
-		{
-			if (du == null) {
+	private void printZeroEdges() {
+	
+		// how to set the boolean in the iterator from caller function?
+		for (DMSTVertex dv : dmst) {
+
+			if (dv == null) {
 				break;
 			}
 
-			if (du.disabled) {
+			if (dv.disabled) {
 				continue;
 			}
-
-			for(DMSTEdge dme:du.dmstAdj)
-			{
-				if((!dme.disabled)&&(dme.getWeight()==0))
+  
+			//DMSTVertexReverseIterator<DMSTEdge> zeroEdges= new DMSTVertexReverseIterator<DMSTEdge>(dv.dmstRevAdj);
+			
+			for (DMSTEdge e : dv.dmstAdj) {
+				if (!e.disabled)
 				{
-					System.out.println("000 edges");
-					dme.stringWithSpaces();
-					DMSTVertex dv=(DMSTVertex)dme.otherEnd(du);
-					du.dmstZeroAdj.add(dme);
-					dv.dmstZeroRevAdj.add(new DMSTEdge(dv,du,dme.getWeight()));
+					System.out.println(e.fromVertex()+" "+ e.toVertex()+" "+e.tempWeight);
 				}
+					
 			}
+			
 		}
 		
-
+		
 	}
+
+
 }
