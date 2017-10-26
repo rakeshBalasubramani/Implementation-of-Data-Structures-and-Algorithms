@@ -64,7 +64,7 @@ public class LP3 {
     	List<Integer>minWeights=dg.findShortestIncomingEdge(start);
     	dg.updateEdgeWeights(g,start,minWeights);
     	dg.printGraph();
-    	dg.createZeroEdgeGraph();
+    //	dg.createZeroEdgeGraph();
     	
 	return 0;
     }

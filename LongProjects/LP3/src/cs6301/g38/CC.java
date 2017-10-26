@@ -12,6 +12,7 @@ package cs6301.g38;
 import cs6301.g38.DMSTGraph.DMSTEdge;
 import cs6301.g38.DMSTGraph.DMSTVertex;
 import cs6301.g38.DMSTGraph.DMSTVertex.DMSTVertexReverseIterator;
+import cs6301.g38.Graph.Edge;
 
 public class CC{
 	
@@ -62,17 +63,16 @@ public class CC{
     void dfsVisit(DMSTVertex u, int cno) {
 	visit(u, cno);
 	
-	DMSTVertexReverseIterator di= (DMSTVertexReverseIterator) u.reverseIterator();
-	
-	while(di.hasNext())
-	{
-		DMSTEdge e=(DMSTEdge) di.next();
-	//for(DMSTEdge e: u.dmstRevAdj) {
-		DMSTVertex v = (DMSTVertex) e.otherEnd(u);
+	DMSTGraph.findZeroEdge=true;
+
+	for(Edge e: u) {
+		DMSTEdge dmstEdge = (DMSTEdge) e;
+		DMSTVertex v = (DMSTVertex) dmstEdge.otherEnd(u);
 	    if(!seen(v)) {
 		dfsVisit(v, cno);
 	    }
 	}
+	DMSTGraph.findZeroEdge=false;
     }
 
     boolean seen(DMSTVertex u) {
