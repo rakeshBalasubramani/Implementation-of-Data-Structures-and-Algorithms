@@ -1,13 +1,11 @@
 package cs6301.g38;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import cs6301.g38.Graph.Edge;
-import cs6301.g38.Graph.Vertex;
 
 //import cs6301.g38.DMSTGraph.DMSTVertex;
 
@@ -21,6 +19,8 @@ public class DMSTGraph extends Graph {
 
 	static int noOfComponents = 0;
 
+	static int noOfVertices = 0;
+
 	private List<Edge> dmstEdges;
 
 	private Vertex source;
@@ -28,6 +28,12 @@ public class DMSTGraph extends Graph {
 	private Graph g;
 
 	private DMSTVertex dmst[];
+
+	private DMSTEdge[][] minEdgesBetweenComponents;
+
+	private DMSTEdge minEdge;
+
+	GraphHash<List<Vertex>, Edge> gh = new GraphHash<List<Vertex>, Edge>(g);
 
 	public static class DMSTVertex extends Vertex {
 
@@ -92,8 +98,7 @@ public class DMSTGraph extends Graph {
 				cur = it.next();
 
 				if (findZeroEdge) {
-					while ((cur.isDisabled() && it.hasNext())
-							|| (cur.tempWeight > 0 && it.hasNext())) {
+					while ((cur.isDisabled() && it.hasNext()) || (cur.tempWeight > 0 && it.hasNext())) {
 						cur = it.next();
 					}
 
@@ -133,75 +138,6 @@ public class DMSTGraph extends Graph {
 
 		}
 
-		// class DMSTVertexReverseIterator implements Iterator<Edge> {
-		// DMSTEdge cur;
-		// Iterator<DMSTEdge> revIt;
-		// boolean ready;
-		//
-		// DMSTVertexReverseIterator(DMSTVertex u,Iterator<DMSTEdge> revIt) {
-		// this.revIt =revIt;
-		// ready = false;
-		//
-		// }
-		//
-		// public boolean hasNext() {
-		// if (ready) {
-		// return true;
-		// }
-		// if (!revIt.hasNext()) {
-		// return false;
-		// }
-		// cur = revIt.next();
-		//
-		// if(findZeroEdge)
-		// {
-		// while ((cur.isDisabled() && revIt.hasNext())||( cur.tempWeight>0 &&
-		// revIt.hasNext())) {
-		// cur = revIt.next();
-		// }
-		//
-		// ready =true;
-		//
-		// if(cur.tempWeight>0)// for last edge
-		// {
-		// return false;
-		// }
-		// else
-		// {
-		// return !cur.isDisabled();
-		// }
-		//
-		// }
-		// else
-		// {
-		// while (cur.isDisabled() && revIt.hasNext()) {
-		// cur = revIt.next();
-		// }
-		//
-		// ready = true;
-		// return !cur.isDisabled();
-		// }
-		//
-		//
-		// }
-		//
-		// public Edge next() {
-		// if (!ready) {
-		// if (!hasNext()) {
-		// throw new java.util.NoSuchElementException();
-		// }
-		// }
-		// ready = false;
-		// return cur;
-		// }
-		//
-		// public void remove() {
-		// throw new java.lang.UnsupportedOperationException();
-		// }
-		//
-		// // }
-		//
-
 	}
 
 	static class DMSTEdge extends Edge {
@@ -229,6 +165,7 @@ public class DMSTGraph extends Graph {
 		dmst = new DMSTVertex[2 * g.size()];
 		for (Vertex v : g) {
 			dmst[v.getName()] = new DMSTVertex(v);
+			noOfVertices++;
 		}
 
 		for (Vertex u : g) {
@@ -340,8 +277,7 @@ public class DMSTGraph extends Graph {
 				isRevItr = false;
 				for (Edge adj : du) {
 					DMSTEdge dmstEdge = ((DMSTEdge) adj);
-					if ((dmstEdge.to.getName() == dv.getName())
-							&& (dmstEdge.getWeight() == dmstEdge1.getWeight())) {
+					if ((dmstEdge.to.getName() == dv.getName()) && (dmstEdge.getWeight() == dmstEdge1.getWeight())) {
 
 						dmstEdge.tempWeight = newWeight;
 						break;
@@ -351,27 +287,7 @@ public class DMSTGraph extends Graph {
 			}
 		}
 
-		CC cc = new CC();
-		noOfComponents = cc.findCC(dmst);
-		System.out.println("No of components:" + noOfComponents);
-		// shrinkComponents(start);
 	}
-
-	// private void update(GraphHash<Edge, DMSTEdge> gh) {
-	//
-	// for (Map.Entry<Edge, DMSTEdge> map : gh.edgeMap.entrySet()) {
-	// Edge e = map.getKey();
-	// DMSTEdge revEdge = map.getValue();
-	//
-	// DMSTEdge adj = (DMSTEdge) e;
-	// adj.disabled = true;
-	// DMSTVertex dFrom = (DMSTVertex) revEdge.from;
-	// DMSTVertex dTo = (DMSTVertex) revEdge.to;
-	// dFrom.dmstRevAdj.add(new DMSTEdge(dFrom, dTo, revEdge.getWeight()));
-	//
-	// }
-	//
-	// }
 
 	public void printGraph() {
 
@@ -381,8 +297,7 @@ public class DMSTGraph extends Graph {
 			for (Edge e : ((DMSTVertex) dv)) {
 				DMSTEdge dmstEdge = ((DMSTEdge) e);
 
-				System.out.println(dmstEdge.fromVertex() + " "
-						+ dmstEdge.toVertex() + " " + dmstEdge.tempWeight);
+				System.out.println(dmstEdge.fromVertex() + " " + dmstEdge.toVertex() + " " + dmstEdge.tempWeight);
 
 			}
 
@@ -402,8 +317,7 @@ public class DMSTGraph extends Graph {
 			for (Edge e : ((DMSTVertex) dv)) {
 				DMSTEdge dmstEdge = ((DMSTEdge) e);
 
-				System.out.println(dmstEdge.fromVertex() + " "
-						+ dmstEdge.toVertex() + " " + dmstEdge.tempWeight);
+				System.out.println(dmstEdge.fromVertex() + " " + dmstEdge.toVertex() + " " + dmstEdge.tempWeight);
 
 			}
 
@@ -413,67 +327,172 @@ public class DMSTGraph extends Graph {
 
 	}
 
-	public void shrinkComponents(Graph g, Vertex start) {
+	private void storeComponentVertices() {
 
-		GraphHash<List<Vertex>, Edge> gh = new GraphHash<List<Vertex>, Edge>(g);
-		// List<DMSTVertex> sameComponent= new ArrayList<DMSTVertex>();
-		Edge[] mstEdges = new Edge[noOfComponents - 1];
-		Edge minEdge;
+		HashMap<Integer, List<DMSTVertex>> componentVertices = new HashMap<Integer, List<DMSTVertex>>();
 
-		for (DMSTVertex dv : dmst) {
+		// store same component vertices to temp hashMap
+		for (Vertex v : this) {
 
-			if (dv == null) {
-				break;
+			DMSTVertex dv = ((DMSTVertex) v);
+
+			if (componentVertices.containsKey(dv.getComponentNumber())) {
+				List<DMSTVertex> vertexComponents = componentVertices.get(dv.getComponentNumber());
+				vertexComponents.add(dv);
+
+				componentVertices.put(dv.getComponentNumber(), vertexComponents);
 			}
 
-			if (dv.getName() == start.getName() || dv.disabled) {
-				continue;
+			else {
+				List<DMSTVertex> vertices = new ArrayList<DMSTVertex>();
+				vertices.add(dv);
+				componentVertices.put(dv.getComponentNumber(), vertices);
+
 			}
 
-			isRevItr = true;
-			for (Edge de : dv) {
+		}
 
-				// DMSTEdge dmstEdge = ((DMSTEdge)de);
+		// print same component vertices
 
-				minEdge = de;
+		for (Map.Entry<Integer, List<DMSTVertex>> tempMap : componentVertices.entrySet()) {
+			int cno = tempMap.getKey();
+			List<DMSTVertex> sameComponentVertices = tempMap.getValue();
 
-				DMSTVertex du = (DMSTVertex) de.otherEnd(dv);
+			System.out.print("C" + cno + ":");
 
-				for (Map.Entry<Vertex, List<Vertex>> map : gh.vertexMap
-						.entrySet()) {
+			for (Vertex v : sameComponentVertices) {
+				System.out.print(v + " ");
+			}
+			System.out.println();
+		}
 
-					DMSTVertex d = (DMSTVertex) map.getKey();
+		shrinkComponents(componentVertices);
 
-					if (d.getComponentNumber() == du.getComponentNumber()) {
-						List<Vertex> list = map.getValue();
-						list.add((Vertex) dv);
-						gh.vertexMap.remove((Vertex) du);
-						gh.vertexMap.put((Vertex) du, list);
+	}
+
+	private void shrinkComponents(HashMap<Integer, List<DMSTVertex>> componentVertices) {
+
+		// assign same component vertices to hashMap
+		for (Map.Entry<Integer, List<DMSTVertex>> tempMap : componentVertices.entrySet()) {
+			int compNo = tempMap.getKey();
+			List<DMSTVertex> sameCompVertices = tempMap.getValue();
+
+			// if the no of vertices is greater than 1 in the component
+			if (sameCompVertices.size() > 1) {
+
+				Vertex shrinkVertex = new Vertex(noOfVertices);
+
+				DMSTVertex componentVertex = new DMSTVertex(shrinkVertex);
+				dmst[noOfVertices] = componentVertex;
+
+				// Loop for adding incoming edge to New Vertex
+				for (DMSTEdge[] rEdge : minEdgesBetweenComponents) {
+
+					DMSTEdge newRevAdjEdge = rEdge[compNo - 1];
+
+					if (newRevAdjEdge == null) {
+						continue;
+					}
+
+					DMSTVertex fromVertex = (DMSTVertex) newRevAdjEdge.toVertex();
+
+					createNewEdges(fromVertex, componentVertex, newRevAdjEdge.tempWeight);
+
+				}
+
+				// Loop for Adding outgoing edges for new Vertex
+
+				for (DMSTEdge cEdge : minEdgesBetweenComponents[compNo - 1]) {
+					if (cEdge == null) {
+						continue;
+					}
+
+					DMSTVertex toVertex = (DMSTVertex) cEdge.fromVertex();
+
+					createNewEdges(componentVertex, toVertex, cEdge.tempWeight);
+
+				}
+
+				noOfVertices++;
+
+				for (DMSTVertex dis : sameCompVertices) {
+					dis.disable();
+				}
+			}
+		}
+
+	}
+
+	private void createNewEdges(DMSTVertex fromVertex, DMSTVertex toVertex, int weight) {
+
+		fromVertex.dmstAdj.add(new DMSTEdge(fromVertex, toVertex, weight));
+
+		toVertex.dmstRevAdj.add(new DMSTEdge(toVertex, fromVertex, weight));
+
+	}
+
+	private void findMinimumEdgeBetweenComponents(int noOfComponents) {
+
+		minEdgesBetweenComponents = new DMSTEdge[noOfComponents][noOfComponents];
+
+		isRevItr = true;
+		for (Vertex v : this) {
+			DMSTVertex dv = ((DMSTVertex) v);
+
+			if (dv.getName() == source.getName()) {
+				minEdgesBetweenComponents[dv.getComponentNumber() - 1][dv.getComponentNumber() - 1] = null; // for
+				// root
+				// node
+			}
+
+			for (Edge e : dv) {
+
+				DMSTVertex du = (DMSTVertex) e.otherEnd(dv);
+
+				DMSTEdge tempEdge = (DMSTEdge) e;
+				if (du.getComponentNumber() == dv.getComponentNumber()) {
+					minEdgesBetweenComponents[dv.getComponentNumber() - 1][dv.getComponentNumber() - 1] = null; // for
+					// edges
+					// to
+					// same
+					// component
+				}
+
+				else {
+					if (minEdgesBetweenComponents[du.getComponentNumber() - 1][dv.getComponentNumber() - 1] != null) {
+						minEdge = minEdgesBetweenComponents[du.getComponentNumber() - 1][dv.getComponentNumber() - 1];
+
+						if (tempEdge.tempWeight <= minEdge.tempWeight) {
+							minEdge = tempEdge;
+							minEdgesBetweenComponents[du.getComponentNumber() - 1][dv.getComponentNumber()
+									- 1] = minEdge;
+						}
 					}
 
 					else {
-						List<Vertex> component = new ArrayList<Vertex>();
-						component.add((Vertex) dv);
-						gh.vertexMap.put((Vertex) dv, component);
+						minEdge = tempEdge;
+						minEdgesBetweenComponents[du.getComponentNumber() - 1][dv.getComponentNumber() - 1] = minEdge;
 					}
 
 				}
-
-				// put root vertex and list of vertices into hashMap based on
-				// component number
-				if (du.getComponentNumber() != dv.getComponentNumber()) {
-					if (de.getWeight() <= minEdge.getWeight()) {
-						Edge ee = new Edge(de.to, de.from, de.getWeight());
-						minEdge = ee;
-						mstEdges[dv.getComponentNumber() - 1] = minEdge;
-
-					}
-				} else {
-
-				}
-
 			}
 
+		}
+
+		isRevItr = false;
+		// printing 2d array
+
+		for (DMSTEdge[] minimum : minEdgesBetweenComponents) {
+			for (DMSTEdge min : minimum) {
+				if (min == null) {
+					System.out.print("-1" + " ");
+				} else {
+					System.out.print(min.tempWeight + " ");
+					// System.out.println(min.stringWithSpaces());
+				}
+			}
+
+			System.out.println();
 		}
 
 	}
@@ -482,14 +501,21 @@ public class DMSTGraph extends Graph {
 		List<Integer> minWeights = findMinWeightIncomingEdge();
 		updateEdgeWeights(minWeights);
 		printGraph();
-		
-		//Do BFS on zero edges from source vertex. IF all vertices reached, done, else shrink it.
 
-		
-		
-		
-		// dg.createZeroEdgeGraph();
-//		shrinkComponents(g, this.source);
+		// Do BFS on zero edges from source vertex. IF all vertices reached,
+		// done, else shrink it.
+
+		System.out.println("Total number of vertices:" + noOfVertices);
+		CC cc = new CC();
+		noOfComponents = cc.findCC(dmst);
+		System.out.println("No of components:" + noOfComponents);
+
+		findMinimumEdgeBetweenComponents(noOfComponents);
+
+		storeComponentVertices();
+
+		printGraph();
+
 	}
 
 }
