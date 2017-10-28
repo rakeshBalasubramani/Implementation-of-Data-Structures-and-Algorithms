@@ -60,11 +60,9 @@ public class LP3 {
      */  
     public static int directedMST(Graph g, Vertex start, List<Edge> dmst) {
     	
-    	DMSTGraph dg=new DMSTGraph(g);
-    	List<Integer>minWeights=dg.findShortestIncomingEdge(start);
-    	dg.updateEdgeWeights(g,start,minWeights);
-    	dg.printGraph();
-    	dg.createZeroEdgeGraph();
+    	DMSTGraph dg=new DMSTGraph(g, start, dmst);
+    	dg.findMST();
+    	//Write the code to calculate weight of the MST.
     	
 	return 0;
     }
