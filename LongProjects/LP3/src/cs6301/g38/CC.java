@@ -9,14 +9,23 @@ package cs6301.g38;
 //import java.io.FileNotFoundException;
 //import java.util.Scanner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cs6301.g38.DMSTGraph.DMSTEdge;
 import cs6301.g38.DMSTGraph.DMSTVertex;
-import cs6301.g38.DMSTGraph.DMSTVertex.DMSTVertexReverseIterator;
 import cs6301.g38.Graph.Edge;
+//import cs6301.g38.Graph.Vertex;
 
 public class CC{
 	
+	int max=Integer.MAX_VALUE;
+	
 	 DMSTVertex dm[];
+	// List<Edge> minEdgeComponent =new ArrayList<Edge>();
+	// Edge minEdge;
+	 //boolean setMin;
+	 
     // Class to store information about a vertex in this algorithm
 //    class CCVertex {
 //	V element;
@@ -52,16 +61,29 @@ public class CC{
 		
 	    if(!seen(u)) {
 		cno++;
+		//setMin=true;
 		dfsVisit(u, cno);
+	//	minEdgeComponent.add(minEdge);
 	    }
 	}
-	
+
+//	System.out.println("MST edges:");
+//	for(Edge mst: minEdgeComponent)
+//	{
+//		if(mst==null)
+//		{
+//			continue;
+//		}
+//		mst.stringWithSpaces();
+//	}
 	return cno;
     }
 
     
     void dfsVisit(DMSTVertex u, int cno) {
 	visit(u, cno);
+	
+	//findMinimumEdgeToDifferentComponent(u);
 	
 	DMSTGraph.findZeroEdge=true;
 
@@ -70,12 +92,45 @@ public class CC{
 		DMSTVertex v = (DMSTVertex) dmstEdge.otherEnd(u);
 	    if(!seen(v)) {
 		dfsVisit(v, cno);
+	//	DMSTGraph.findZeroEdge=false;
+		
+//		findMinimumEdgeToDifferentComponent(u);
 	    }
 	}
+	
 	DMSTGraph.findZeroEdge=false;
+	
     }
 
-    boolean seen(DMSTVertex u) {
+//    private void findMinimumEdgeToDifferentComponent(DMSTVertex u) {
+//	
+//    	DMSTGraph.isRevItr=true;
+//    	
+//    	for(Edge in: u)
+//    	{
+//    		if(setMin)
+//    		{
+//    			Edge e= new Edge(in.to,in.from,in.getWeight());
+//    			minEdge=e;
+//    			setMin=false;
+//    		}
+//    		
+//    		DMSTVertex diffComponent=(DMSTVertex)in.otherEnd(u);
+//    		
+//    		if((u.getComponentNumber()!=diffComponent.getComponentNumber())&&(diffComponent.getComponentNumber()!=-1)&&(in.getWeight()<=minEdge.getWeight())){
+//    			
+//    			Edge ee= new Edge(in.to,in.from,in.getWeight());
+//    			minEdge=ee;
+//    		}			
+//    	}
+//    	
+//    	DMSTGraph.isRevItr=false;
+//    	
+//		
+//	}
+
+
+	boolean seen(DMSTVertex u) {
     //DMSTVertex ccu = getDMSTVertex(u);
 	return u.seen;
     }
@@ -87,6 +142,9 @@ public class CC{
 	u.cno = cno;
     }
 
+    
+    
+    
     // From Vertex to CCVertex (ugly)
 //    V getCCVertex(V u) {
 //	return dm[u.name];

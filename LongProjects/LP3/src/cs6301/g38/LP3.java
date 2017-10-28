@@ -65,6 +65,7 @@ public class LP3 {
     	dg.updateEdgeWeights(g,start,minWeights);
     	dg.printGraph();
     //	dg.createZeroEdgeGraph();
+    	dg.shrinkComponents(Graph g,Vertex start);
     	
 	return 0;
     }

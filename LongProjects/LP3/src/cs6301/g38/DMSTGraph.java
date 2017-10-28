@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import cs6301.g38.DMSTGraph.DMSTVertex.DMSTVertexReverseIterator;
+//import cs6301.g38.DMSTGraph.DMSTVertex;
 
 
 public class DMSTGraph extends Graph {
 
 	private static int MAX = Integer.MAX_VALUE;
 	
-	private static boolean isRevItr= false;
+	static boolean isRevItr= false;
 	
 	 static boolean findZeroEdge = false;
+	 
+	 static int noOfComponents=0;
 
 	public static class DMSTVertex extends Vertex {
 
@@ -35,6 +38,11 @@ public class DMSTGraph extends Graph {
 		boolean isDisabled() {
 			return disabled;
 		}
+		
+		int getComponentNumber()
+		{
+			return cno;
+		}
 
 		void disable() {
 			disabled = true;
@@ -44,12 +52,12 @@ public class DMSTGraph extends Graph {
 		public Iterator<Edge> iterator() {
 			if(isRevItr)
 			{
-				return new DMSTVertexReverseIterator(this, dmstRevAdj.iterator());
+				return new DMSTVertexIterator(this, dmstRevAdj.iterator());
 	
 			}
 			else
 			{
-			return new DMSTVertexIterator(this);
+			return new DMSTVertexIterator(this,dmstAdj.iterator());
 			}
 		}
 
@@ -64,8 +72,8 @@ public class DMSTGraph extends Graph {
 			Iterator<DMSTEdge> it;
 			boolean ready;
 
-			DMSTVertexIterator(DMSTVertex u) {
-				this.it = u.dmstAdj.iterator();
+			DMSTVertexIterator(DMSTVertex u,Iterator<DMSTEdge> it) {
+				this.it = it;
 				ready = false;
 			}
 
@@ -125,73 +133,73 @@ public class DMSTGraph extends Graph {
 
 		}
 
-		class DMSTVertexReverseIterator implements Iterator<Edge> {
-			DMSTEdge cur;
-			Iterator<DMSTEdge> revIt;
-			boolean ready;
-
-			DMSTVertexReverseIterator(DMSTVertex u,Iterator<DMSTEdge> revIt) {
-				this.revIt =revIt;
-				ready = false; 
-			
-			}
-
-			public boolean hasNext() {
-				if (ready) {
-					return true;
-				}
-				if (!revIt.hasNext()) {
-					return false;
-				}
-				cur = revIt.next();
-				
-				if(findZeroEdge)
-				{
-					while ((cur.isDisabled() && revIt.hasNext())||( cur.tempWeight>0 && revIt.hasNext())) { 
-						cur = revIt.next();
-					}	
-					
-					ready =true;
-					
-					if(cur.tempWeight>0)// for last edge
-					{
-						return false;
-					}
-					else
-					{
-						return !cur.isDisabled();
-					}
-					 
-				}
-				else
-				{
-					while (cur.isDisabled() && revIt.hasNext()) { 
-						cur = revIt.next();
-					}
-					
-					ready = true;
-					return !cur.isDisabled();
-				}
-				
-				
-			}
-
-			public Edge next() {
-				if (!ready) {
-					if (!hasNext()) {
-						throw new java.util.NoSuchElementException();
-					}
-				}
-				ready = false;
-				return cur;
-			}
-
-			public void remove() {
-				throw new java.lang.UnsupportedOperationException();
-			}
-			
-		}
-		
+//		class DMSTVertexReverseIterator implements Iterator<Edge> {
+//			DMSTEdge cur;
+//			Iterator<DMSTEdge> revIt;
+//			boolean ready;
+//
+//			DMSTVertexReverseIterator(DMSTVertex u,Iterator<DMSTEdge> revIt) {
+//				this.revIt =revIt;
+//				ready = false; 
+//			
+//			}
+//
+//			public boolean hasNext() {
+//				if (ready) {
+//					return true;
+//				}
+//				if (!revIt.hasNext()) {
+//					return false;
+//				}
+//				cur = revIt.next();
+//				
+//				if(findZeroEdge)
+//				{
+//					while ((cur.isDisabled() && revIt.hasNext())||( cur.tempWeight>0 && revIt.hasNext())) { 
+//						cur = revIt.next();
+//					}	
+//					
+//					ready =true;
+//					
+//					if(cur.tempWeight>0)// for last edge
+//					{
+//						return false;
+//					}
+//					else
+//					{
+//						return !cur.isDisabled();
+//					}
+//					 
+//				}
+//				else
+//				{
+//					while (cur.isDisabled() && revIt.hasNext()) { 
+//						cur = revIt.next();
+//					}
+//					
+//					ready = true;
+//					return !cur.isDisabled();
+//				}
+//				
+//				
+//			}
+//
+//			public Edge next() {
+//				if (!ready) {
+//					if (!hasNext()) {
+//						throw new java.util.NoSuchElementException();
+//					}
+//				}
+//				ready = false;
+//				return cur;
+//			}
+//
+//			public void remove() {
+//				throw new java.lang.UnsupportedOperationException();
+//			}
+//			
+////		}
+//		
 
 	}
 
@@ -356,8 +364,9 @@ public class DMSTGraph extends Graph {
 
 		
 		CC cc=new CC();
-		int noOfComponents=cc.findCC(dmst);
+		noOfComponents=cc.findCC(dmst);
 		System.out.println("No of components:"+ noOfComponents);
+		//shrinkComponents(start);
 	}
 
 //	private void update(GraphHash<Edge, DMSTEdge> gh) {
@@ -419,7 +428,7 @@ public class DMSTGraph extends Graph {
 			}
   
 		
-			isRevItr=true;
+			//isRevItr=true;
 			findZeroEdge=true;
 		for (Edge e : dv) {
 			DMSTEdge dmstEdge=((DMSTEdge)e);
@@ -430,8 +439,88 @@ public class DMSTGraph extends Graph {
 			}
 			
 		}
-		isRevItr=false;
+		//isRevItr=false;
 		findZeroEdge=false;
+		
+	}
+
+	public void shrinkComponents(Graph g,Vertex start) {
+	
+		GraphHash<List<Vertex>,Edge> gh=new GraphHash<List<Vertex>,Edge>(g);
+//		List<DMSTVertex> sameComponent= new ArrayList<DMSTVertex>();
+		Edge[] mstEdges= new Edge[noOfComponents-1];
+		Edge minEdge;
+		
+		for(DMSTVertex dv:dmst)
+		{
+			
+			if(dv==null)
+			{
+				break;
+			}
+			
+			if (dv.getName() == start.getName() || dv.disabled) {
+				continue;
+			}
+			
+			isRevItr=true;
+			for (Edge de : dv) {
+				
+			//	DMSTEdge dmstEdge = ((DMSTEdge)de);
+				
+				minEdge=de;
+				
+				
+				DMSTVertex du=(DMSTVertex)de.otherEnd(dv);
+				
+				
+				for(Map.Entry<Vertex,List<Vertex>> map:gh.vertexMap.entrySet())
+				{
+					
+				DMSTVertex d=(DMSTVertex)map.getKey();
+				
+				if(d.getComponentNumber()==du.getComponentNumber())
+				{
+					List<Vertex> list=map.getValue();
+					list.add((Vertex)dv);
+					gh.vertexMap.remove((Vertex)du);
+					gh.vertexMap.put((Vertex)du,list);
+				}
+					
+				else
+				{
+					List<Vertex> component= new ArrayList<Vertex>();
+					component.add((Vertex)dv);
+					gh.vertexMap.put((Vertex)dv,component);
+				}
+					
+					
+				}
+				
+					
+				//put root vertex and list of vertices into hashMap based on component number
+				if(du.getComponentNumber()!=dv.getComponentNumber())
+				{
+					if (de.getWeight()<=minEdge.getWeight()){
+						Edge ee=new Edge(de.to,de.from,de.getWeight());
+						minEdge=ee;
+						mstEdges[dv.getComponentNumber()-1]=minEdge;
+						
+						
+					}
+				}
+				else
+				{
+					
+				}
+					
+						
+				}
+			
+			
+		}
+		
+		
 		
 	}
 
