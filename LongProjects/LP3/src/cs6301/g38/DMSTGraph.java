@@ -372,6 +372,14 @@ public class DMSTGraph extends Graph {
 
 	private void shrinkComponents(HashMap<Integer, List<DMSTVertex>> componentVertices) {
 
+		DMSTVertex fVertex, toVertex;
+		DMSTEdge upEdge;
+		
+		int totalVertices=noOfVertices; // track newly created vertices
+		
+		DMSTVertex[] newVertex= new DMSTVertex[noOfComponents];
+		DMSTVertex[] compVertex = new DMSTVertex[noOfComponents];
+		
 		// assign same component vertices to hashMap
 		for (Map.Entry<Integer, List<DMSTVertex>> tempMap : componentVertices.entrySet()) {
 			int compNo = tempMap.getKey();
@@ -380,49 +388,172 @@ public class DMSTGraph extends Graph {
 			// if the no of vertices is greater than 1 in the component
 			if (sameCompVertices.size() > 1) {
 
-				Vertex shrinkVertex = new Vertex(noOfVertices);
+				
+				Vertex shrinkVertex = new Vertex(totalVertices++);
 
 				DMSTVertex componentVertex = new DMSTVertex(shrinkVertex);
-				dmst[noOfVertices] = componentVertex;
-
-				// Loop for adding incoming edge to New Vertex
-				for (DMSTEdge[] rEdge : minEdgesBetweenComponents) {
-
-					DMSTEdge newRevAdjEdge = rEdge[compNo - 1];
-
-					if (newRevAdjEdge == null) {
-						continue;
-					}
-
-					DMSTVertex fromVertex = (DMSTVertex) newRevAdjEdge.toVertex();
-
-					createNewEdges(fromVertex, componentVertex, newRevAdjEdge.tempWeight);
-
+				componentVertex.cno=compNo;
+				//dmst[noOfVertices] = componentVertex;
+				
+				newVertex[compNo-1]=componentVertex;
+				
+			//	noOfVertices++;
+			}
+		}		
+		
+		
+		for(DMSTEdge[] row: minEdgesBetweenComponents)
+		{
+			for(DMSTEdge column: row)
+			{
+				if(column==null)
+				{
+					continue;
 				}
-
-				// Loop for Adding outgoing edges for new Vertex
-
-				for (DMSTEdge cEdge : minEdgesBetweenComponents[compNo - 1]) {
-					if (cEdge == null) {
-						continue;
+				
+				DMSTVertex from=(DMSTVertex)column.fromVertex();
+				DMSTVertex to=(DMSTVertex)column.toVertex();
+				
+				List<DMSTVertex> cfVertices=componentVertices.get(from.getComponentNumber());
+				List<DMSTVertex> ctVertices= componentVertices.get(to.getComponentNumber());
+				
+				// for from vertex
+				if(cfVertices.size()>1)
+				{
+					
+					// vertex for each Component
+					compVertex[from.getComponentNumber()-1]=newVertex[from.getComponentNumber()-1];
+					
+					//changing the from vertex in the matrix
+					column.from=newVertex[from.getComponentNumber()-1];
+					
+					//adding edges to adj and revadj list
+					compVertex[((DMSTVertex)column.from).getComponentNumber()-1].dmstRevAdj.add(new DMSTEdge(compVertex[((DMSTVertex)column.from).getComponentNumber()-1],(DMSTVertex)column.to,column.tempWeight));
+					to.dmstAdj.add(new DMSTEdge((DMSTVertex)column.to,compVertex[((DMSTVertex)column.from).getComponentNumber()-1],column.tempWeight));
+					
+					//disable vertices of the same component
+					for(DMSTVertex disf: cfVertices)
+					{
+						disf.disable();
 					}
-
-					DMSTVertex toVertex = (DMSTVertex) cEdge.fromVertex();
-
-					createNewEdges(componentVertex, toVertex, cEdge.tempWeight);
-
 				}
-
-				noOfVertices++;
-
-				for (DMSTVertex dis : sameCompVertices) {
-					dis.disable();
+				
+				else 
+				{
+					compVertex[from.getComponentNumber()-1]=cfVertices.get(0);
+				}
+				
+				
+				// for to vertex
+				if(ctVertices.size()>1)
+				{
+					// Vertex for each component
+					compVertex[to.getComponentNumber()-1]=newVertex[to.getComponentNumber()-1];
+					
+					//changing to vertex in matrix
+					column.to=newVertex[to.getComponentNumber()-1];
+					
+					
+					compVertex[((DMSTVertex)column.to).getComponentNumber()-1].dmstAdj.add(new DMSTEdge(compVertex[((DMSTVertex)column.to).getComponentNumber()-1],(DMSTVertex)column.from,column.tempWeight));
+					((DMSTVertex)column.from).dmstRevAdj.add(new DMSTEdge(((DMSTVertex)column.from),((DMSTVertex)column.to),column.tempWeight));
+					
+					//disable vertices of the same component
+					for(DMSTVertex dist: ctVertices)
+					{
+						dist.disable();
+					}
+				
+				
+				}
+				else
+				{
+					compVertex[to.getComponentNumber()-1]=ctVertices.get(0);
 				}
 			}
 		}
+		
+
+		for(DMSTVertex ver: newVertex)
+		{
+			dmst[noOfVertices++]=ver;
+		}
+		
+//				// Loop for adding incoming edge to New Vertex
+//				for (DMSTEdge[] rEdge : minEdgesBetweenComponents) {
+//
+//					DMSTEdge newRevAdjEdge = rEdge[compNo - 1];
+//
+//					if (newRevAdjEdge == null) {
+//						continue;
+//					}
+//
+//					fVertex = (DMSTVertex) newRevAdjEdge.toVertex();
+//
+//					createNewEdges(fVertex, componentVertex, newRevAdjEdge.tempWeight);
+//					
+//					//minEdgesBetweenComponents[row][compNo-1]= new DMSTEdge(componentVertex,fromVertex,newRevAdjEdge.tempWeight);
+//					
+//					
+//					upEdge=new DMSTEdge((DMSTVertex)newRevAdjEdge.from,componentVertex,newRevAdjEdge.tempWeight);
+//					
+//					newRevAdjEdge.from=upEdge.from;
+//					newRevAdjEdge.to=upEdge.to;
+//					newRevAdjEdge.weight=upEdge.getWeight();
+//					
+////					newRevAdjEdge=upEdge;
+//					
+//				//	printMiniMumEdgeBetweenComponents();
+//
+//				}
+//
+//				// Loop for Adding outgoing edges for new Vertex
+//
+//				for (DMSTEdge cEdge : minEdgesBetweenComponents[compNo - 1]) {
+//					
+//					
+//					if (cEdge == null) {
+//						continue;
+//					}
+//
+//					
+//					updateMinimumWeightMatrix(compNo,componentVertex,cEdge);
+//					
+//					toVertex = (DMSTVertex) cEdge.fromVertex();
+//
+//					createNewEdges(componentVertex, toVertex, cEdge.tempWeight);
+//
+//				}
+//
+//				noOfVertices++;
+//
+//				for (DMSTVertex dis : sameCompVertices) {
+//					dis.disable();
+//				}
+//			}
+//		}
 
 	}
 
+	private void updateMinimumWeightMatrix(int compNo, DMSTVertex componentVertex,DMSTEdge cEdge) {
+		
+		DMSTEdge edge= new DMSTEdge((DMSTVertex)cEdge.toVertex(),componentVertex,cEdge.tempWeight);
+		
+		cEdge.from=edge.from;
+		cEdge.to=edge.to;
+		cEdge.weight=edge.getWeight();
+		
+		
+//		for(DMSTEdge edge:minEdgesBetweenComponents[compNo-1]){
+//			
+//			if(edge==null)
+//			{
+//				continue;
+//			}
+//			
+//		 edge=new DMSTEdge((DMSTVertex)cEdge.toVertex(),componentVertex,cEdge.tempWeight);
+//		
+//	}
+}
 	private void createNewEdges(DMSTVertex fromVertex, DMSTVertex toVertex, int weight) {
 
 		fromVertex.dmstAdj.add(new DMSTEdge(fromVertex, toVertex, weight));
@@ -433,7 +564,8 @@ public class DMSTGraph extends Graph {
 
 	private void findMinimumEdgeBetweenComponents(int noOfComponents) {
 
-		minEdgesBetweenComponents = new DMSTEdge[noOfComponents][noOfComponents];
+		DMSTEdge[][] minEdgeComponent= new DMSTEdge[noOfComponents][noOfComponents];
+		minEdgesBetweenComponents =minEdgeComponent;
 
 		isRevItr = true;
 		for (Vertex v : this) {
@@ -449,7 +581,9 @@ public class DMSTGraph extends Graph {
 
 				DMSTVertex du = (DMSTVertex) e.otherEnd(dv);
 
-				DMSTEdge tempEdge = (DMSTEdge) e;
+				DMSTEdge edge = new DMSTEdge((DMSTVertex)e.fromVertex(),(DMSTVertex)e.toVertex(),e.getWeight());
+				DMSTEdge tempEdge = edge;
+				
 				if (du.getComponentNumber() == dv.getComponentNumber()) {
 					minEdgesBetweenComponents[dv.getComponentNumber() - 1][dv.getComponentNumber() - 1] = null; // for
 					// edges
@@ -482,6 +616,13 @@ public class DMSTGraph extends Graph {
 		isRevItr = false;
 		// printing 2d array
 
+		printMiniMumEdgeBetweenComponents();
+		
+
+	}
+
+	private void printMiniMumEdgeBetweenComponents() {
+		
 		for (DMSTEdge[] minimum : minEdgesBetweenComponents) {
 			for (DMSTEdge min : minimum) {
 				if (min == null) {
@@ -494,7 +635,8 @@ public class DMSTGraph extends Graph {
 
 			System.out.println();
 		}
-
+		
+		System.out.println();
 	}
 
 	public void findMST() {
