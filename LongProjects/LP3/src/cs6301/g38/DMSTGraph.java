@@ -594,6 +594,11 @@ public class DMSTGraph extends Graph {
 
 		if (noOfComponents==1)
 		{
+			
+			System.out.println("Done");
+
+		
+			printGraph();
 			return;
 		}
 		
@@ -604,8 +609,21 @@ public class DMSTGraph extends Graph {
 
 		printGraph();
 		
+		resetSeenOldVertices();
 		findMST();
 
+	}
+
+	private void resetSeenOldVertices() {
+	
+		System.out.println("RESET SEEN");
+		for(Vertex v : this)
+		{
+			System.out.println(v);
+			((DMSTVertex)v).seen=false;
+		}
+		System.out.println("---------");
+		
 	}
 
 }
