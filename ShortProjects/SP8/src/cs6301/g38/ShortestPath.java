@@ -131,22 +131,27 @@ public class ShortestPath  {
 		System.out.println("\n-------------DAG Shortest Path---------------");
 		List<Graph.Vertex> topologicalOrder = new LinkedList<Graph.Vertex>();
 		TopologicalOrder tp = new TopologicalOrder();
-		topologicalOrder = tp.topoLogicalOrder1(graph.g);
+		topologicalOrder = tp.topologicalOrder2(graph.g);
 		
 		
 		ShortestPathVertex src = shortestPathVertex[0];
 		System.out.println("Source Vertex : "+ src.vertex);
 		src.d = 0;
-		
+		//System.out.println("Topological Order " + topologicalOrder);
 		// for each vertex in topological order, relax the edges out of vertex
+		
+		if(topologicalOrder == null){
+			System.out.println("topological order " + null);
+		}
+		else{
 		for(Graph.Vertex u : topologicalOrder){
 			for(Graph.Edge e : u.adj){
 				relax(e);
 				System.out.println("Vertex: " + shortestPathVertex[u.name].vertex+ "  Distance :" + shortestPathVertex[u.name].d);
 				
 			}
+		  }
 		}
-		
 	}
 	
 	//Dijkstra's Algorithm to find Shortest Path
@@ -278,8 +283,7 @@ public class ShortestPath  {
 		Graph g = Graph.readDirectedGraph(in);
 
 		Graph.Vertex s = g.getVertex(1);
-		ShortestPath sp = new ShortestPath(g,s);
-
+		ShortestPath sp = new ShortestPath(g,s);		
 		sp.fastestShortestPaths();
 	
 	}
