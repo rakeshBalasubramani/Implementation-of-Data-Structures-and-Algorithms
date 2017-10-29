@@ -107,7 +107,7 @@ public class ShortestPath  {
 		queue.add(src);
 		
 		while(queue.peek()!=null){
-			System.out.println("Quueue:" + queue.element().vertex);
+			//System.out.println("Queue:" + queue.element().vertex);
 			ShortestPathVertex u = queue.remove();
 			for(Graph.Edge edge : u.vertex){
 				Graph.Vertex v = edge.otherEnd(u.vertex);
@@ -198,9 +198,9 @@ public class ShortestPath  {
 		System.out.println("Source Vertex : "+ src.vertex);
 		src.d = 0;
 		src.seen = true;
-		System.out.println("src: " + src.vertex + src.d + " :" + src.seen);
+		//System.out.println("src: " + src.vertex + src.d + " :" + src.seen);
 		queue.add(src);
-		System.out.println("queue" + queue.element().vertex);
+		//System.out.println("queue" + queue.element().vertex);
 		
 		
 		while(queue.peek()!=null){
@@ -221,7 +221,7 @@ public class ShortestPath  {
 						shortestPathVertex[v.name].seen = true;	
 					}
 				}
-				System.out.println("Vertex: " + u.vertex + "  Distance :" + u.d);
+				//System.out.println("Vertex: " + u.vertex + "  Distance :" + u.d);
 			}
 			System.out.println("Vertex: " + u.vertex+ "  Distance :" + u.d);
 		}		
