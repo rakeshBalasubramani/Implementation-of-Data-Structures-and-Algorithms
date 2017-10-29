@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import cs6301.g38.BFS.BFSVertex;
+
 //import cs6301.g38.DMSTGraph.DMSTVertex;
 
 public class DMSTGraph extends Graph {
@@ -584,24 +586,20 @@ public class DMSTGraph extends Graph {
 	public void findMST() {
 		List<Integer> minWeights = findMinWeightIncomingEdge();
 		updateEdgeWeights(minWeights);
-		printGraph();
+		//printGraph();
 
+		boolean isReachable=bfsFindMST();
 		
+		if(isReachable)
+		{
+			return;
+		}
+	
 		//System.out.println("Total number of vertices:" + noOfVertices);
 		CC cc = new CC();
 		noOfComponents = cc.findCC(dmst);
 		System.out.println("No of components:" + noOfComponents);
 
-		if (noOfComponents==1)
-		{
-			
-			System.out.println("Done");
-
-		
-			printGraph();
-			return;
-		}
-		
 		
 		findMinimumEdgeBetweenComponents(noOfComponents);
 
@@ -612,6 +610,25 @@ public class DMSTGraph extends Graph {
 		resetSeenOldVertices();
 		findMST();
 
+	}
+
+	private boolean bfsFindMST() {
+		
+		boolean isReachable=true;
+		BFS b= new BFS(this.g,this.source);
+		
+		b.bfs();
+		
+		for(BFSVertex bv:b.node)
+		{
+			if(!bv.seen)
+			{
+				isReachable=false;
+				break;
+			}
+		}
+		
+		return isReachable;
 	}
 
 	private void resetSeenOldVertices() {

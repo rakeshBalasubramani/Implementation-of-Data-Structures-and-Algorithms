@@ -54,6 +54,9 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
 	q.add(src);
 	while(!q.isEmpty()) {
 	    Graph.Vertex u = q.remove();
+	    
+	    DMSTGraph.findZeroEdge=true;
+	    
 	    for(Graph.Edge e: u) {
 		Graph.Vertex v = e.otherEnd(u);
 		if(!seen(v)) {
@@ -61,6 +64,8 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
 		    q.add(v);
 		}
 	    }
+	    
+	    DMSTGraph.findZeroEdge=true;
 	}
     }
     
