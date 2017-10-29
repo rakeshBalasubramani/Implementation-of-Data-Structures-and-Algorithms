@@ -372,8 +372,6 @@ public class DMSTGraph extends Graph {
 
 	private void shrinkComponents(HashMap<Integer, List<DMSTVertex>> componentVertices) {
 
-		DMSTVertex fVertex, toVertex;
-		DMSTEdge upEdge;
 		
 		int totalVertices=noOfVertices; // track newly created vertices
 		
@@ -393,11 +391,9 @@ public class DMSTGraph extends Graph {
 
 				DMSTVertex componentVertex = new DMSTVertex(shrinkVertex);
 				componentVertex.cno=compNo;
-				//dmst[noOfVertices] = componentVertex;
-				
 				newVertex[compNo-1]=componentVertex;
 				
-			//	noOfVertices++;
+				//gh.vertexMap.put(componentVertex, sameCompVertices);
 			}
 		}		
 		
@@ -488,89 +484,25 @@ public class DMSTGraph extends Graph {
 			dmst[noOfVertices++]=ver;
 		}
 		
-//				// Loop for adding incoming edge to New Vertex
-//				for (DMSTEdge[] rEdge : minEdgesBetweenComponents) {
-//
-//					DMSTEdge newRevAdjEdge = rEdge[compNo - 1];
-//
-//					if (newRevAdjEdge == null) {
-//						continue;
-//					}
-//
-//					fVertex = (DMSTVertex) newRevAdjEdge.toVertex();
-//
-//					createNewEdges(fVertex, componentVertex, newRevAdjEdge.tempWeight);
-//					
-//					//minEdgesBetweenComponents[row][compNo-1]= new DMSTEdge(componentVertex,fromVertex,newRevAdjEdge.tempWeight);
-//					
-//					
-//					upEdge=new DMSTEdge((DMSTVertex)newRevAdjEdge.from,componentVertex,newRevAdjEdge.tempWeight);
-//					
-//					newRevAdjEdge.from=upEdge.from;
-//					newRevAdjEdge.to=upEdge.to;
-//					newRevAdjEdge.weight=upEdge.getWeight();
-//					
-////					newRevAdjEdge=upEdge;
-//					
-//				//	printMiniMumEdgeBetweenComponents();
-//
-//				}
-//
-//				// Loop for Adding outgoing edges for new Vertex
-//
-//				for (DMSTEdge cEdge : minEdgesBetweenComponents[compNo - 1]) {
-//					
-//					
-//					if (cEdge == null) {
-//						continue;
-//					}
-//
-//					
-//					updateMinimumWeightMatrix(compNo,componentVertex,cEdge);
-//					
-//					toVertex = (DMSTVertex) cEdge.fromVertex();
-//
-//					createNewEdges(componentVertex, toVertex, cEdge.tempWeight);
-//
-//				}
-//
-//				noOfVertices++;
-//
-//				for (DMSTVertex dis : sameCompVertices) {
-//					dis.disable();
-//				}
-//			}
-//		}
 
 	}
 
-	private void updateMinimumWeightMatrix(int compNo, DMSTVertex componentVertex,DMSTEdge cEdge) {
-		
-		DMSTEdge edge= new DMSTEdge((DMSTVertex)cEdge.toVertex(),componentVertex,cEdge.tempWeight);
-		
-		cEdge.from=edge.from;
-		cEdge.to=edge.to;
-		cEdge.weight=edge.getWeight();
-		
-		
-//		for(DMSTEdge edge:minEdgesBetweenComponents[compNo-1]){
-//			
-//			if(edge==null)
-//			{
-//				continue;
-//			}
-//			
-//		 edge=new DMSTEdge((DMSTVertex)cEdge.toVertex(),componentVertex,cEdge.tempWeight);
+//	private void updateMinimumWeightMatrix(int compNo, DMSTVertex componentVertex,DMSTEdge cEdge) {
 //		
+//		DMSTEdge edge= new DMSTEdge((DMSTVertex)cEdge.toVertex(),componentVertex,cEdge.tempWeight);
+//		
+//		cEdge.from=edge.from;
+//		cEdge.to=edge.to;
+//		cEdge.weight=edge.getWeight();
+//		
+//}
+//	private void createNewEdges(DMSTVertex fromVertex, DMSTVertex toVertex, int weight) {
+//
+//		fromVertex.dmstAdj.add(new DMSTEdge(fromVertex, toVertex, weight));
+//
+//		toVertex.dmstRevAdj.add(new DMSTEdge(toVertex, fromVertex, weight));
+//
 //	}
-}
-	private void createNewEdges(DMSTVertex fromVertex, DMSTVertex toVertex, int weight) {
-
-		fromVertex.dmstAdj.add(new DMSTEdge(fromVertex, toVertex, weight));
-
-		toVertex.dmstRevAdj.add(new DMSTEdge(toVertex, fromVertex, weight));
-
-	}
 
 	private void findMinimumEdgeBetweenComponents(int noOfComponents) {
 
@@ -654,19 +586,25 @@ public class DMSTGraph extends Graph {
 		updateEdgeWeights(minWeights);
 		printGraph();
 
-		// Do BFS on zero edges from source vertex. IF all vertices reached,
-		// done, else shrink it.
-
-		System.out.println("Total number of vertices:" + noOfVertices);
+		
+		//System.out.println("Total number of vertices:" + noOfVertices);
 		CC cc = new CC();
 		noOfComponents = cc.findCC(dmst);
 		System.out.println("No of components:" + noOfComponents);
 
+		if (noOfComponents==1)
+		{
+			return;
+		}
+		
+		
 		findMinimumEdgeBetweenComponents(noOfComponents);
 
 		storeComponentVertices();
 
 		printGraph();
+		
+		findMST();
 
 	}
 
