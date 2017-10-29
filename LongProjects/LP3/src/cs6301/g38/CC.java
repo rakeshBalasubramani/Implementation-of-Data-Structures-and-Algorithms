@@ -86,6 +86,7 @@ public class CC{
 	//findMinimumEdgeToDifferentComponent(u);
 	
 	DMSTGraph.findZeroEdge=true;
+	DMSTGraph.isRevItr=true;
 
 	for(Edge e: u) {
 		DMSTEdge dmstEdge = (DMSTEdge) e;
@@ -99,6 +100,7 @@ public class CC{
 	}
 	
 	DMSTGraph.findZeroEdge=false;
+	DMSTGraph.isRevItr=false;
 	
     }
 
