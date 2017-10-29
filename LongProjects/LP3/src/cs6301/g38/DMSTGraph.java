@@ -189,7 +189,7 @@ public class DMSTGraph extends Graph {
 		DMSTVertex dmcur;
 
 		DMSTIterator(DMSTGraph dm) {
-			this.it = new ArrayIterator<DMSTVertex>(dm.dmst, 0, dm.size() - 1); // Iterate
+			this.it = new ArrayIterator<DMSTVertex>(dm.dmst, 0, noOfVertices-1); // Iterate
 																				// over
 																				// existing
 																				// elements
@@ -427,10 +427,19 @@ public class DMSTGraph extends Graph {
 					//changing the from vertex in the matrix
 					column.from=newVertex[from.getComponentNumber()-1];
 					
-					//adding edges to adj and revadj list
-					compVertex[((DMSTVertex)column.from).getComponentNumber()-1].dmstRevAdj.add(new DMSTEdge(compVertex[((DMSTVertex)column.from).getComponentNumber()-1],(DMSTVertex)column.to,column.tempWeight));
-					to.dmstAdj.add(new DMSTEdge((DMSTVertex)column.to,compVertex[((DMSTVertex)column.from).getComponentNumber()-1],column.tempWeight));
+				
+					if(ctVertices.size()>1)
+					{
+						to=newVertex[to.getComponentNumber()-1];
+					}
 					
+					//adding edges to adj and revadj list
+					compVertex[((DMSTVertex)column.from).getComponentNumber()-1].dmstRevAdj.add(new DMSTEdge(compVertex[((DMSTVertex)column.from).getComponentNumber()-1],to,column.tempWeight));
+					
+					to.dmstAdj.add(new DMSTEdge(to,compVertex[((DMSTVertex)column.from).getComponentNumber()-1],column.tempWeight));
+
+					
+				
 					//disable vertices of the same component
 					for(DMSTVertex disf: cfVertices)
 					{
@@ -475,6 +484,7 @@ public class DMSTGraph extends Graph {
 
 		for(DMSTVertex ver: newVertex)
 		{
+			if(ver!=null)
 			dmst[noOfVertices++]=ver;
 		}
 		
@@ -581,7 +591,7 @@ public class DMSTGraph extends Graph {
 
 				DMSTVertex du = (DMSTVertex) e.otherEnd(dv);
 
-				DMSTEdge edge = new DMSTEdge((DMSTVertex)e.fromVertex(),(DMSTVertex)e.toVertex(),e.getWeight());
+				DMSTEdge edge = new DMSTEdge((DMSTVertex)e.fromVertex(),(DMSTVertex)e.toVertex(),((DMSTEdge)e).tempWeight);
 				DMSTEdge tempEdge = edge;
 				
 				if (du.getComponentNumber() == dv.getComponentNumber()) {
