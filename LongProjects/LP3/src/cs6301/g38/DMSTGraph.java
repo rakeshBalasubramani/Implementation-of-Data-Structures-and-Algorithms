@@ -22,6 +22,8 @@ public class DMSTGraph extends Graph {
 	static int noOfComponents = 0;
 
 	static int noOfVertices = 0;
+	
+	static int noOfEdges=0;
 
 	private List<Edge> dmstEdges;
 
@@ -156,6 +158,13 @@ public class DMSTGraph extends Graph {
 			disabled = false;
 		}
 
+		
+		DMSTEdge(DMSTVertex from, DMSTVertex to, int weight,int name) {
+			super(from, to, weight,name);
+			tempWeight = weight;
+			disabled = false;
+		}
+
 		boolean isDisabled() {
 			DMSTVertex dfrom = (DMSTVertex) from;
 			DMSTVertex dto = (DMSTVertex) to;
@@ -179,8 +188,9 @@ public class DMSTGraph extends Graph {
 				Vertex v = e.otherEnd(u);
 				DMSTVertex v1 = getVertex(u);
 				DMSTVertex v2 = getVertex(v);
-				v1.dmstAdj.add(new DMSTEdge(v1, v2, e.weight));
-				v2.dmstRevAdj.add(new DMSTEdge(v2, v1, e.weight));
+				v1.dmstAdj.add(new DMSTEdge(v1, v2, e.weight,noOfEdges));
+				v2.dmstRevAdj.add(new DMSTEdge(v2, v1, e.weight,noOfEdges));
+				noOfEdges++;
 			}
 		}
 	}
@@ -411,7 +421,8 @@ public class DMSTGraph extends Graph {
 				componentVertex.cno = compNo;
 				newVertex[compNo - 1] = componentVertex;
 
-				gh.vertexMap.put(componentVertex, sameCompVertices);
+
+				 gh.putVertex(componentVertex, sameCompVertices);
 			}
 		}
 
@@ -446,15 +457,15 @@ public class DMSTGraph extends Graph {
 					// adding edges to adj and revadj list
 					DMSTEdge dmstEdge = new DMSTEdge(
 							compVertex[((DMSTVertex) column.from)
-									.getComponentNumber() - 1], to,
-							column.tempWeight);
+										.getComponentNumber() - 1], to,
+								column.tempWeight,noOfEdges);
 					compVertex[((DMSTVertex) column.from).getComponentNumber() - 1].dmstRevAdj
 							.add(dmstEdge);
 
+
 					to.dmstAdj.add(new DMSTEdge(to,
 							compVertex[((DMSTVertex) column.from)
-									.getComponentNumber() - 1],
-							column.tempWeight));
+									.getComponentNumber() - 1],	column.tempWeight,noOfEdges));
 					
 					Edge edge = gh.getEdge(column);
 					if(edge!=null)
@@ -466,6 +477,8 @@ public class DMSTGraph extends Graph {
 					gh.putEdge(dmstEdge, column);
 					}
 
+
+					noOfEdges++;
 					// disable vertices of the same component
 					for (DMSTVertex disf : cfVertices) {
 						disf.disable();
@@ -489,12 +502,14 @@ public class DMSTGraph extends Graph {
 					DMSTEdge dmstEdge = new DMSTEdge(
 							compVertex[((DMSTVertex) column.to)
 									.getComponentNumber() - 1],
-							(DMSTVertex) column.from, column.tempWeight);
+							(DMSTVertex) column.from, column.tempWeight,noOfEdges);
 					compVertex[((DMSTVertex) column.to).getComponentNumber() - 1].dmstAdj
 							.add(dmstEdge);
+
 					((DMSTVertex) column.from).dmstRevAdj.add(new DMSTEdge(
 							((DMSTVertex) column.from),
-							((DMSTVertex) column.to), column.tempWeight));
+							((DMSTVertex) column.to), column.tempWeight,noOfEdges));
+
 
 					
 					
@@ -509,6 +524,7 @@ public class DMSTGraph extends Graph {
 					gh.putEdge(dmstEdge, column);
 					}
 					
+					noOfEdges++;
 					// disable vertices of the same component
 					for (DMSTVertex dist : ctVertices) {
 						dist.disable();
@@ -568,7 +584,7 @@ public class DMSTGraph extends Graph {
 				DMSTVertex du = (DMSTVertex) e.otherEnd(dv);
 
 				DMSTEdge edge = new DMSTEdge((DMSTVertex) e.fromVertex(),
-						(DMSTVertex) e.toVertex(), ((DMSTEdge) e).tempWeight);
+						(DMSTVertex) e.toVertex(), ((DMSTEdge) e).tempWeight,e.getName());
 				DMSTEdge tempEdge = edge;
 
 				if (du.getComponentNumber() == dv.getComponentNumber()) {
@@ -631,6 +647,7 @@ public class DMSTGraph extends Graph {
 	}
 
 	public void findMST() {
+		
 		List<Integer> minWeights = findMinWeightIncomingEdge();
 		updateEdgeWeights(minWeights);
 		// printGraph();
@@ -644,6 +661,7 @@ public class DMSTGraph extends Graph {
 		}
 
 		// System.out.println("Total number of vertices:" + noOfVertices);
+		System.out.println("Total number of edges:" + noOfEdges);
 		CC cc = new CC();
 		noOfComponents = cc.findCC(dmst);
 		System.out.println("No of components:" + noOfComponents);
