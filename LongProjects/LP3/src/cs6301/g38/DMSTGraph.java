@@ -467,14 +467,14 @@ public class DMSTGraph extends Graph {
 							compVertex[((DMSTVertex) column.from)
 									.getComponentNumber() - 1],	column.tempWeight,noOfEdges));
 					
-					Edge edge = gh.getEdge(column);
+					Edge edge = gh.getEdge(dmstEdge);
 					if(edge!=null)
 					{
 						gh.putEdge(dmstEdge, edge);
 					}
 					else
 					{
-					gh.putEdge(dmstEdge, column);
+					gh.putEdge(dmstEdge, getGraphEdge(column.fromVertex(),column.toVertex()));
 					}
 
 
@@ -514,14 +514,14 @@ public class DMSTGraph extends Graph {
 					
 					
 					
-					Edge edge = gh.getEdge(column);
+					Edge edge = gh.getEdge(dmstEdge);
 					if(edge!=null)
 					{
 						gh.putEdge(dmstEdge, edge);
 					}
 					else
 					{
-					gh.putEdge(dmstEdge, column);
+					gh.putEdge(dmstEdge, getGraphEdge(column.fromVertex(),column.toVertex()));
 					}
 					
 					noOfEdges++;
@@ -562,6 +562,22 @@ public class DMSTGraph extends Graph {
 	// toVertex.dmstRevAdj.add(new DMSTEdge(toVertex, fromVertex, weight));
 	//
 	// }
+
+	private Edge getGraphEdge(Vertex fromVertex,Vertex toVertex) {
+		
+		Edge result = null;
+		for(Edge e : fromVertex.adj)
+		{
+			if(e.to.name == toVertex.name)
+			{
+				result = e;
+				break;
+			}
+		}
+		
+		
+		return result;
+	}
 
 	private void findMinimumEdgeBetweenComponents(int noOfComponents) {
 
@@ -657,6 +673,7 @@ public class DMSTGraph extends Graph {
 
 		if (isReachable) {
 			printGraph();
+			expansion(source);
 			return;
 		}
 
@@ -675,6 +692,16 @@ public class DMSTGraph extends Graph {
 		resetSeenOldVertices();
 		findMST();
 
+	}
+
+	private void expansion(DMSTVertex vertex) {
+		
+		if(vertex.name == source.name)
+		{
+			
+		}
+		
+		
 	}
 
 	private boolean bfsFindMST() {
