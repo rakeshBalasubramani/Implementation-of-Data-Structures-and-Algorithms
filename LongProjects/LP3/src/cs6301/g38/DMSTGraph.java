@@ -470,7 +470,7 @@ public class DMSTGraph extends Graph {
 					Edge edge = gh.getEdge(dmstEdge);
 					if(edge!=null)
 					{
-						gh.putEdge(dmstEdge, edge);
+						gh.putEdge(dmstEdge, column);
 					}
 					else
 					{
@@ -517,7 +517,7 @@ public class DMSTGraph extends Graph {
 					Edge edge = gh.getEdge(dmstEdge);
 					if(edge!=null)
 					{
-						gh.putEdge(dmstEdge, edge);
+						gh.putEdge(dmstEdge, column);
 					}
 					else
 					{
@@ -750,7 +750,7 @@ public class DMSTGraph extends Graph {
 		for(Edge sameCompEdge:rootVertex)
 		{
 			// to do--- skip if it connects to root of the component
-			dmstEdges.add(sameCompEdge);
+			dmstEdges.add(sameCompEdge); // check in hashmap, if no value, then add the same edge, else add the value edge got from map.
 			DMSTVertex otherEnd=(DMSTVertex) sameCompEdge.otherEnd(rootVertex);
 			checkComponentVertex(otherEnd);
 		}
