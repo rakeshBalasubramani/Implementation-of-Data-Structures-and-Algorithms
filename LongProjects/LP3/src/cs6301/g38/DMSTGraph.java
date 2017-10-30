@@ -698,9 +698,62 @@ public class DMSTGraph extends Graph {
 		
 		if(vertex.name == source.name)
 		{
-			
+			findZeroEdge=true;
+			for(Edge adj: vertex)
+			{
+				dmstEdges.add(gh.getEdge(adj));
+				
+				DMSTVertex otherEnd= (DMSTVertex)adj.otherEnd(vertex);
+				
+				checkComponentVertex(otherEnd);
+				
+			}
+			findZeroEdge=false;
 		}
 		
+		
+		
+	}
+
+	private void checkComponentVertex(DMSTVertex component) {
+		
+		if(gh.vertexMap.containsKey(component))
+		{
+			List<DMSTVertex>cVertices=gh.getVertex(component);
+			
+			for(DMSTVertex ev: cVertices)
+			{
+				ev.disabled=false;
+				
+			}
+			
+			// to do -----find root vertex for each component
+			findMSTWithinComponent(cVertices.get(0));
+		}
+		
+		else
+		{
+			for(Edge edgeFromSingleNode:component)
+			{
+				// to do--- skip if it connects to root of the component
+				dmstEdges.add(edgeFromSingleNode);
+				DMSTVertex otherEnd=(DMSTVertex) edgeFromSingleNode.otherEnd(component);
+				checkComponentVertex(otherEnd);
+			}
+		}
+		
+	}
+
+	private void findMSTWithinComponent(DMSTVertex rootVertex) {
+		
+		
+		for(Edge sameCompEdge:rootVertex)
+		{
+			// to do--- skip if it connects to root of the component
+			dmstEdges.add(sameCompEdge);
+			DMSTVertex otherEnd=(DMSTVertex) sameCompEdge.otherEnd(rootVertex);
+			checkComponentVertex(otherEnd);
+		}
 		
 	}
 
