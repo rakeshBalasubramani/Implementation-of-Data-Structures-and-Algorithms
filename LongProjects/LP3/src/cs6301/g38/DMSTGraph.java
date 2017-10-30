@@ -35,7 +35,7 @@ public class DMSTGraph extends Graph {
 
 	private DMSTEdge minEdge;
 
-	GraphHash<List<Vertex>, Edge> gh = new GraphHash<List<Vertex>, Edge>(g);
+	GraphHash<List<DMSTVertex>, Edge> gh = new GraphHash<List<DMSTVertex>, Edge>(g);
 
 	public static class DMSTVertex extends Vertex {
 
@@ -411,7 +411,7 @@ public class DMSTGraph extends Graph {
 				componentVertex.cno = compNo;
 				newVertex[compNo - 1] = componentVertex;
 
-				// gh.vertexMap.put(componentVertex, sameCompVertices);
+				gh.vertexMap.put(componentVertex, sameCompVertices);
 			}
 		}
 
@@ -444,16 +444,27 @@ public class DMSTGraph extends Graph {
 					}
 
 					// adding edges to adj and revadj list
+					DMSTEdge dmstEdge = new DMSTEdge(
+							compVertex[((DMSTVertex) column.from)
+									.getComponentNumber() - 1], to,
+							column.tempWeight);
 					compVertex[((DMSTVertex) column.from).getComponentNumber() - 1].dmstRevAdj
-							.add(new DMSTEdge(
-									compVertex[((DMSTVertex) column.from)
-											.getComponentNumber() - 1], to,
-									column.tempWeight));
+							.add(dmstEdge);
 
 					to.dmstAdj.add(new DMSTEdge(to,
 							compVertex[((DMSTVertex) column.from)
 									.getComponentNumber() - 1],
 							column.tempWeight));
+					
+					Edge edge = gh.getEdge(column);
+					if(edge!=null)
+					{
+						gh.putEdge(dmstEdge, edge);
+					}
+					else
+					{
+					gh.putEdge(dmstEdge, column);
+					}
 
 					// disable vertices of the same component
 					for (DMSTVertex disf : cfVertices) {
@@ -475,15 +486,29 @@ public class DMSTGraph extends Graph {
 					// changing to vertex in matrix
 					column.to = newVertex[to.getComponentNumber() - 1];
 
+					DMSTEdge dmstEdge = new DMSTEdge(
+							compVertex[((DMSTVertex) column.to)
+									.getComponentNumber() - 1],
+							(DMSTVertex) column.from, column.tempWeight);
 					compVertex[((DMSTVertex) column.to).getComponentNumber() - 1].dmstAdj
-							.add(new DMSTEdge(
-									compVertex[((DMSTVertex) column.to)
-											.getComponentNumber() - 1],
-									(DMSTVertex) column.from, column.tempWeight));
+							.add(dmstEdge);
 					((DMSTVertex) column.from).dmstRevAdj.add(new DMSTEdge(
 							((DMSTVertex) column.from),
 							((DMSTVertex) column.to), column.tempWeight));
 
+					
+					
+					
+					Edge edge = gh.getEdge(column);
+					if(edge!=null)
+					{
+						gh.putEdge(dmstEdge, edge);
+					}
+					else
+					{
+					gh.putEdge(dmstEdge, column);
+					}
+					
 					// disable vertices of the same component
 					for (DMSTVertex dist : ctVertices) {
 						dist.disable();
