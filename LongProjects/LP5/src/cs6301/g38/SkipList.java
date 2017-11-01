@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 
-// Skeleton for skip list implementation.
-
 public class SkipList<T extends Comparable<? super T>> {
 
 	class SkipListEntry {
