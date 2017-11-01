@@ -233,15 +233,11 @@ public class ShortestPath  {
 		//initialize source and add to the queue
 		src.d = 0;
 		src.seen = true;
-<<<<<<< HEAD
 		//System.out.println("src: " + src.vertex + src.d + " :" + src.seen);
 		queue.add(src);
 		//System.out.println("queue" + queue.element().vertex);
 		
-=======
-		queue.add(src);
->>>>>>> cb6654be4780207641450d88594e8b293335c075
-		
+		queue.add(src);		
 		while(queue.peek()!=null){
 			ShortestPathVertex u = queue.remove();
 			u.seen = false; //no longer in the queue
@@ -260,11 +256,8 @@ public class ShortestPath  {
 						shortestPathVertex[v.name].seen = true;	
 					}
 				}
-<<<<<<< HEAD
 				//System.out.println("Vertex: " + u.vertex + "  Distance :" + u.d);
-=======
->>>>>>> cb6654be4780207641450d88594e8b293335c075
-			}
+				}
 		}		
 		return true; 		
 	}

@@ -337,13 +337,13 @@ public class BST<T extends Comparable<? super T>> implements Iterable<T> {
 		while (in.hasNext()) {
 			int x = in.nextInt();
 			if (x > 0) {
-				System.out.print("Add " + x + " : ");
+				//System.out.print("Add " + x + " : ");
 				t.add(x);
-				t.printTree();
+//				t.printTree();
 			} else if (x < 0) {
-				System.out.print("Remove " + -x + " : ");
+//				System.out.print("Remove " + -x + " : ");
 				t.remove(-x);
-				t.printTree();
+//				t.printTree();
 			} else {
 				
 				System.out.println("Final: ");
