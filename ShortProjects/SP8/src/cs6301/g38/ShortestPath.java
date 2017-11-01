@@ -107,9 +107,11 @@ public class ShortestPath  {
 	public boolean relax(Graph.Edge e){
 		Graph.Vertex u = e.from;
 		Graph.Vertex v = e.to;
+		//System.out.println("u-d " + shortestPathVertex[u.name].d + "v-d "+ shortestPathVertex[v.name].d);
+		
 		if(shortestPathVertex[v.name].d > shortestPathVertex[u.name].d + e.weight){
 			shortestPathVertex[v.name].d = shortestPathVertex[u.name].d + e.weight;
-			//System.out.println("\tupdated distnace " + shortestPathVertex[v.name].d);
+			//System.out.println("\t Updated u-d " + shortestPathVertex[u.name].d + "v-d "+ shortestPathVertex[v.name].d);
 			shortestPathVertex[v.name].parent = u;
 			
 			return true;
@@ -212,7 +214,7 @@ public class ShortestPath  {
 				
 				changed = relax(e);
 				if(changed){
-					Graph.Vertex v1 = e.otherEnd(u.vertex);
+					Graph.Vertex v1 = e.to;
 					indexedHeap.decreaseKey(shortestPathVertex[v1.name]);
 				}
 			}
