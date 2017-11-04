@@ -127,7 +127,7 @@ public class SkipList<T extends Comparable<? super T>> {
 		temp = head;
 		if (temp != null) {
 			for (int i = temp.next.size() - 1; i >= 0; i--) {
-				while (temp.next.get(i) != tail && temp.next.get(i).element.compareTo(x) < 0) {
+				while (i < temp.next.size() && temp.next.get(i) != tail && temp.next.get(i).element.compareTo(x) < 0) {
 					temp = temp.next.get(i);
 				}
 
@@ -293,7 +293,9 @@ public class SkipList<T extends Comparable<? super T>> {
 
 		/**
 		 * Contructor to initialise the head of the iterator.
-		 * @param head - HEad of the Skiplist.
+		 * 
+		 * @param head
+		 *            - HEad of the Skiplist.
 		 */
 		public SkipListIterator(SkipList<T>.SkipListEntry head) {
 			temp = head;
@@ -386,7 +388,8 @@ public class SkipList<T extends Comparable<? super T>> {
 			case 1:
 				System.out.println("Enter element to add");
 				x = in.nextInt();
-				System.out.println(t.add(x));
+				t.add(x);
+				t.printSkipList();
 				break;
 			case 2:
 				System.out.println("Ceiling");
@@ -399,8 +402,7 @@ public class SkipList<T extends Comparable<? super T>> {
 				System.out.println(t.contains(x));
 				break;
 			case 4:
-				System.out.println("First");
-				System.out.println(t.first());
+				System.out.println("First: " + t.first());
 				break;
 			case 5:
 				System.out.println("Floor");
@@ -413,28 +415,26 @@ public class SkipList<T extends Comparable<? super T>> {
 				System.out.println(t.get(x));
 				break;
 			case 7:
-				System.out.println("isEmpty");
-				System.out.println(t.isEmpty());
+				System.out.println("isEmpty: " + t.isEmpty());
 				break;
 			case 8:
-				System.out.println("Last");
-				System.out.println(t.last());
+				System.out.println("Last: " + t.last());
 				break;
 			case 9:
 				System.out.println("Rebuild");
 				t.rebuild();
+				t.printSkipList();
 				break;
 			case 10:
-				System.out.println("Remove");
+				System.out.println("Enter element to be removed");
 				x = in.nextInt();
-				System.out.println(t.remove(x));
+				t.remove(x);
+				t.printSkipList();
 				break;
 			case 11:
-				System.out.println("Size");
-				System.out.println(t.size());
+				System.out.println("Size: " + t.size());
 				break;
 			}
-			t.printSkipList();
 			System.out.println("Again??(1/0)");
 			ch = in.nextInt();
 		} while (ch == 1);
