@@ -5,12 +5,39 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ *
+ * @Desc Class used to implement SkipLists
+ * @param <T>
+ *            - Type of element stored in the SkipLists.
+ */
 public class SkipList<T extends Comparable<? super T>> {
 
+	/**
+	 * @author Rajkumar PanneerSelvam - rxp162130 <br>
+	 *         Avinash Venkatesh - axv165330 <br>
+	 *         Rakesh Balasubramani - rxb162130 <br>
+	 *         HariPriyaa Manian - hum160030
+	 *
+	 * @Desc Entry class for the Skiplists
+	 */
 	class SkipListEntry {
+		/**
+		 * Element to be stored.
+		 */
 		T element;
+		/**
+		 * Arraylist of pointers.
+		 */
 		ArrayList<SkipListEntry> next;
 
+		/**
+		 * Constructor for the Skiplist Entry.
+		 */
 		SkipListEntry() {
 			next = new ArrayList<>();
 		}
@@ -41,6 +68,12 @@ public class SkipList<T extends Comparable<? super T>> {
 			return print;
 		}
 
+		/**
+		 * Constructor for the Skiplist Entry.
+		 * 
+		 * @param x
+		 *            - The value to be stored in the Skiplist Entry.
+		 */
 		public SkipListEntry(T x) {
 			next = new ArrayList<>();
 			element = x;
@@ -59,16 +92,36 @@ public class SkipList<T extends Comparable<? super T>> {
 		}
 	}
 
-	SkipListEntry head, tail;
+	/**
+	 * Head of the Skiplist.
+	 */
+	SkipListEntry head;
+	/**
+	 * Tail of the Skiplist.
+	 */
+	SkipListEntry tail;
+	/**
+	 * Number of elements in the Skiplist.
+	 */
 	int size;
 
-	// Constructor
+	/**
+	 * Constructor to initialise the Skiplist.
+	 */
 	public SkipList() {
 		head = null;
 		tail = null;
 		size = 0;
 	}
 
+	/**
+	 * Helper function to find element in the SkipList.
+	 * 
+	 * @param x
+	 *            - Element to be found.
+	 * @return - Entry that contains the elment if the element exists else the
+	 *         previous Entry.
+	 */
 	private SkipListEntry find(T x) {
 		SkipListEntry temp;
 		temp = head;
@@ -83,8 +136,13 @@ public class SkipList<T extends Comparable<? super T>> {
 		return temp;
 	}
 
-	// Add x to list. If x already exists, replace it. Returns true if new node is
-	// added to list
+	/**
+	 * Fucntion to add element to the Skiplist.
+	 * 
+	 * @param x
+	 *            - Element to be added.
+	 * @return - True if added to the list else false.
+	 */
 	public boolean add(T x) {
 		SkipListEntry temp = find(x);
 		if (temp == null) {
@@ -111,6 +169,13 @@ public class SkipList<T extends Comparable<? super T>> {
 		return true;
 	}
 
+	/**
+	 * Helper function to randomise the level of the new Entry.
+	 * 
+	 * @param height
+	 *            - Level of the previous Entry.
+	 * @return - Level of the new Entry.
+	 */
 	private int chooseLevel(int height) {
 		int i = 0;
 		boolean b;
@@ -127,53 +192,112 @@ public class SkipList<T extends Comparable<? super T>> {
 		return i;
 	}
 
-	// Find smallest element that is greater or equal to x
+	/**
+	 * Find smallest element that is greater or equal to x.
+	 * 
+	 * @param x
+	 *            - Given element.
+	 * @return - ceil(x)
+	 */
 	public T ceiling(T x) {
-		return null;
+		SkipListEntry temp = find(x);
+		if (temp == null) {
+			return null;
+		} else if (x.compareTo(temp.element) == 0) {
+			return x;
+		} else {
+			return temp.next.get(0).element;
+		}
 	}
 
-	// Does list contain x?
+	/**
+	 * Does list contain x?
+	 * 
+	 * @param x
+	 *            - Given Element
+	 * @return - True if skiplists contains element else false.
+	 */
 	public boolean contains(T x) {
 		SkipListEntry temp = find(x);
 		return temp.next.get(0).element == x;
 	}
 
-	// Return first element of list
+	/**
+	 * Get the first element of Skiplist.
+	 * 
+	 * @return - Element if not ewmpty else null.
+	 */
 	public T first() {
-		return null;
+		if (size > 0) {
+			return head.next.get(0).element;
+		} else {
+			return null;
+		}
 	}
 
-	// Find largest element that is less than or equal to x
+	/**
+	 * Find largest element that is less than or equal to x.
+	 * 
+	 * @param x
+	 *            - Given element.
+	 * @return - floor(x)
+	 */
 	public T floor(T x) {
-		return null;
+		return find(x).element;
 	}
 
-	// Return element at index n of list. First element is at index 0.
+	/**
+	 * Get element at index.
+	 * 
+	 * @param n
+	 *            - Given index.
+	 * @return - Element at index.
+	 */
 	public T get(int n) {
 		return null;
 	}
 
-	// Is the list empty?
+	/**
+	 * To check if the Skiplist is empty.
+	 * 
+	 * @return - True if empty else false.
+	 */
 	public boolean isEmpty() {
-		return false;
+		return size == 0;
 	}
 
-	// Iterate through the elements of list in sorted order
+	/**
+	 * Iterator for the Skiplist.
+	 * 
+	 * @return - Skiplist iterator.
+	 */
 	public Iterator<T> iterator() {
 		return null;
 	}
 
-	// Return last element of list
+	/**
+	 * Get the last element of the skiplist.
+	 * 
+	 * @return - Last Element.
+	 */
 	public T last() {
-		return null;
+		return get(size - 1);
 	}
 
-	// Reorganize the elements of the list into a perfect skip list
+	/**
+	 * Reorganize the elements of the list into a perfect skip list.
+	 */
 	public void rebuild() {
 
 	}
 
-	// Remove x from list. Removed element is returned. Return null if x not in list
+	/**
+	 * Fucntion to remove the element from the list.
+	 * 
+	 * @param x
+	 *            - Given element.
+	 * @return - True if removed else false.
+	 */
 	public T remove(T x) {
 		SkipListEntry temp = find(x);
 		SkipListEntry entry = temp.next.get(0);
@@ -192,30 +316,18 @@ public class SkipList<T extends Comparable<? super T>> {
 		}
 	}
 
-	// Return the number of elements in the list
+	/**
+	 * Get the number of elements in the skiplist.
+	 * 
+	 * @return - size
+	 */
 	public int size() {
 		return size;
 	}
 
-	public static void main(String[] args) {
-		SkipList<Integer> t = new SkipList<>();
-		Scanner in = new Scanner(System.in);
-		while (in.hasNext()) {
-			int x = in.nextInt();
-			if (x > 0) {
-				t.add(x);
-				t.printSkipList();
-			} else if (x < 0) {
-				t.remove(-x);
-				t.printSkipList();
-			} else {
-				break;
-			}
-		}
-
-		in.close();
-	}
-
+	/**
+	 * Print the skiplist.
+	 */
 	private void printSkipList() {
 		SkipListEntry temp = head;
 		while (temp != tail) {
@@ -225,4 +337,72 @@ public class SkipList<T extends Comparable<? super T>> {
 		System.out.println(temp);
 
 	}
+
+	public static void main(String[] args) {
+		SkipList<Integer> t = new SkipList<>();
+		Scanner in = new Scanner(System.in);
+		int ch, x;
+		do {
+			System.out.println(
+					"1.Add,2.Ceiling,3.Contains,4.First,5.Floor,6.Get,7.isEmpty,8.Last,9.Rebuild,10.Remove,11.Size");
+			ch = in.nextInt();
+			switch (ch) {
+			case 1:
+				System.out.println("Enter element to add");
+				x = in.nextInt();
+				System.out.println(t.add(x));
+				break;
+			case 2:
+				System.out.println("Ceiling");
+				x = in.nextInt();
+				System.out.println(t.ceiling(x));
+				break;
+			case 3:
+				System.out.println("Contains");
+				x = in.nextInt();
+				System.out.println(t.contains(x));
+				break;
+			case 4:
+				System.out.println("First");
+				System.out.println(t.first());
+				break;
+			case 5:
+				System.out.println("Floor");
+				x = in.nextInt();
+				System.out.println(t.floor(x));
+				break;
+			case 6:
+				System.out.println("Enter index");
+				x = in.nextInt();
+				System.out.println(t.get(x));
+				break;
+			case 7:
+				System.out.println("isEmpty");
+				System.out.println(t.isEmpty());
+				break;
+			case 8:
+				System.out.println("Last");
+				System.out.println(t.last());
+				break;
+			case 9:
+				System.out.println("Rebuild");
+				t.rebuild();
+				break;
+			case 10:
+				System.out.println("Remove");
+				x = in.nextInt();
+				System.out.println(t.remove(x));
+				break;
+			case 11:
+				System.out.println("Size");
+				System.out.println(t.size());
+				break;
+			}
+			t.printSkipList();
+			System.out.println("Again??(1/0)");
+			ch = in.nextInt();
+		} while (ch == 1);
+		in.close();
+	}
+
 }
