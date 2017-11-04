@@ -272,7 +272,43 @@ public class SkipList<T extends Comparable<? super T>> {
 	 * @return - Skiplist iterator.
 	 */
 	public Iterator<T> iterator() {
-		return null;
+		return new SkipListIterator(head);
+	}
+
+	/**
+	 * @author Rajkumar PanneerSelvam - rxp162130 <br>
+	 *         Avinash Venkatesh - axv165330 <br>
+	 *         Rakesh Balasubramani - rxb162130 <br>
+	 *         HariPriyaa Manian - hum160030
+	 *
+	 * @Desc Class used to iterate over the SkipLists
+	 * @param <T>
+	 *            - Type of element stored in the SkipLists.
+	 */
+	class SkipListIterator implements Iterator<T> {
+		/**
+		 * Temp SkipListEntry used to iterate.
+		 */
+		SkipListEntry temp;
+
+		/**
+		 * Contructor to initialise the head of the iterator.
+		 * @param head - HEad of the Skiplist.
+		 */
+		public SkipListIterator(SkipList<T>.SkipListEntry head) {
+			temp = head;
+		}
+
+		public boolean hasNext() {
+			return temp.next.get(0) != null;
+		}
+
+		public T next() {
+			T element = temp.element;
+			temp.next.get(0);
+			return element;
+
+		}
 	}
 
 	/**
