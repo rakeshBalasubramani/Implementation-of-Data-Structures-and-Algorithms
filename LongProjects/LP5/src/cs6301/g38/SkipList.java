@@ -219,7 +219,11 @@ public class SkipList<T extends Comparable<? super T>> {
 	 */
 	public boolean contains(T x) {
 		SkipListEntry temp = find(x);
-		return temp.next.get(0).element == x;
+		if (temp != null) {
+			return temp.next.get(0).element == x;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -243,7 +247,10 @@ public class SkipList<T extends Comparable<? super T>> {
 	 * @return - floor(x)
 	 */
 	public T floor(T x) {
-		return find(x).element;
+		if (null != find(x)) {
+			return find(x).element;
+		} else
+			return null;
 	}
 
 	/**
@@ -388,7 +395,7 @@ public class SkipList<T extends Comparable<? super T>> {
 			case 1:
 				System.out.println("Enter element to add");
 				x = in.nextInt();
-				t.add(x);
+				System.out.println(t.add(x));
 				t.printSkipList();
 				break;
 			case 2:
@@ -428,7 +435,7 @@ public class SkipList<T extends Comparable<? super T>> {
 			case 10:
 				System.out.println("Enter element to be removed");
 				x = in.nextInt();
-				t.remove(x);
+				System.out.println(t.remove(x));
 				t.printSkipList();
 				break;
 			case 11:
