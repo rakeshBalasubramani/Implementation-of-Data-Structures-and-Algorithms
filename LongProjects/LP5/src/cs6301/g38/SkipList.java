@@ -31,6 +31,10 @@ public class SkipList<T extends Comparable<? super T>> {
 		 */
 		T element;
 		/**
+		 * Number of elements between two elements.
+		 */
+		int span;
+		/**
 		 * Arraylist of pointers.
 		 */
 		ArrayList<SkipListEntry> next;
@@ -44,9 +48,11 @@ public class SkipList<T extends Comparable<? super T>> {
 
 		public String toString() {
 			String print;
+			SkipListEntry n;
 			if (this == head) {
 				print = "H  ";
-				for (SkipListEntry n : next) {
+				for (int i = 1; i < this.next.size(); i++) {
+					n = this.next.get(i);
 					if (n != tail) {
 						print += n.element + " ";
 					} else {
@@ -57,7 +63,8 @@ public class SkipList<T extends Comparable<? super T>> {
 				print = "T";
 			} else {
 				print = element + "  ";
-				for (SkipListEntry n : next) {
+				for (int i = 1; i < this.next.size(); i++) {
+					n = this.next.get(i);
 					if (n != tail) {
 						print += n.element + " ";
 					} else {
@@ -106,12 +113,18 @@ public class SkipList<T extends Comparable<? super T>> {
 	int size;
 
 	/**
+	 * MaxLevel of the Skiplist.
+	 */
+	int maxLevel;
+
+	/**
 	 * Constructor to initialise the Skiplist.
 	 */
 	public SkipList() {
 		head = null;
 		tail = null;
 		size = 0;
+		maxLevel = 5;
 	}
 
 	/**
@@ -122,18 +135,20 @@ public class SkipList<T extends Comparable<? super T>> {
 	 * @return - Entry that contains the elment if the element exists else the
 	 *         previous Entry.
 	 */
-	private SkipListEntry find(T x) {
+	private ArrayList<SkipList<T>.SkipListEntry> find(T x) {
 		SkipListEntry temp;
 		temp = head;
+		ArrayList<SkipListEntry> prev = new ArrayList<>();
 		if (temp != null) {
-			for (int i = temp.next.size() - 1; i >= 0; i--) {
-				while (i < temp.next.size() && temp.next.get(i) != tail && temp.next.get(i).element.compareTo(x) < 0) {
+			for (int i = maxLevel; i >= 0; i--) {
+				while (temp.next.get(i) != tail && temp.next.get(i).element.compareTo(x) < 0) {
 					temp = temp.next.get(i);
 				}
+				prev.add(temp);
 
 			}
 		}
-		return temp;
+		return prev;
 	}
 
 	/**
@@ -144,7 +159,11 @@ public class SkipList<T extends Comparable<? super T>> {
 	 * @return - True if added to the list else false.
 	 */
 	public boolean add(T x) {
-		SkipListEntry temp = find(x);
+		ArrayList<SkipListEntry> prev = find(x);
+		SkipListEntry temp = null;
+		if (prev.size()>0) {
+			temp = prev.get(prev.size() - 1);
+		}
 		if (temp == null) {
 			head = new SkipListEntry();
 			tail = new SkipListEntry();
@@ -152,17 +171,25 @@ public class SkipList<T extends Comparable<? super T>> {
 			head.next.add(0, newEntry);
 			head.next.add(1, tail);
 			newEntry.next.add(0, tail);
+			tail.next.add(0, null);
+			for (int i = 1; i <= maxLevel; i++) {
+				head.next.add(i, tail);
+				tail.next.add(i, null);
+			}
 			size++;
 
 		} else if (temp.next.get(0).element == x) {
 			temp.next.get(0).element = x;
 			return false;
 		} else {
-			int level = chooseLevel(temp.next.size());
+			int level = chooseLevel();
+			System.out.println("Level "+level);
 			SkipListEntry newEntry = new SkipListEntry(x);
 			for (int i = 0; i <= level; i++) {
-				newEntry.next.add(i, temp.next.get(i));
-				temp.next.add(i, newEntry);
+				if (prev.get(maxLevel-i) != null) {
+					newEntry.next.add(i, prev.get(maxLevel-i).next.get(i));
+					prev.get(maxLevel-i).next.set(i, newEntry);
+				}
 			}
 			size++;
 		}
@@ -176,13 +203,11 @@ public class SkipList<T extends Comparable<? super T>> {
 	 *            - Level of the previous Entry.
 	 * @return - Level of the new Entry.
 	 */
-	private int chooseLevel(int height) {
+	private int chooseLevel() {
 		int i = 0;
-		boolean b;
 		Random r = new Random();
-		while (i < height) {
-			b = r.nextBoolean();
-			if (b) {
+		while (i < maxLevel) {
+			if (r.nextBoolean()) {
 				i++;
 			} else {
 				break;
@@ -200,10 +225,11 @@ public class SkipList<T extends Comparable<? super T>> {
 	 * @return - ceil(x)
 	 */
 	public T ceiling(T x) {
-		SkipListEntry temp = find(x);
+		ArrayList<SkipListEntry> prev = find(x);
+		SkipListEntry temp = prev.get(prev.size() - 1);
 		if (temp == null) {
 			return null;
-		} else if (x.compareTo(temp.element) == 0) {
+		} else if (temp.element != null && x.compareTo(temp.element) == 0) {
 			return x;
 		} else {
 			return temp.next.get(0).element;
@@ -218,7 +244,8 @@ public class SkipList<T extends Comparable<? super T>> {
 	 * @return - True if skiplists contains element else false.
 	 */
 	public boolean contains(T x) {
-		SkipListEntry temp = find(x);
+		ArrayList<SkipListEntry> prev = find(x);
+		SkipListEntry temp = prev.get(prev.size() - 1);
 		if (temp != null) {
 			return temp.next.get(0).element == x;
 		} else {
@@ -247,8 +274,10 @@ public class SkipList<T extends Comparable<? super T>> {
 	 * @return - floor(x)
 	 */
 	public T floor(T x) {
-		if (null != find(x)) {
-			return find(x).element;
+		ArrayList<SkipListEntry> prev = find(x);
+		SkipListEntry temp = prev.get(prev.size() - 1);
+		if (null != temp) {
+			return temp.element;
 		} else
 			return null;
 	}
@@ -341,17 +370,17 @@ public class SkipList<T extends Comparable<? super T>> {
 	 * 
 	 * @param x
 	 *            - Given element.
-	 * @return - True if removed else false.
+	 * @return - Element if removed else null.
 	 */
 	public T remove(T x) {
-		SkipListEntry temp = find(x);
-		SkipListEntry entry = temp.next.get(0);
+		ArrayList<SkipListEntry> prev = find(x);
+		SkipListEntry entry = prev.get(prev.size() - 1).next.get(0);
 		if (entry.element != x) {
 			return null;
 		} else {
-			for (int i = 0; i < entry.next.size(); i++) {
-				if (temp.next.get(i) == entry) {
-					temp.next.set(i, entry.next.get(i));
+			for (int i = 0; i < maxLevel; i++) {
+				if (prev.get(maxLevel-i).next.get(i) == entry) {
+					prev.get(maxLevel-i).next.set(i, entry.next.get(i));
 				} else {
 					break;
 				}
