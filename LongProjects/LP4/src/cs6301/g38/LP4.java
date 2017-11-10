@@ -13,14 +13,32 @@ import java.util.HashMap;
 public class LP4 {
     Graph g;
     Vertex s;
-
+    static final int Infinity = Integer.MAX_VALUE;
+	
+     
     // common constructor for all parts of LP4: g is graph, s is source vertex
     public LP4(Graph g, Vertex s) {
 	this.g = g;
 	this.s = s;
     }
+    
+    public class CSPVertex extends Vertex{
 
-
+    	int[] d;
+    	Vertex parent;
+    	int distance;
+		public CSPVertex(Vertex u) {
+			super(u);
+			d = new int[g.edgeSize()];	
+			parent = null;
+			distance = 0;
+		}
+    	
+    }
+    
+    
+    
+ 
     // Part a. Return number of topological orders of g
     public long countTopologicalOrders() {
 	// To do
@@ -40,6 +58,7 @@ public class LP4 {
     // 	Return -1 if the graph has a negative or zero cycle
     public long countShortestPaths(Vertex t) {
 	// To do
+    	
 	return 0;
     }
 
@@ -55,8 +74,54 @@ public class LP4 {
 
     // Part e. Return weight of shortest path from s to t using at most k edges
     public int constrainedShortestPath(Vertex t, int k) {
-	// To do
-	return 0;
+    	// To do
+    	CSPVertex[] cspVertex = new CSPVertex[g.size()];
+    	boolean nochange;
+    	
+    	// adding additional properties of each vertex
+    	for(Vertex u: g.vertex){
+    		cspVertex[u.getName()] = new CSPVertex(u);  		
+    	}
+    	// initialize d[0] and parent for all vertices
+    	for(CSPVertex u : cspVertex){
+    		u.d[0] = Infinity;
+    		u.parent = null;    			
+    	}
+    	cspVertex[s.name].d[0] = 0; //set distance of source to be zero
+    	for(int i=1; i<=k ; i++){
+    		nochange = true;
+    		for(Vertex v : g.vertex){
+    			CSPVertex u = cspVertex[v.getName()];
+    			u.d[i] = u.d[i-1];
+    			int min = 0;
+				
+    			//CSPVertex p = cspVertex[u.parent.name];
+    			for(Edge e : u.revAdj){
+    				CSPVertex p = cspVertex[e.otherEnd(u).name];
+    				System.out.println("parent of  "+ u.name + " is "+ p.name);
+    				if(u.d[i] > p.d[i-1] && u.d[i] > min ){
+    					u.d[i] = p.d[i-1] + e.weight;
+    					min = u.d[i];
+    					u.parent = p;
+    					System.out.println("\t updated parent of  "+ u.name + " is "+ p.name);
+        				
+    					nochange = false;
+    				}
+    			}
+    		}
+    		//if(nochange){
+    			for(CSPVertex u : cspVertex){
+    				u.distance = u.d[i];
+    				System.out.println("i value " + i + " u- " + u.name + " distance " + u.distance);
+    			}
+    			System.out.println("Distance to target " + cspVertex[t.name].d[k]);
+    			//return cspVertex[t.name].d[i];
+    			//return 1;
+       	//	}
+    		//System.out.println("Distance to target " + cspVertex[t.name].d[k]);
+			
+   	   	}
+       	return cspVertex[t.name].d[k];
     }
 
 
