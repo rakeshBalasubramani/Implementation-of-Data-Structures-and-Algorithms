@@ -10,7 +10,7 @@ import cs6301.g38.Graph.Edge;
 public class TopologicalSort extends Graph {
 
 	TVertex[] tv; // vertices of graph
-	private List<TVertex> list = new LinkedList<TVertex>();
+	private TVertex[] list ;
 	
 	public long count;
 	
@@ -115,7 +115,7 @@ public class TopologicalSort extends Graph {
 	public TopologicalSort(Graph g) {
 		super(g);
 		tv = new TVertex[g.size()]; // Extra space is allocated in array for
-									// nodes to be added later
+		list = new TVertex[g.size()]	;						// nodes to be added later;
 		for (Vertex u : g) {
 			tv[u.getName()] = new TVertex(u);
 		}
@@ -227,11 +227,9 @@ public class TopologicalSort extends Graph {
 
 			vertex.visit();
 
-			//list.add(vertex);
 			countTopologicalSorts();
 
 			vertex.unVisit();
-			//list.remove(vertex);
 			resetInDegreeForAdj(vertex);
 
 			isAllNodeVisited = true;
@@ -246,7 +244,7 @@ public class TopologicalSort extends Graph {
 	
 	}
 
-	public void enumerateTopologicalSorts() {
+	public void enumerateTopologicalSorts(int curSize) {
 
 		boolean isAllNodeVisited = false;
 
@@ -257,11 +255,11 @@ public class TopologicalSort extends Graph {
 
 			vertex.visit();
 
-			list.add(vertex);
-			enumerateTopologicalSorts();
+			list[curSize++]=vertex;
+			enumerateTopologicalSorts(curSize);
 
 			vertex.unVisit();
-			list.remove(vertex);
+			curSize--;
 			resetInDegreeForAdj(vertex);
 
 			isAllNodeVisited = true;
@@ -302,7 +300,7 @@ public class TopologicalSort extends Graph {
 		Graph g = Graph.readDirectedGraph(new Scanner(System.in));
 		TopologicalSort xg = new TopologicalSort(g);
 		xg.countTopologicalSorts();
-		xg.enumerateTopologicalSorts();
+		//xg.enumerateTopologicalSorts(0);
 		System.out.println( xg.count + " -- " + xg.enumCount);
 	}
 
