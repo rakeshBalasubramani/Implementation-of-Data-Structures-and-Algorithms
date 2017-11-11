@@ -32,6 +32,7 @@ public class LP4 {
 			d = new int[g.edgeSize()];	
 			parent = null;
 			distance = 0;
+			
 		}
     	
     }
@@ -93,17 +94,17 @@ public class LP4 {
     		for(Vertex v : g.vertex){
     			CSPVertex u = cspVertex[v.getName()];
     			u.d[i] = u.d[i-1];
-    			
     			//int min = 0;
-				
-    			for(Edge e : u.revAdj){
+				for(Edge e : u.revAdj){
     				CSPVertex p = cspVertex[e.otherEnd(u).name];
     				System.out.println("\nparent of  "+ u.name + " is "+ p.name);
-      				System.out.println("u.d[i] "+ u.d[i] + " >  " + p.d[i-1] + e.weight);
+      				System.out.println("u.d[i] "+ u.d[i] + " >  " + p.d[i-1] +" weight " +  e.weight);
       			//	if(p.d[i-1] == Infinity) break;
       				//u.d[i] = Infinity;
     				if(u.d[i] > p.d[i-1] + e.weight ){
     					u.d[i] = p.d[i-1] + e.weight;
+    					//if(u.d[i] < 0) u.d[i] = Infinity;
+    	    			
     					//min = u.d[i];
     					u.parent = p;
     					System.out.println("\t updated parent of  "+ u.name + " is "+ p.name);
