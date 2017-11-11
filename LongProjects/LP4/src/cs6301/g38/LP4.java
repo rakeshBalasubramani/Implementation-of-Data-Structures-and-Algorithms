@@ -74,7 +74,7 @@ public class LP4 {
     	// To do
     	CSPVertex[] cspVertex = new CSPVertex[g.size()];
     	boolean nochange;
-    	
+    	boolean isReached=false;
     	// adding additional properties of each vertex
     	for(Vertex u: g.vertex){
     		cspVertex[u.getName()] = new CSPVertex(u);  		
@@ -87,28 +87,35 @@ public class LP4 {
     	
     	for(int i=1; i<=k ; i++){
     		nochange = true;
-    		for(Vertex v : g.vertex){
-    			CSPVertex u = cspVertex[v.getName()];
+    		for(CSPVertex u : cspVertex){
+    			//CSPVertex u = cspVertex[v.getName()];
     			u.d[i] = u.d[i-1];
     			for(Edge e : u.revAdj){
     				CSPVertex p = cspVertex[e.otherEnd(u).name];
-    				System.out.println("\nparent of  "+ u.name + " is "+ p.name);
-      				System.out.println("u.d[i] "+ u.d[i] + " >  " + p.d[i-1] +" weight " +  e.weight);
-      				
-      			    if(p.isInfinity){
-      			    	System.out.println("parent not seen");
+//    				System.out.println("\nparent of  "+ u.name + " is "+ p.name);
+//      				System.out.println("u.d[i] "+ u.d[i] + " >  " + p.d[i-1] +" weight " +  e.weight);
+//      				
+      			    if(p.isInfinity && !u.seen){
+      			    //	System.out.println("parent not seen");
       			    	u.d[i] = Infinity;
       			    	//u.seen = true;
       			    	continue;
-      			    }else{
+      			    }else if(p.isInfinity)
+      			    {
+      			    	continue;
+      			    }
+      			    else{
 	      				if(u.d[i] > p.d[i-1] + e.weight ){
 	    					u.d[i] = p.d[i-1] + e.weight;
 	    					u.parent = p;
-	    					System.out.println("\t updated parent of  "+ u.name + " is "+ p.name);
+	    					//System.out.println("\t updated parent of  "+ u.name + " is "+ p.name);
 	    					nochange = false;
 	    					u.seen = true;
-	    				}
-	    				System.out.println("\ti value " + i + " u- " + u.name + " distance " + u.d[i]);					
+	    					if(u.equals(t))
+	    					{
+	    						isReached=true;
+	    					}	    				}
+	    			//	System.out.println("\ti value " + i + " u- " + u.name + " distance " + u.d[i]);					
 	    			}
       			 }
     		}
@@ -116,19 +123,26 @@ public class LP4 {
     			if(v.seen){
     				v.isInfinity = false;
     			}
+    			
     		}
     		if(nochange){
     			for(CSPVertex u : cspVertex){
     				u.distance = u.d[i];
-    				System.out.println("i value " + i + " u- " + u.name + " distance " + u.distance);
+    				//System.out.println("i value " + i + " u- " + u.name + " distance " + u.distance);
     			}
-    			System.out.println("Distance to target " + cspVertex[t.name].d[k]);
+    			//System.out.println("Distance to target " + cspVertex[t.name-1].d[k]);
     			return cspVertex[t.name].d[i];
        		}
-    		System.out.println("Distance to target " + cspVertex[t.name].d[k]);			
+    		//System.out.println("Distance to target " + cspVertex[t.name-1].d[k]);			
    	   	}
-       	return 0;
+    	
+    	if(isReached)
+    	{
+    		return cspVertex[t.name].d[k];
+    	}
+       	return Infinity;
     }
+
 
 
     // Part f. Reward collection problem

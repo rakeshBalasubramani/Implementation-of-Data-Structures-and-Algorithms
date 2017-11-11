@@ -16,7 +16,7 @@ public class LP4e {
         int maxEdges = in.nextInt();
         Timer t = new Timer();
         LP4 handle = new LP4(g, g.getVertex(source));
-        int result = handle.constrainedShortestPath(g.getVertex(target), maxEdges);
+        long result = handle.constrainedShortestPath(g.getVertex(target), maxEdges);
 	if(VERBOSE > 0) { LP4.printGraph(g, null, g.getVertex(source), null, maxEdges); }
         System.out.println(result + "\n" + t.end());
     }
