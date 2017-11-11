@@ -10,10 +10,12 @@ import cs6301.g38.Graph.Edge;
 import java.util.List;
 import java.util.HashMap;
 
+import com.sun.org.apache.xml.internal.security.Init;
+
 public class LP4 {
     Graph g;
     Vertex s;
-    static final int Infinity = Integer.MAX_VALUE;
+    private static final long Infinity = Long.MAX_VALUE;
 	
      
     // common constructor for all parts of LP4: g is graph, s is source vertex
@@ -24,14 +26,14 @@ public class LP4 {
     
     public class CSPVertex extends Vertex{
 
-    	int[] d;
+    	long[] d;
     	Vertex parent;
-    	int distance;
+    	long distance= Infinity;
 		public CSPVertex(Vertex u) {
 			super(u);
-			d = new int[g.edgeSize()];	
+			d = new long[g.size()];	
 			parent = null;
-			distance = 0;
+			d[0]=Infinity;
 		}
     	
     }
@@ -73,7 +75,7 @@ public class LP4 {
 
 
     // Part e. Return weight of shortest path from s to t using at most k edges
-    public int constrainedShortestPath(Vertex t, int k) {
+    public long constrainedShortestPath(Vertex t, int k) {
     	// To do
     	CSPVertex[] cspVertex = new CSPVertex[g.size()];
     	boolean nochange;
@@ -82,12 +84,9 @@ public class LP4 {
     	for(Vertex u: g.vertex){
     		cspVertex[u.getName()] = new CSPVertex(u);  		
     	}
-    	// initialize d[0] and parent for all vertices
-    	for(CSPVertex u : cspVertex){
-    		u.d[0] = Infinity;
-    		u.parent = null;    			
-    	}
-    	cspVertex[s.name].d[0] = 0; //set distance of source to be zero
+
+    	cspVertex[s.name].d[0] = 0; 
+    	cspVertex[s.name].distance=0;//set distance of source to be zero
     	for(int i=1; i<=k ; i++){
     		nochange = true;
     		for(Vertex v : g.vertex){
