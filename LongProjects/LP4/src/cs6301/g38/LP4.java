@@ -93,35 +93,36 @@ public class LP4 {
     		for(Vertex v : g.vertex){
     			CSPVertex u = cspVertex[v.getName()];
     			u.d[i] = u.d[i-1];
-    			int min = 0;
+    			
+    			//int min = 0;
 				
-    			//CSPVertex p = cspVertex[u.parent.name];
     			for(Edge e : u.revAdj){
     				CSPVertex p = cspVertex[e.otherEnd(u).name];
-    				System.out.println("parent of  "+ u.name + " is "+ p.name);
-    				if(u.d[i] > p.d[i-1] && u.d[i] > min ){
+    				System.out.println("\nparent of  "+ u.name + " is "+ p.name);
+      				System.out.println("u.d[i] "+ u.d[i] + " >  " + p.d[i-1] + e.weight);
+      			//	if(p.d[i-1] == Infinity) break;
+      				//u.d[i] = Infinity;
+    				if(u.d[i] > p.d[i-1] + e.weight ){
     					u.d[i] = p.d[i-1] + e.weight;
-    					min = u.d[i];
+    					//min = u.d[i];
     					u.parent = p;
     					System.out.println("\t updated parent of  "+ u.name + " is "+ p.name);
-        				
     					nochange = false;
     				}
+    				System.out.println("\ti value " + i + " u- " + u.name + " distance " + u.d[i]);					
     			}
     		}
-    		//if(nochange){
+    		if(nochange){
     			for(CSPVertex u : cspVertex){
     				u.distance = u.d[i];
     				System.out.println("i value " + i + " u- " + u.name + " distance " + u.distance);
     			}
     			System.out.println("Distance to target " + cspVertex[t.name].d[k]);
-    			//return cspVertex[t.name].d[i];
-    			//return 1;
-       	//	}
-    		//System.out.println("Distance to target " + cspVertex[t.name].d[k]);
-			
+    			return cspVertex[t.name].d[i];
+       		}
+    		System.out.println("Distance to target " + cspVertex[t.name].d[k]);			
    	   	}
-       	return cspVertex[t.name].d[k];
+       	return 0;
     }
 
 
