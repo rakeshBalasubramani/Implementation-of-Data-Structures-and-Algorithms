@@ -5,16 +5,14 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Scanner;
 
-import cs6301.g38.Graph.Edge;
-
 public class TopologicalSort extends Graph {
 
 	TVertex[] tv; // vertices of graph
-	private TVertex[] list ;
-	
-	public long count;
-	
-	public long enumCount;
+	private TVertex[] list;
+
+	private long count;
+
+	private long enumCount;
 
 	public static class TVertex extends Vertex {
 		boolean visited;
@@ -114,8 +112,8 @@ public class TopologicalSort extends Graph {
 
 	public TopologicalSort(Graph g) {
 		super(g);
-		tv = new TVertex[g.size()]; // Extra space is allocated in array for
-		list = new TVertex[g.size()]	;						// nodes to be added later;
+		tv = new TVertex[g.size()];
+		list = new TVertex[g.size()];
 		for (Vertex u : g) {
 			tv[u.getName()] = new TVertex(u);
 		}
@@ -213,10 +211,8 @@ public class TopologicalSort extends Graph {
 		TVertex u = (TVertex) getVertex(i);
 		u.visit();
 	}
-	
-	public void countTopologicalSorts()
-	{
 
+	public void countTopologicalSorts() {
 
 		boolean isAllNodeVisited = false;
 
@@ -236,12 +232,10 @@ public class TopologicalSort extends Graph {
 
 		}
 
-	
 		if (!isAllNodeVisited) {
 			count++;
 		}
 
-	
 	}
 
 	public void enumerateTopologicalSorts(int curSize) {
@@ -255,7 +249,7 @@ public class TopologicalSort extends Graph {
 
 			vertex.visit();
 
-			list[curSize++]=vertex;
+			list[curSize++] = vertex;
 			enumerateTopologicalSorts(curSize);
 
 			vertex.unVisit();
@@ -266,7 +260,6 @@ public class TopologicalSort extends Graph {
 
 		}
 
-	
 		if (!isAllNodeVisited) {
 			enumCount++;
 			for (TVertex v : list) {
@@ -296,12 +289,20 @@ public class TopologicalSort extends Graph {
 		}
 	}
 
+	public long getCountPath() {
+		return count;
+	}
+
+	public long getEnumCountPath() {
+		return enumCount;
+	}
+
 	public static void main(String[] args) {
 		Graph g = Graph.readDirectedGraph(new Scanner(System.in));
 		TopologicalSort xg = new TopologicalSort(g);
 		xg.countTopologicalSorts();
-		//xg.enumerateTopologicalSorts(0);
-		System.out.println( xg.count + " -- " + xg.enumCount);
+		xg.enumerateTopologicalSorts(0);
+		System.out.println(xg.count + " -- " + xg.enumCount);
 	}
 
 }

@@ -18,8 +18,7 @@ public class LP4c {
       Timer t = new Timer();
         LP4 handle = new LP4(g, g.getVertex(source));
         long result = handle.countShortestPaths(g.getVertex(target));
-        BellManFordGraph bg = new BellManFordGraph(g);
-        bg.bellmanFord(g.getVertex(source), g.getVertex(target));
+      
         if (VERBOSE > 0) {
             LP4.printGraph(g, null, g.getVertex(source), g.getVertex(target), 0);
         }

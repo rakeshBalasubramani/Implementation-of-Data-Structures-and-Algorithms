@@ -4,6 +4,7 @@
 
 package cs6301.g38;
 import cs6301.g38.Graph.Vertex;
+import cs6301.g38.RewardCollection.REdge;
 
 public class LP4f {
     static int VERBOSE = 0;
@@ -21,6 +22,8 @@ public class LP4f {
 	Timer t = new Timer();
 	LP4 handle = new LP4(g, g.getVertex(source));
 	int result = handle.reward(map, list);
+	
+	
 	if(VERBOSE > 0) { LP4.printGraph(g, map, g.getVertex(source), null, 0); }
 	System.out.println(result);
 	for(Vertex u: list) { System.out.print(u + " "); }

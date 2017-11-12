@@ -14,17 +14,11 @@
 
 package cs6301.g38;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Scanner;
-import java.util.Set;
 
-public class BellManFordGraph extends Graph {
-
-	private static boolean isTightEdgeOnly = false;
+public class AllShortestPaths extends Graph {
 
 	public static class BVertex extends Vertex {
 		boolean seen;
@@ -34,12 +28,12 @@ public class BellManFordGraph extends Graph {
 		int parentSize;
 		int count;
 
-		BVertex(Vertex u,int revAdjSize) {
+		BVertex(Vertex u, int revAdjSize) {
 			super(u);
 			seen = false;
 			badj = new LinkedList<>();
 			parentVertices = new BVertex[revAdjSize];
-			parentSize=0;
+			parentSize = 0;
 		}
 
 		boolean isSeen() {
@@ -55,12 +49,10 @@ public class BellManFordGraph extends Graph {
 		}
 
 		public boolean containsParent(BVertex currrent) {
-			boolean isExist=false;
-			for(int i=0;i< parentSize;i++)
-			{
-				if(parentVertices[i].equals(currrent))
-				{
-					isExist=true;
+			boolean isExist = false;
+			for (int i = 0; i < parentSize; i++) {
+				if (parentVertices[i].equals(currrent)) {
+					isExist = true;
 					break;
 				}
 			}
@@ -68,11 +60,11 @@ public class BellManFordGraph extends Graph {
 		}
 
 		public void addParent(BVertex currrent) {
-			parentVertices[parentSize++]= currrent;
+			parentVertices[parentSize++] = currrent;
 		}
 
 		public void clearParent() {
-			parentSize=0;			
+			parentSize = 0;
 		}
 
 		public int parentSize() {
@@ -91,12 +83,12 @@ public class BellManFordGraph extends Graph {
 
 	BVertex[] xv; // vertices of graph
 
-	public BellManFordGraph(Graph g) {
+	public AllShortestPaths(Graph g) {
 		super(g);
 		xv = new BVertex[g.size()]; // Extra space is allocated in array for
-									// nodes to be added later
+		// nodes to be added later
 		for (Vertex u : g) {
-			xv[u.getName()] = new BVertex(u,u.revAdj.size());
+			xv[u.getName()] = new BVertex(u, u.revAdj.size());
 		}
 
 		// Make copy of edges
@@ -124,8 +116,42 @@ public class BellManFordGraph extends Graph {
 		u.seen();
 	}
 
-	boolean bellmanFord(Vertex s, Vertex t) {
-		Queue<BVertex> queue = new LinkedList<BellManFordGraph.BVertex>();
+	private long countAllSPs(Vertex t) {
+		long noOfSp = dfs(getVertex(t), 0);
+		return noOfSp;
+	}
+
+	private long enumerateAllSPs(Vertex t) {
+
+		BVertex[] currentPath = new BVertex[xv.length];
+
+		return dfs(getVertex(t), currentPath, xv.length - 1, 0);
+	}
+
+	public long countAllSPs(Vertex s, Vertex t) {
+		if (bellmanFord(s, t)) {
+			return countAllSPs(t);
+		} else {
+			System.out
+			.println("Non-positive cycle in graph.  Unable to solve problem");
+			return Long.MAX_VALUE;
+		}
+
+	}
+
+	public long enumerateAllSPs(Vertex s, Vertex t) {
+		if (bellmanFord(s, t)) {
+			return enumerateAllSPs(t);
+		} else {
+			System.out
+			.println("Non-positive cycle in graph.  Unable to solve problem");
+			return Long.MAX_VALUE;
+		}
+
+	}
+
+	private boolean bellmanFord(Vertex s, Vertex t) {
+		Queue<BVertex> queue = new LinkedList<AllShortestPaths.BVertex>();
 		BVertex source = getVertex(s);
 		source.seen = true;
 		source.distance = 0;
@@ -166,30 +192,23 @@ public class BellManFordGraph extends Graph {
 			}
 		}
 
-		if (isPathExist) {
-			// List<List<BVertex>> allPaths = new ArrayList<>();
-			BVertex[] currentPath = new BVertex[xv.length];
-
-			//dfs(getVertex(t), currentPath, xv.length - 1);
-
-			System.out.println("No of paths: " + dfs(getVertex(t), 0));
-		}
-		return true;
+		return isPathExist;
 
 	}
 
-	private void dfs(BVertex t, BVertex[] currentPath, int curLen) {
-		// currentPath.addFirst(t);
+	private long dfs(BVertex t, BVertex[] currentPath, int curLen, long allPaths) {
 		currentPath[curLen--] = t;
 		if (t.parentSize() == 0) {
 			printPath(currentPath, curLen);
+			return ++allPaths;
 		}
 
-		for (int i=0;i<t.parentSize;i++) {
-			
-			dfs(t.parentVertices[i], currentPath, curLen);
-			
+		for (int i = 0; i < t.parentSize; i++) {
+
+			allPaths = dfs(t.parentVertices[i], currentPath, curLen, allPaths);
+
 		}
+		return allPaths;
 
 	}
 
@@ -208,31 +227,12 @@ public class BellManFordGraph extends Graph {
 			return ++allPaths;
 		}
 
-		for (int i=0;i<t.parentSize;i++) {
+		for (int i = 0; i < t.parentSize; i++) {
 			allPaths = dfs(t.parentVertices[i], allPaths);
-			
-	
+
 		}
 
 		return allPaths;
-	}
-
-	public static void main(String[] args) {
-		Graph g = Graph.readGraph(new Scanner(System.in));
-		BellManFordGraph xg = new BellManFordGraph(g);
-		Vertex src = xg.getVertex(1);
-
-	}
-
-	void printGraph(BFS b) {
-		for (Vertex u : this) {
-			System.out.print("  " + u + "  :   " + b.distance(u) + "  : ");
-			for (Edge e : u) {
-				System.out.print(e);
-			}
-			System.out.println();
-		}
-
 	}
 
 }

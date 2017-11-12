@@ -10,8 +10,6 @@ import cs6301.g38.Graph.Edge;
 import java.util.List;
 import java.util.HashMap;
 
-import com.sun.org.apache.xml.internal.security.Init;
-
 public class LP4 {
     Graph g;
     Vertex s;
@@ -41,31 +39,34 @@ public class LP4 {
      
     // Part a. Return number of topological orders of g
     public long countTopologicalOrders() {
-	// To do
-	return 0;
+    	TopologicalSort xg = new TopologicalSort(g);
+		xg.countTopologicalSorts();
+	return xg.getCountPath();
     }
 
     // Part b. Print all topological orders of g, one per line, and 
     //	return number of topological orders of g
     public long enumerateTopologicalOrders() {
-	// To do
-        return 0;
+    	TopologicalSort xg = new TopologicalSort(g);
+		xg.enumerateTopologicalSorts(0);
+        return xg.getEnumCountPath();
     }
 
     // Part c. Return the number of shortest paths from s to t
     // 	Return -1 if the graph has a negative or zero cycle
     public long countShortestPaths(Vertex t) {
-	// To do
-    	
-	return 0;
+    	  AllShortestPaths bg = new AllShortestPaths(g);
+           
+	return  bg.countAllSPs(s, t);
     }
     
     // Part d. Print all shortest paths from s to t, one per line, and 
     //	return number of shortest paths from s to t.
     //	Return -1 if the graph has a negative or zero cycle.
     public long enumerateShortestPaths(Vertex t) {
-        // To do
-        return 0;
+    	AllShortestPaths bg = new AllShortestPaths(g);
+        
+    	return  bg.enumerateAllSPs(s, t);
     }
 
 
@@ -150,8 +151,16 @@ public class LP4 {
     // tour is empty list passed as a parameter, for output tour
     // Return total reward for tour
     public int reward(HashMap<Vertex,Integer> vertexRewardMap, List<Vertex> tour) {
-	// To do
-        return 0;
+    	RewardCollection r = new RewardCollection(g, s, vertexRewardMap);
+   int reward= 	r.findMaxRewardPath();
+    	
+    	if(reward>0)
+    	{
+    		r.copyRewardPath(tour);
+    	}
+    	
+    	
+        return reward;
     }
 
     // Do not modify this function
