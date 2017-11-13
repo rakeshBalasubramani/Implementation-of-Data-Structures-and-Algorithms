@@ -214,7 +214,7 @@ public class TopologicalSort extends Graph {
 
 	public void countTopologicalSorts() {
 
-		boolean isAllNodeVisited = false;
+		boolean isAllNodeVisited = true;
 
 		for (Vertex v : this) {
 			TVertex vertex = (TVertex) v;
@@ -228,11 +228,11 @@ public class TopologicalSort extends Graph {
 			vertex.unVisit();
 			resetInDegreeForAdj(vertex);
 
-			isAllNodeVisited = true;
+			isAllNodeVisited = false;
 
 		}
 
-		if (!isAllNodeVisited) {
+		if (isAllNodeVisited) {
 			count++;
 		}
 
@@ -240,7 +240,7 @@ public class TopologicalSort extends Graph {
 
 	public void enumerateTopologicalSorts(int curSize) {
 
-		boolean isAllNodeVisited = false;
+		boolean isAllNodeVisited = true;
 
 		for (Vertex v : this) {
 			TVertex vertex = (TVertex) v;
@@ -256,11 +256,11 @@ public class TopologicalSort extends Graph {
 			curSize--;
 			resetInDegreeForAdj(vertex);
 
-			isAllNodeVisited = true;
+			isAllNodeVisited = false;
 
 		}
 
-		if (!isAllNodeVisited) {
+		if (isAllNodeVisited) {
 			enumCount++;
 			for (TVertex v : list) {
 				System.out.print(v + " ");
