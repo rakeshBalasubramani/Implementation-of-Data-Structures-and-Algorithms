@@ -10,7 +10,7 @@ public class RewardCollection extends Graph {
 
 	public static class RVertex extends Vertex {
 		boolean seen;
-		List<REdge> badj;
+		REdge[] badj;
 		long distance = Long.MAX_VALUE;
 		int reward;
 		int count;
@@ -18,7 +18,7 @@ public class RewardCollection extends Graph {
 		RVertex(Vertex u) {
 			super(u);
 			seen = false;
-			badj = new LinkedList<>();
+			badj = new REdge[u.adj.size()] ;
 
 		}
 
@@ -50,6 +50,8 @@ public class RewardCollection extends Graph {
 	int maxReward;
 	private int size;
 
+	private	Edge[] currentPath = new Edge[this.edgeSize()];
+
 	public RewardCollection(Graph g, Vertex src, HashMap<Vertex, Integer> reward) {
 		super(g);
 		xv = new RVertex[g.size()];
@@ -67,11 +69,12 @@ public class RewardCollection extends Graph {
 
 		// Make copy of edges
 		for (Vertex u : g) {
+			int i=0;
 			for (Edge e : u) {
 				Vertex v = e.otherEnd(u);
 				RVertex x1 = getVertex(u);
 				RVertex x2 = getVertex(v);
-				x1.badj.add(new REdge(x1, x2, e.weight));
+				x1.badj[i++] = new REdge(x1, x2, e.weight);
 			}
 		}
 	}
@@ -93,8 +96,7 @@ public class RewardCollection extends Graph {
 	public int findMaxRewardPath() {
 		if (bellmanFord()) {
 
-			Edge[] ee = new Edge[this.edgeSize()];
-			dfs(source, ee, this.edgeSize() - 1, null, true, 0,
+			dfs(source, this.edgeSize() - 1, null, true, 0,
 					getVertex(source).reward);
 			return this.maxReward;
 		} else {
@@ -135,18 +137,19 @@ public class RewardCollection extends Graph {
 
 	}
 
-	private void dfs(RVertex t, Edge[] currentPath, int curLen, Edge e,
+	private void dfs(RVertex t, int curLen, Edge e,
 			boolean isStart, long pathLen, int reward) {
 		currentPath[curLen--] = e;
 		if (t.equals(source) && !isStart) {
 			if (reward > maxReward) {
 
-				checkMaxReward(currentPath, curLen, reward);
+				checkMaxReward( curLen, reward);
 
 			}
 		}
 		boolean isReward = false;
-		for (Edge r : t.adj) {
+		for (int i=0; i < t.badj.length ; i++) {
+			Edge r = t.badj[i];
 			RVertex toVertex = getVertex(r.otherEnd(t));
 
 			if (!toVertex.isSeen()) {
@@ -158,7 +161,7 @@ public class RewardCollection extends Graph {
 					isReward = true;
 				}
 
-				dfs(toVertex, currentPath, curLen, r, false, pathLen, reward);
+				dfs(toVertex, curLen, r, false, pathLen, reward);
 
 				pathLen = pathLen - r.weight;
 				if (isReward) {
@@ -172,7 +175,7 @@ public class RewardCollection extends Graph {
 
 	}
 
-	private void checkMaxReward(Edge[] currentPath, int curLen, int reward) {
+	private void checkMaxReward( int curLen, int reward) {
 		this.maxReward = reward;
 
 		size = 0;

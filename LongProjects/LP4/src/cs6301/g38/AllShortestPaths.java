@@ -22,7 +22,6 @@ public class AllShortestPaths extends Graph {
 
 	public static class BVertex extends Vertex {
 		boolean seen;
-		List<BEdge> badj;
 		long distance = Long.MAX_VALUE;
 		BVertex[] parentVertices;
 		int parentSize;
@@ -31,7 +30,6 @@ public class AllShortestPaths extends Graph {
 		BVertex(Vertex u, int revAdjSize) {
 			super(u);
 			seen = false;
-			badj = new LinkedList<>();
 			parentVertices = new BVertex[revAdjSize];
 			parentSize = 0;
 		}
@@ -82,6 +80,8 @@ public class AllShortestPaths extends Graph {
 	}
 
 	BVertex[] xv; // vertices of graph
+	
+	BVertex[]currentPath;
 
 	public AllShortestPaths(Graph g) {
 		super(g);
@@ -91,15 +91,7 @@ public class AllShortestPaths extends Graph {
 			xv[u.getName()] = new BVertex(u, u.revAdj.size());
 		}
 
-		// Make copy of edges
-		for (Vertex u : g) {
-			for (Edge e : u) {
-				Vertex v = e.otherEnd(u);
-				BVertex x1 = getVertex(u);
-				BVertex x2 = getVertex(v);
-				x1.badj.add(new BEdge(x1, x2, e.weight));
-			}
-		}
+	
 	}
 
 	@Override
@@ -123,9 +115,9 @@ public class AllShortestPaths extends Graph {
 
 	private long enumerateAllSPs(Vertex t) {
 
-		BVertex[] currentPath = new BVertex[xv.length];
+		currentPath = new BVertex[xv.length];
 
-		return dfs(getVertex(t), currentPath, xv.length - 1, 0);
+		return dfs(getVertex(t), xv.length - 1, 0);
 	}
 
 	public long countAllSPs(Vertex s, Vertex t) {
@@ -196,7 +188,7 @@ public class AllShortestPaths extends Graph {
 
 	}
 
-	private long dfs(BVertex t, BVertex[] currentPath, int curLen, long allPaths) {
+	private long dfs(BVertex t,  int curLen, long allPaths) {
 		currentPath[curLen--] = t;
 		if (t.parentSize() == 0) {
 			printPath(currentPath, curLen);
@@ -205,7 +197,7 @@ public class AllShortestPaths extends Graph {
 
 		for (int i = 0; i < t.parentSize; i++) {
 
-			allPaths = dfs(t.parentVertices[i], currentPath, curLen, allPaths);
+			allPaths = dfs(t.parentVertices[i], curLen, allPaths);
 
 		}
 		return allPaths;
