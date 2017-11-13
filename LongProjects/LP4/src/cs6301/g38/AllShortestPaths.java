@@ -1,31 +1,30 @@
-/**
- * @author rbk Ver 1.0: 2017/09/29 Example to extend Graph/Vertex/Edge classes
- *         to implement algorithms in which nodes and edges need to be disabled
- *         during execution. Design goal: be able to call other graph algorithms
- *         without changing their codes to account for disabled elements.
- *
- *         Ver 1.1: 2017/10/09 Updated iterator with boolean field ready.
- *         Previously, if hasNext() is called multiple times, then cursor keeps
- *         moving forward, even though the elements were not accessed by next().
- *         Also, if program calls next() multiple times, without calling
- *         hasNext() in between, same element is returned. Added
- *         UnsupportedOperationException to remove.
- **/
-
 package cs6301.g38;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
+
+/**
+ * @author Avinash Venkatesh - axv165330 <br>
+ *         HariPriyaa - hum160030 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         Raj Kumar Panneer Selvam - rxp162130
+ *
+ * @description This class is used to find all shortest paths between given source and destination vertex
+ * in the given input graph
+ */
 public class AllShortestPaths extends Graph {
 
+	/**
+	 * @description BVertex used to store shortest distance, its parent vertices and size.
+	 *
+	 */
 	public static class BVertex extends Vertex {
 		boolean seen;
 		long distance = Long.MAX_VALUE;
 		BVertex[] parentVertices;
 		int parentSize;
-		int count;
+		int count; // used for BellmanFord algo iteration count.
 
 		BVertex(Vertex u, int revAdjSize) {
 			super(u);
@@ -71,22 +70,14 @@ public class AllShortestPaths extends Graph {
 
 	}
 
-	static class BEdge extends Edge {
 
-		BEdge(BVertex from, BVertex to, int weight) {
-			super(from, to, weight);
-		}
-
-	}
-
-	BVertex[] xv; // vertices of graph
+	private BVertex[] xv; // vertices of graph
 	
-	BVertex[]currentPath;
+	private BVertex[]currentPath; // vertices used to store the path from src to dest.
 
 	public AllShortestPaths(Graph g) {
 		super(g);
-		xv = new BVertex[g.size()]; // Extra space is allocated in array for
-		// nodes to be added later
+		xv = new BVertex[g.size()]; 
 		for (Vertex u : g) {
 			xv[u.getName()] = new BVertex(u, u.revAdj.size());
 		}
@@ -103,23 +94,33 @@ public class AllShortestPaths extends Graph {
 		return Vertex.getVertex(xv, u);
 	}
 
-	void seen(int i) {
-		BVertex u = (BVertex) getVertex(i);
-		u.seen();
-	}
+	
 
+	/**count all shortest paths from dest to src using dfs backtracking.
+	 * @param t - dest vertex
+	 * @return no of shortest paths from src to dest.
+	 */
 	private long countAllSPs(Vertex t) {
-		long noOfSp = dfs(getVertex(t), 0);
+		long noOfSp = findPathToSrc(getVertex(t), 0);
 		return noOfSp;
 	}
 
+	/**count and enumerate all shortest paths from dest to src using dfs backtracking.
+	 * @param t - dest vertex
+	 * @return no of shortest paths from src to dest.
+	 */
 	private long enumerateAllSPs(Vertex t) {
 
 		currentPath = new BVertex[xv.length];
 
-		return dfs(getVertex(t), xv.length - 1, 0);
+		return findPathToSrc(getVertex(t), xv.length - 1, 0);
 	}
 
+	/**count all shortest paths from s to t.
+	 * @param s - src vertex
+	 * @param t - dest vertex
+	 * @return no of shortest paths from src to dest.
+	 */
 	public long countAllSPs(Vertex s, Vertex t) {
 		if (bellmanFord(s, t)) {
 			return countAllSPs(t);
@@ -131,6 +132,11 @@ public class AllShortestPaths extends Graph {
 
 	}
 
+	/**count and enumerate all shortest paths from s to t.
+	 * @param s - src vertex
+	 * @param t - dest vertex
+	 * @return no of shortest paths from src to dest.
+	 */
 	public long enumerateAllSPs(Vertex s, Vertex t) {
 		if (bellmanFord(s, t)) {
 			return enumerateAllSPs(t);
@@ -142,6 +148,11 @@ public class AllShortestPaths extends Graph {
 
 	}
 
+	/**Run bellmanford from s to t
+	 * @param s - src vertex
+	 * @param t - dest vertex
+	 * @return - true, if path exists between s to t, else false.
+	 */
 	private boolean bellmanFord(Vertex s, Vertex t) {
 		Queue<BVertex> queue = new LinkedList<AllShortestPaths.BVertex>();
 		BVertex source = getVertex(s);
@@ -188,22 +199,32 @@ public class AllShortestPaths extends Graph {
 
 	}
 
-	private long dfs(BVertex t,  int curLen, long allPaths) {
-		currentPath[curLen--] = t;
+	/**Finds all paths from src to dest using DFS.
+	 * @param t - current Vertex
+	 * @param curIndex - currentIndex in the path array
+	 * @param allPaths - to keep track of no of shortest paths b/w src to dest.
+	 * @return - No of shortest paths from src to dest
+	 */
+	private long findPathToSrc(BVertex t,  int curIndex, long allPaths) {
+		currentPath[curIndex--] = t;
 		if (t.parentSize() == 0) {
-			printPath(currentPath, curLen);
+			printPath(currentPath, curIndex);
 			return ++allPaths;
 		}
 
 		for (int i = 0; i < t.parentSize; i++) {
 
-			allPaths = dfs(t.parentVertices[i], curLen, allPaths);
+			allPaths = findPathToSrc(t.parentVertices[i], curIndex, allPaths);
 
 		}
 		return allPaths;
 
 	}
 
+	/**Print the vertices in the path array.
+	 * @param currentPath - given Path array
+	 * @param startIndex -  start index of the array
+	 */
 	private void printPath(BVertex[] currentPath, int startIndex) {
 		for (int i = startIndex + 1; i < currentPath.length; i++) {
 
@@ -214,13 +235,18 @@ public class AllShortestPaths extends Graph {
 		System.out.println();
 	}
 
-	private long dfs(BVertex t, long allPaths) {
+	/**Finds all paths from src to dest using DFS.
+	 * @param t - current Vertex
+	 * @param allPaths - to keep track of no of shortest paths b/w src to dest.
+	 * @return - No of shortest paths from src to dest
+	 */
+	private long findPathToSrc(BVertex t, long allPaths) {
 		if (t.parentSize() == 0) {
 			return ++allPaths;
 		}
 
 		for (int i = 0; i < t.parentSize; i++) {
-			allPaths = dfs(t.parentVertices[i], allPaths);
+			allPaths = findPathToSrc(t.parentVertices[i], allPaths);
 
 		}
 

@@ -135,11 +135,11 @@ public class LP4 {
     // Return total reward for tour
     public int reward(HashMap<Vertex,Integer> vertexRewardMap, List<Vertex> tour) {
     	RewardCollection r = new RewardCollection(g, s, vertexRewardMap);
-   int reward= 	r.findMaxRewardPath();
+   int reward= 	r.findMaxRewardCycle();
     	
     	if(reward>0)
     	{
-    		r.copyRewardPath(tour);
+    		r.copyRewardCyclePath(tour);
     	}
     	
     	

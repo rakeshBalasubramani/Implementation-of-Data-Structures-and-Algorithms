@@ -5,15 +5,27 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+/**
+ * @author Avinash Venkatesh - axv165330 <br>
+ *         HariPriyaa - hum160030 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         Raj Kumar Panneer Selvam - rxp162130
+ *
+ * @description This class is used to find all topological orders in the given graph.
+ */
 public class TopologicalSort extends Graph {
 
 	TVertex[] tv; // vertices of graph
 	private TVertex[] list;
 
-	private long count;
+	private long count; // no of topological paths.
 
-	private long enumCount;
+	private long enumCount;// no of topological paths, when doing enumeration.
 
+	/**
+	 * @description Class used to store inDegree and outDegree of the given vertex.
+	 *
+	 */
 	public static class TVertex extends Vertex {
 		boolean visited;
 		List<TEdge> xadj, revAdj;
@@ -148,6 +160,10 @@ public class TopologicalSort extends Graph {
 		return new XGraphIterator(this);
 	}
 
+	/**
+	 * @description, Vertex iterator class used to return vertices whose inDegree is 0 and not seen yet.
+	 *
+	 */
 	class XGraphIterator implements Iterator<Vertex> {
 		Iterator<TVertex> it;
 		TVertex tcur;
@@ -207,14 +223,13 @@ public class TopologicalSort extends Graph {
 		return Vertex.getVertex(tv, u);
 	}
 
-	void visit(int i) {
-		TVertex u = (TVertex) getVertex(i);
-		u.visit();
-	}
-
+	
+	/**Method used to count all topological orders in the given graph.
+	 * 
+	 */
 	public void countTopologicalSorts() {
 
-		boolean isAllNodeVisited = true;
+		boolean isAllNodeVisited = true; // if all nodes of inDegree=0 is visited, then a topological order exist.
 
 		for (Vertex v : this) {
 			TVertex vertex = (TVertex) v;
@@ -238,9 +253,12 @@ public class TopologicalSort extends Graph {
 
 	}
 
+	/**Method used to count and enumerate all topological orders in the given graph.
+	 * 
+	 */
 	public void enumerateTopologicalSorts(int curSize) {
 
-		boolean isAllNodeVisited = true;
+		boolean isAllNodeVisited = true;// if all nodes of inDegree=0 is visited, then a topological order exist.
 
 		for (Vertex v : this) {
 			TVertex vertex = (TVertex) v;
@@ -270,6 +288,9 @@ public class TopologicalSort extends Graph {
 
 	}
 
+	/**Increment the inDegree of the given vertex by 1
+	 * @param vertex - Given vertex.
+	 */
 	private void resetInDegreeForAdj(TVertex vertex) {
 		Iterator<TEdge> iter1 = vertex.xadj.listIterator();
 		while (iter1.hasNext()) {
@@ -279,6 +300,9 @@ public class TopologicalSort extends Graph {
 		}
 	}
 
+	/**Decrement the inDegree of the given vertex by 1
+	 * @param vertex - Given vertex.
+	 */
 	private void reduceInDegreeForAdj(TVertex vertex) {
 		Iterator<TEdge> iter = vertex.xadj.listIterator();
 		while (iter.hasNext()) {
@@ -289,10 +313,16 @@ public class TopologicalSort extends Graph {
 		}
 	}
 
+	/**Returns no of topological paths in the given graph.
+	 * @return - no of topological paths
+	 */
 	public long getCountPath() {
 		return count;
 	}
 
+	/**Returns no of topological paths in the given graph.
+	 * @return - no of topological paths
+	 */
 	public long getEnumCountPath() {
 		return enumCount;
 	}
