@@ -125,6 +125,7 @@ public class LP4 {
        	if(isReached){
     		return cspVertex[t.name].d[k]; //if target was reached, return its distance, else return infinity
     	}
+       	System.out.println("Source can't reach target with given number of edges");
        	return Infinity;
     }
 
