@@ -3,6 +3,7 @@ package cs6301.g38;
 
 public class MDS {
 
+	MultiDimensionalSearch m= new MultiDimensionalSearch();
     public MDS() {
     }
 
@@ -20,7 +21,10 @@ public class MDS {
        the item.  Returns true if the item is new, and false otherwise.
     */
     public boolean add(Long id, Long[ ] description) {
-	return true;
+    	
+    	
+    	return m.add(id,description);
+    	//return true;
     }
 
     /* add a new supplier (Long) and their reputation (float in
@@ -29,7 +33,9 @@ public class MDS {
        supplier is new, and false otherwise.
     */
     public boolean add(Long supplier, float reputation) {
-	return true;
+	
+    	return m.add(supplier, reputation);
+    	//return true;
     }
 
     /* add products and their prices at which the supplier sells the
