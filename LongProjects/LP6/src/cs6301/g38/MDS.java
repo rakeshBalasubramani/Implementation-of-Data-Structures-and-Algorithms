@@ -118,7 +118,7 @@ public class MDS {
        an array with the items removed.
     */
     public Long[ ] purge(float maxReputation) {
-	return null;
+	return m.purge(maxReputation);
     }
 
     /* remove item from storage.  Returns the sum of the Longs that
@@ -126,7 +126,8 @@ public class MDS {
        did not exist).
     */
     public Long remove(Long id) {
-	return 0L;
+	//return 0L;
+    	return m.remove(id);
     }
 
     /* remove from the given id's description those elements that are
@@ -145,4 +146,11 @@ public class MDS {
     public int removeAll(Long[ ] arr) {
 	return 0;
     }
+
+	public void printItems() {
+		// TODO Auto-generated method stub
+		m.printItems();
+	}
+
+	
 }
