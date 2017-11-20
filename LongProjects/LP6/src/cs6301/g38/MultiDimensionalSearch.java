@@ -115,10 +115,10 @@ public class MultiDimensionalSearch {
 	}
 	
 	
-//	public MultiDimensionalSearch()
-//	{
-//		
-//	}
+	public MultiDimensionalSearch()
+	{
+		
+	}
 	
 	public boolean add(long id, Long[] description){
 		return addDescription(id, description);
@@ -139,6 +139,27 @@ public class MultiDimensionalSearch {
 			 }
 			 
 			 itemSupplierMap.put(it,supplierinfo);
+			 
+			 for(long d: itemDesc)
+			 {
+				 if(itemDescription.containsKey(d))
+				 {
+					 LinkedList<Long> idWithDescription=itemDescription.get(d);
+					 idWithDescription.add(id);
+					 itemDescription.put(d, idWithDescription);
+					 
+				 }
+				 
+				 else
+				 {
+					 LinkedList<Long> idWithDescription= new LinkedList<Long>();
+					 idWithDescription.add(id);
+					 itemDescription.put(d,idWithDescription);
+				 }
+				 
+				 
+			 }
+			 
 			 System.out.println("desc added");
 			 
 			 for(Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo: itemSupplierMap.entrySet())
@@ -152,9 +173,7 @@ public class MultiDimensionalSearch {
 				 }
 				 
 			 }
-			 
-			 
-			 
+			
 			 
 			 return true; 
 		 }
@@ -164,11 +183,24 @@ public class MultiDimensionalSearch {
 			 it= new Item(id,description);
 			 itemSupplierMap.put(it,new TreeSet<>());
 			 
-			 for(long d:description)
+			 for(long d: description)
 			 {
-				 LinkedList<Long> idWithDescription= new LinkedList<Long>();
-				 idWithDescription.add(id);
-				 itemDescription.put(d,idWithDescription);
+				 if(itemDescription.containsKey(d))
+				 {
+					 LinkedList<Long> idWithDescription=itemDescription.get(d);
+					 idWithDescription.add(id);
+					 itemDescription.put(d, idWithDescription);
+					 
+				 }
+			 
+				 else
+				 {
+						 LinkedList<Long> idWithDescription= new LinkedList<Long>();
+						 idWithDescription.add(id);
+						 itemDescription.put(d,idWithDescription);
+					 
+				 }
+			 
 			 }
 			 
 			 System.out.println(" new element added");
@@ -195,6 +227,8 @@ public class MultiDimensionalSearch {
 	}
 
 	private boolean addSupplier(long supplier, float reputation) {
+		
+		s.vid=supplier;
 		
 		
 		
