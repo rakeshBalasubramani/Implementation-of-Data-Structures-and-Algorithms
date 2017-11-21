@@ -111,7 +111,8 @@ public class MDS {
        Each item can be purchased from a different seller.
     */
     public int invoice(Long[ ] arr, float minReputation) {
-	return 0;
+    	// return 0;
+    	return m.invoice(arr, minReputation);
     }
 
     /* remove all items, all of whose suppliers have a reputation that
@@ -119,7 +120,7 @@ public class MDS {
        an array with the items removed.
     */
     public Long[ ] purge(float maxReputation) {
-	return m.purge(maxReputation);
+    	return m.purge(maxReputation);
     }
 
     /* remove item from storage.  Returns the sum of the Longs that
@@ -137,7 +138,8 @@ public class MDS {
        number of elements that were actually removed from the description.
     */
     public int remove(Long id, Long[ ] arr) {
-	return 0;
+    	//return 0;
+    	return m.remove(id, arr);
     }
 
     /* remove the elements of the array from the description of all
@@ -145,7 +147,8 @@ public class MDS {
        from their descriptions.
     */
     public int removeAll(Long[ ] arr) {
-	return 0;
+    	// return 0;
+    	return m.removeAll(arr); 
     }
 
 	public void printItems() {
