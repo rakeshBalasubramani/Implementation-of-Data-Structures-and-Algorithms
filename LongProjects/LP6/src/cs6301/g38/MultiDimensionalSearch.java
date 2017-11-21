@@ -4,20 +4,22 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class MultiDimensionalSearch {
 	
-	public  static HashMap<Long,LinkedList<Long>> itemDescription = new HashMap<Long,LinkedList<Long>>();
-	public static  HashMap<Item,TreeSet<SupplierItemInfo>> itemSupplierMap= new HashMap<Item,TreeSet<SupplierItemInfo>>();
-	public  static TreeMap<Supplier,LinkedList<ItemPrice>> supplierItemMap= new TreeMap<Supplier,LinkedList<ItemPrice>>();
-	//Item it= new Item();
+	private HashMap<Long,LinkedList<Long>> itemDescription = new HashMap<Long,LinkedList<Long>>();
+	private  TreeMap<Item,TreeSet<SupplierItemInfo>> itemSupplierMap= new TreeMap<Item,TreeSet<SupplierItemInfo>>();
+	private TreeMap<Supplier,LinkedList<ItemPrice>> supplierItemMap= new TreeMap<Supplier,LinkedList<ItemPrice>>();
+	
+	Item it;
 	//Supplier s= new Supplier();
 	
-	public static class Item
+	public static class Item implements Comparable<Item>
 	{
+		
 		private long id;
 		private List<Long> description;
 		
@@ -37,19 +39,43 @@ public class MultiDimensionalSearch {
 			}
 		}
 		
-		
-		@Override
-		public int hashCode()
-		{
-			return (int)id;
+		public long getId() {
+			return id;
 		}
+
+		public void setId(long id) {
+			this.id = id;
+		}
+
+		public List<Long> getDescription() {
+			return description;
+		}
+
+		public void setDescription(List<Long> description) {
+			this.description = description;
+		}
+
 		
+		
+//		@Override
+//		public int hashCode()
+//		{
+//			return (int)id;
+//		}
+//		
 		@Override
 		public boolean equals(Object i)
 		{
 			Item item=(Item) i;
 			return this.id==item.id;
 		}
+		
+		@Override
+		public int compareTo(Item item) {
+			return (int) (this.id-item.id);
+			
+		}
+		
 	}
 	
 	public static class Supplier implements Comparable<Supplier>
@@ -67,6 +93,20 @@ public class MultiDimensionalSearch {
 			this.reputation=reputation;
 		}
 		
+		public long getVid() {
+			return vid;
+		}
+		public void setVid(long vid) {
+			this.vid = vid;
+		}
+		public float getReputation() {
+			return reputation;
+		}
+		public void setReputation(float reputation) {
+			this.reputation = reputation;
+		}
+
+		
 		public int compareTo(Supplier s)
 		{
 			return (int) (this.reputation-s.reputation);
@@ -83,6 +123,7 @@ public class MultiDimensionalSearch {
 	
 	public static class SupplierItemInfo implements Comparable<SupplierItemInfo>
 	{
+		
 		private long id,vid;
 		private float reputation;
 		private int price;
@@ -94,6 +135,39 @@ public class MultiDimensionalSearch {
 			this.reputation=reputation;
 			this.price=price;
 		}
+		
+		public long getId() {
+			return id;
+		}
+
+		public void setId(long id) {
+			this.id = id;
+		}
+
+		public long getVid() {
+			return vid;
+		}
+
+		public void setVid(long vid) {
+			this.vid = vid;
+		}
+
+		public float getReputation() {
+			return reputation;
+		}
+
+		public void setReputation(float reputation) {
+			this.reputation = reputation;
+		}
+
+		public int getPrice() {
+			return price;
+		}
+
+		public void setPrice(int price) {
+			this.price = price;
+		}
+
 		
 		public int compareTo(SupplierItemInfo sio)
 		{
@@ -112,6 +186,22 @@ public class MultiDimensionalSearch {
 			this.id=id;
 			this.price=price;
 		}
+		
+		public long getId() {
+			return id;
+		}
+
+		public void setId(long id) {
+			this.id = id;
+		}
+
+		public int getPrice() {
+			return price;
+		}
+
+		public void setPrice(int price) {
+			this.price = price;
+		}
 	}
 	
 	
@@ -120,18 +210,29 @@ public class MultiDimensionalSearch {
 		
 	}
 	
+	
 	public boolean add(long id, Long[] description){
 		return addDescription(id, description);
 	}
 	
 	private boolean addDescription(long id, Long[ ] description) {
-		Item it= new Item();
-		Supplier s= new Supplier();
 		
-		 it.id=id;
+		Item []arr; 
+		it= new Item();
+		it.setId(id);
 		 
 		 if(itemSupplierMap.containsKey(it))
 		 {
+			 
+			 Set<Item> itemSet= itemSupplierMap.keySet();
+			 arr = new Item[itemSet.size()];
+			 itemSet.toArray(arr);
+			 
+			 int index=BinarySearch.recursiveBinarySearch(arr,it);
+			 
+			 it=arr[index];
+			 
+			 //System.out.println("Id From binary Search:"+ it.getId());
 			 TreeSet<SupplierItemInfo> supplierinfo= itemSupplierMap.get(it);
 			 List<Long> itemDesc=it.description;
 			 
@@ -163,10 +264,11 @@ public class MultiDimensionalSearch {
 			 }
 			 
 			 System.out.println("New desc added");
+			 System.out.println(" Present Item Information");
 			 
-			/* for(Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo: itemSupplierMap.entrySet())
+			for(Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo: itemSupplierMap.entrySet())
 			 {
-				 System.out.println(" Present Item Information");
+				System.out.println("###");
 				 System.out.println("id:"+iteminfo.getKey().id);
 				 
 				 for(long d:iteminfo.getKey().description)
@@ -174,10 +276,9 @@ public class MultiDimensionalSearch {
 					 System.out.println(d);
 				 }
 				 
-			 }*/
-			
+			 }
 			 
-			 return true; 
+			 return false; 
 		 }
 		 
 		 else
@@ -185,7 +286,7 @@ public class MultiDimensionalSearch {
 			 it= new Item(id,description);
 			 itemSupplierMap.put(it,new TreeSet<>());
 			 
-			 for(long d: description)
+ 			 for(long d: description)
 			 {
 				 if(itemDescription.containsKey(d))
 				 {
@@ -206,10 +307,12 @@ public class MultiDimensionalSearch {
 			 }
 			 
 			 System.out.println(" new element added");
+			 System.out.println(" New Item Information");
+			
 			 
-		/*	for(Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo: itemSupplierMap.entrySet())
+			for(Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo: itemSupplierMap.entrySet())
 			 {
-				 System.out.println(" New Item Information");
+				 System.out.println("###");
 				 System.out.println("id:"+iteminfo.getKey().id);
 				 
 				 for(long d:iteminfo.getKey().description)
@@ -217,10 +320,12 @@ public class MultiDimensionalSearch {
 					 System.out.println(d);
 				 }
 				 
-			 }*/
-			 return false;
+			 }
+			
+			 return true;
 		 }
 			
+		
 		    }
 	
 	public boolean add(long supplier, float reputation){
@@ -233,8 +338,6 @@ public class MultiDimensionalSearch {
 		Supplier s= new Supplier();
 		
 		s.vid=supplier;
-		
-		
 		
 		return false;
 	}

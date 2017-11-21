@@ -3,8 +3,9 @@ package cs6301.g38;
 
 public class MDS {
 
-	MultiDimensionalSearch m= new MultiDimensionalSearch();
+	MultiDimensionalSearch m;
     public MDS() {
+		 m= new MultiDimensionalSearch();
     }
 
     public static class Pair {

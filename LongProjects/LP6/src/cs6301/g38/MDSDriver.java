@@ -13,34 +13,36 @@ public class MDSDriver {
 		
 		boolean status=mds.add(12L, description1);
 		System.out.println("Status:"+status);
-		mds.printItems();
+		System.out.println("---------------------");
+		//mds.printItems();
 		
 
 		status=mds.add(3L, description2);
 		System.out.println("Status:"+status);
-		
+		System.out.println("---------------------");
 		
 		//status=mds.add(12L, description);
 		
-		mds.printItems();
+		//mds.printItems();
 		
-		status=mds.add(10L, description1);
+		status=mds.add(12L, description2);
 		System.out.println("Status:"+status);
-
-		mds.printItems();
+		System.out.println("---------------------");
+		
+		//mds.printItems();
 		
 		
-		// k - purge(max Reputation)
-		System.out.println("Enter max reputation: ");
-		float maxReputation = in.nextFloat();
-		System.out.println("Items removed: "+ mds.purge(maxReputation));
-		
-		
-		// l - remove item and return sum of description
-		System.out.println("Enter the item to be removed: ");
-		long id = in.nextLong();
-		System.out.println("Sum of description of item " + id + " is " + mds.remove(id));
-		mds.printItems();
+//		// k - purge(max Reputation)
+//		System.out.println("Enter max reputation: ");
+//		float maxReputation = in.nextFloat();
+//		System.out.println("Items removed: "+ mds.purge(maxReputation));
+//		
+//		
+//		// l - remove item and return sum of description
+//		System.out.println("Enter the item to be removed: ");
+//		long id = in.nextLong();
+//		System.out.println("Sum of description of item " + id + " is " + mds.remove(id));
+//		mds.printItems();
 		
 	}
 
