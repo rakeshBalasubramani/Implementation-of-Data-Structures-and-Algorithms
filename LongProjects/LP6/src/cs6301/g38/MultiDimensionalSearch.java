@@ -1,7 +1,7 @@
 package cs6301.g38;
-
-import java.util.Collections;
+ 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +14,9 @@ import cs6301.g38.MDS.Pair;
 
 public class MultiDimensionalSearch {
 
-	private HashMap<Long, LinkedList<Long>> itemDescription = new HashMap<Long, LinkedList<Long>>();// desc, list of Item id's, Replace LL to HashSet
+	private HashMap<Long, HashSet<Long>> itemDescription = new HashMap<Long, HashSet<Long>>();// desc, list of Item id's, Replace LL to HashSet
 	private TreeMap<Item, TreeSet<SupplierItemInfo>> itemSupplierMap = new TreeMap<Item, TreeSet<SupplierItemInfo>>();
-	private TreeMap<Supplier, LinkedList<ItemPrice>> supplierItemMap = new TreeMap<Supplier, LinkedList<ItemPrice>>(); // Replace LL to Treeset
+	private TreeMap<Supplier, TreeSet<ItemPrice>> supplierItemMap = new TreeMap<Supplier, TreeSet<ItemPrice>>(); // Replace LL to Treeset
 
 	Item it = new Item() ;
 	Supplier  s = new Supplier();
@@ -55,12 +55,12 @@ public class MultiDimensionalSearch {
 			this.description = description;
 		}
 
-		// @Override
-		// public int hashCode()
-		// {
-		// return (int)id;
-		// }
-		//
+		 @Override
+		 public int hashCode()
+		 {
+		 return (int)id;
+		 }
+		
 		@Override
 		public boolean equals(Object i) {
 			Item item = (Item) i;
@@ -173,9 +173,6 @@ public class MultiDimensionalSearch {
 		@Override
 		public int compareTo(SupplierItemInfo sio)
 		{
-			
-			
-			
 			int reputationDiff = Float.compare(this.reputation, sio.getReputation());			
 			return ((reputationDiff == 0) ? Integer.compare(this.price,sio.getPrice()) : reputationDiff);			
 			//return (int) (this.reputation-sio.reputation);
@@ -183,7 +180,7 @@ public class MultiDimensionalSearch {
 
 	}
 
-	public static class ItemPrice {
+	public static class ItemPrice implements Comparable<ItemPrice> {
 		private long id;
 		private int price;
 
@@ -206,6 +203,13 @@ public class MultiDimensionalSearch {
 
 		public void setPrice(int price) {
 			this.price = price;
+		}
+		
+		@Override
+		public int compareTo(ItemPrice o) {
+			
+			return (int) (this.id - o.id);
+			
 		}
 	}
 
