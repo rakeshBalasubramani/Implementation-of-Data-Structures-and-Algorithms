@@ -32,6 +32,23 @@ public class MDSDriver {
 		//mds.printItems();
 		
 		
+		status=mds.add(2134L, 2.0f);
+		System.out.println("Status:"+status);
+		System.out.println("---------------------");
+		
+		
+		status=mds.add(54343L, 4.7f);
+		System.out.println("Status:"+status);
+		System.out.println("---------------------");
+		
+		
+		status=mds.add(2134L, 3.2f);
+		System.out.println("Status:"+status);
+		System.out.println("---------------------");
+		
+		
+		
+		
 //		// k - purge(max Reputation)
 //		System.out.println("Enter max reputation: ");
 //		float maxReputation = in.nextFloat();
