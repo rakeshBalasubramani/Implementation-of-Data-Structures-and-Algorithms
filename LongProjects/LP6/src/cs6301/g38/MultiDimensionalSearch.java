@@ -5,12 +5,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import cs6301.g38.MDS.Pair;
+import cs6301.g38.MultiDimensionalSearch.ItemPrice;
 
 public class MultiDimensionalSearch {
 
@@ -189,6 +192,10 @@ public class MultiDimensionalSearch {
 			this.price = price;
 		}
 
+		public ItemPrice() {
+			// TODO Auto-generated constructor stub
+		}
+
 		public long getId() {
 			return id;
 		}
@@ -223,7 +230,7 @@ public class MultiDimensionalSearch {
 
 	private boolean addDescription(long id, Long[] descriptions) {
 
-		Item[] arr;
+		//Item[] arr;
 		it.setId(id);
 
 		 if(itemSupplierMap.containsKey(it))
@@ -255,7 +262,7 @@ public class MultiDimensionalSearch {
 			 {
 				 if(itemDescription.containsKey(d))
 				 {
-					 LinkedList<Long> idWithDescription=itemDescription.get(d);
+					 HashSet<Long> idWithDescription=itemDescription.get(d);
 					 idWithDescription.add(id); // check the existence of Id in the HashSet before adding the item id.
 					 itemDescription.put(d, idWithDescription);
 					 
@@ -263,7 +270,7 @@ public class MultiDimensionalSearch {
 				 
 				 else
 				 {
-					 LinkedList<Long> idWithDescription= new LinkedList<Long>();
+					 HashSet<Long> idWithDescription= new HashSet<Long>();
 					 idWithDescription.add(id);
 					 itemDescription.put(d,idWithDescription);
 				 }
@@ -294,14 +301,14 @@ public class MultiDimensionalSearch {
 
 			for (long desc : descriptions) {
 				if (itemDescription.containsKey(desc)) {
-					LinkedList<Long> ids = itemDescription.get(desc);
+					HashSet<Long> ids = itemDescription.get(desc);
 					ids.add(id);
 					itemDescription.put(desc, ids); // check this line is required or not??
 
 				}
 
 				else {
-					LinkedList<Long> idWithDescription = new LinkedList<Long>();
+					HashSet<Long> idWithDescription = new HashSet<Long>();
 					idWithDescription.add(id);
 					itemDescription.put(desc, idWithDescription);
 
@@ -348,14 +355,14 @@ public class MultiDimensionalSearch {
 			Supplier supplier = supplierArr[index];
 
 			System.out.println("Supplier id:" + supplier.getVid());
-			LinkedList<ItemPrice> itemPrice = supplierItemMap.get(supplier);
+			TreeSet<ItemPrice> itemPrice = supplierItemMap.get(supplier);
 			supplier.setReputation(reputation);
 			supplierItemMap.put(supplier, itemPrice);
 			System.out.println("Updated reputation of supplier");
 
-			for (Map.Entry<Supplier, LinkedList<ItemPrice>> map : supplierItemMap.entrySet()) {
+			for (Entry<Supplier, TreeSet<ItemPrice>> map : supplierItemMap.entrySet()) {
 				Supplier up = map.getKey();
-				LinkedList<ItemPrice> ip = map.getValue();
+				TreeSet<ItemPrice> ip = map.getValue();
 
 				System.out.println("Supplier id:" + up.getVid());
 				System.out.println("Supplier Reputation:" + up.getReputation());
@@ -372,12 +379,12 @@ public class MultiDimensionalSearch {
 
 		else {
 			Supplier supplier = new Supplier(vid, reputation);
-			supplierItemMap.put(supplier, new LinkedList<ItemPrice>());
+			supplierItemMap.put(supplier, new TreeSet<ItemPrice>());
 			System.out.println("NEW supplier");
 
-			for (Map.Entry<Supplier, LinkedList<ItemPrice>> map : supplierItemMap.entrySet()) {
+			for (Entry<Supplier, TreeSet<ItemPrice>> map : supplierItemMap.entrySet()) {
 				Supplier up = map.getKey();
-				LinkedList<ItemPrice> ip = map.getValue();
+				TreeSet<ItemPrice> ip = map.getValue();
 
 				System.out.println("Supplier id:" + up.getVid());
 				System.out.println("Supplier Reputation:" + up.getReputation());
@@ -405,48 +412,50 @@ public class MultiDimensionalSearch {
 		
 		/*private HashMap<Long,LinkedList<Long>> itemDescription = new HashMap<Long,LinkedList<Long>>();
 		private TreeMap<Item,TreeSet<SupplierItemInfo>> itemSupplierMap= new HashMap<Item,TreeSet<SupplierItemInfo>>();
-		private TreeMap<Supplier,LinkedList<ItemPrice>> supplierItemMap= new TreeMap<Supplier,LinkedList<ItemPrice>>();
+		private TreeMap<Supplier,TreeSet<ItemPrice>> supplierItemMap= new TreeMap<Supplier,LinkedList<ItemPrice>>();
 		*/
+		Supplier sii = new Supplier();
+		sii.setReputation(maxReputation);
 		
-		LinkedList<Long> itemsRemoved = new LinkedList<Long>();
-		LinkedList<Supplier> supplierRemoved = new LinkedList<Supplier>();
+		HashSet<Long> itemsRemoved = new HashSet<Long>();
+		HashSet<Supplier> supplierRemoved = new HashSet<Supplier>();
 
-		// get the items and suppliers where suppliers's reputation <=
-		// maxReputation
-		for (Map.Entry<Supplier, LinkedList<ItemPrice>> supplierMaxReputation : supplierItemMap.entrySet()) {
-
+		// get the items and suppliers where suppliers's reputation <= maxReputation
+		NavigableMap<Supplier, TreeSet<ItemPrice>> supplierResultMap = supplierItemMap.headMap(sii, true);
+				
+		for (Entry<Supplier, TreeSet<ItemPrice>> supplierMaxReputation : supplierResultMap.entrySet()) {
 			Supplier supplierEntry = supplierMaxReputation.getKey();
-			LinkedList<ItemPrice> supplierItems = supplierMaxReputation.getValue();
-
-			if (supplierEntry.reputation <= maxReputation) {
-				supplierRemoved.add(supplierEntry);
-				for (ItemPrice item : supplierItems) {
-					itemsRemoved.add(item.id);
-				}
+			TreeSet<ItemPrice> supplierItems = supplierMaxReputation.getValue();
+			// supplierRemoved.add(supplierEntry);
+			for (ItemPrice item : supplierItems) {
+				itemSupplierMap.remove(item.id);   // remove the item entry from itemSupplierMap
+				itemsRemoved.add(item.id);
+				supplierItems.remove(item);
 			}
+			supplierItemMap.remove(supplierEntry.vid);
 		}
+		
 
 		System.out.println("Items to be purged :" + itemsRemoved);
 
 		
-		// remove the supplier entry from supplierItemMap
-		for(Supplier supplier : supplierRemoved){
-			if(supplierItemMap.containsKey(supplier)){
-				supplierItemMap.get(supplier).clear();
-				//supplierItemMap.remove(supplier);			
-			}
-		}
-		
-		// remove the item entry from itemSupplierMap
-		for(Long itemId : itemsRemoved){
-			if(itemSupplierMap.containsKey(itemId)){				
-				itemSupplierMap.remove(itemId);
-			}
-		}
+//		// remove the supplier entry from supplierItemMap
+//		for(Supplier supplier : supplierRemoved){
+//			if(supplierItemMap.containsKey(supplier)){
+//				//supplierItemMap.get(supplier).clear();
+//				supplierItemMap.remove(supplier);			
+//			}
+//		}
+//		
+//		// remove the item entry from itemSupplierMap
+//		for(Long itemId : itemsRemoved){
+//			if(itemSupplierMap.containsKey(itemId)){				
+//				itemSupplierMap.remove(itemId);
+//			}
+//		}
 
 		// remove the items with thier description from the itemDescriptionMap
-		for (Map.Entry<Long, LinkedList<Long>> descItem : itemDescription.entrySet()) {
-
+		for (Entry<Long, HashSet<Long>> descItem : itemDescription.entrySet()) {
 			// check for item ids to be removed
 			for (Long id : itemsRemoved) {
 				if (descItem.getValue().contains(id)) {
@@ -454,9 +463,7 @@ public class MultiDimensionalSearch {
 				}
 			}
 		}
-
 		return itemsRemoved.toArray(new Long[itemsRemoved.size()]);
-
 	}
 
 	// --- l ---
@@ -489,31 +496,43 @@ public class MultiDimensionalSearch {
 			System.out.println("Id From binary Search:"+ it.getId() + " and desc " + it.getDescription());
 			TreeSet<SupplierItemInfo> supplierinfo= itemSupplierMap.get(it);
 			*/
-			Item it1 = getItemDetails(it);
-			List<Long> desc =it1.description;
 		
+			Item it1 = getItemDetails(it);
+			Supplier supplierEntry;
+			List<Long> desc =it1.description;
+			HashSet<Long> removeItemsForSupplier = new HashSet<Long>();
+		
+			// get the suppliers info for the item to be removed
+			TreeSet<SupplierItemInfo> supplierValue = itemSupplierMap.get(it1); 
+			for(SupplierItemInfo s : supplierValue){
+				removeItemsForSupplier.add(s.vid);
+			}			
+				
 			// remove  entry from itemSupplierMap
-			itemSupplierMap.remove(it1); // GET THE SUPPLIER INFO AND USE IT TO REMOVE 
+			itemSupplierMap.remove(it1);  
 					
 			// remove the items with thier description from the itemDescriptionMap
-			for(Map.Entry<Long, LinkedList<Long>> descItem : itemDescription.entrySet()){
+			for(Entry<Long, HashSet<Long>> descItem : itemDescription.entrySet()){
 				//check for item id to be removed				
 				if(descItem.getValue().contains(it1.getId())){
 						descItem.getValue().remove(it1.getId());
 				}
 			}
 
-			// remove the item from supplierItemMap
-			//CHANGE 
-			for (Map.Entry<Supplier, LinkedList<ItemPrice>> supplierItemInfo : supplierItemMap.entrySet()) {
-				LinkedList<ItemPrice> info = supplierItemInfo.getValue();
-				for (ItemPrice i : info) {
-					if (i.id == id) {
-						info.remove(i);
-					}
-				}
-			}
-
+			// check for suppliers to be removed, find the item entry and remove item from supplierItemMap
+			for(Long s : removeItemsForSupplier){
+				supplierEntry = new Supplier();
+				supplierEntry.setVid(s);
+				if(supplierItemMap.containsKey(supplierEntry)){
+					TreeSet<ItemPrice> info = supplierItemMap.get(supplierEntry);
+					for (ItemPrice i : info) {
+						if (i.id == id) {
+							info.remove(i);
+						}
+					}					
+				}				
+			}			
+			
 			// find the sum of description
 			for (Long d : desc) {
 				sumOfDescription += d;
@@ -550,7 +569,7 @@ public class MultiDimensionalSearch {
 			int sIndex = BinarySearch.recursiveBinarySearch(supplierArr, s);
 			Supplier supplier = supplierArr[sIndex];
 
-			LinkedList<ItemPrice> ip = supplierItemMap.get(supplier);
+			TreeSet<ItemPrice> ip = supplierItemMap.get(supplier);
 
 			for (Pair p : idPrice) {
 				isnewProd = true;
@@ -602,7 +621,7 @@ public class MultiDimensionalSearch {
 
 		} else {
 			Supplier supplier = new Supplier(vid, 0.0f);
-			LinkedList<ItemPrice> ip = new LinkedList<>();
+			TreeSet<ItemPrice> ip = new TreeSet<>();
 
 			for (Pair p : idPrice) {
 				ip.add(new ItemPrice(p.id, p.price));
@@ -641,9 +660,6 @@ public class MultiDimensionalSearch {
 		}
 		
 		// remove arr elements from description in itemSupplierMap
-		
-		
-		Item []arr1; 
 		it.setId(id);
 		 
 		if(itemSupplierMap.containsKey(it))
@@ -678,10 +694,6 @@ public class MultiDimensionalSearch {
 	
 	
 	public int removeAllFromItemDesc(Long[] arr){
-		/*private HashMap<Long,LinkedList<Long>> itemDescription = new HashMap<Long,LinkedList<Long>>();
-		private TreeMap<Item,TreeSet<SupplierItemInfo>> itemSupplierMap= new HashMap<Item,TreeSet<SupplierItemInfo>>();
-		private TreeMap<Supplier,LinkedList<ItemPrice>> supplierItemMap= new TreeMap<Supplier,LinkedList<ItemPrice>>();
-		*/
 		
 		int countOfItems = 0;		
 		// remove all items associated with desc in arr in itemDescriptionMap
@@ -715,8 +727,7 @@ public class MultiDimensionalSearch {
 		
 		int sumOfMinPrice = 0;
 		
-		for(Long id : arr){
-			
+		for(Long id : arr){	
 				
 			it.setId(id);
 			if(itemSupplierMap.containsKey(it)){
@@ -724,8 +735,6 @@ public class MultiDimensionalSearch {
 			//	System.out.println("item details from func " + it1.id + " desc " + it1.description );
 				supplierInfo = itemSupplierMap.get(it);
 				System.out.println("\t supplier info for item " + it.id + " = " + supplierInfo);
-				
-				//int index = supplierInfo.headSet(sii).size()+1;
 				
 				// suppliers for the item whose reputation >= minReputation
 				NavigableSet<SupplierItemInfo> result =	supplierInfo.tailSet(sii, true);
@@ -767,7 +776,7 @@ public class MultiDimensionalSearch {
 		 }	
 		 
 		 System.out.println("\n---------   supplier item map -----------");
-		 for(Map.Entry<Supplier, LinkedList<ItemPrice>> iteminfo: supplierItemMap.entrySet()){
+		 for(Entry<Supplier, TreeSet<ItemPrice>> iteminfo: supplierItemMap.entrySet()){
 			 System.out.println("id:"+iteminfo.getKey());
 			 for(ItemPrice d : iteminfo.getValue()){
 					 System.out.println(d);
