@@ -60,6 +60,36 @@ public class MDSDriver {
 		//System.out.println("Num of items that lost one or more terms from desc " + mds.removeAll(arr));
 		mds.printItems();
 		
+
+		status=mds.add(2134L, 2.0f);
+		System.out.println("Status:"+status);
+		System.out.println("---------------------");
+		
+		
+		status=mds.add(54343L, 4.7f);
+		System.out.println("Status:"+status);
+		System.out.println("---------------------");
+		
+		
+		status=mds.add(2134L, 3.2f);
+		System.out.println("Status:"+status);
+		System.out.println("---------------------");
+		
+		
+		
+		
+//		// k - purge(max Reputation)
+//		System.out.println("Enter max reputation: ");
+//		float maxReputation = in.nextFloat();
+//		System.out.println("Items removed: "+ mds.purge(maxReputation));
+//		
+//		
+//		// l - remove item and return sum of description
+//		System.out.println("Enter the item to be removed: ");
+//		long id = in.nextLong();
+//		System.out.println("Sum of description of item " + id + " is " + mds.remove(id));
+//		mds.printItems();
+
 		
 	}
 

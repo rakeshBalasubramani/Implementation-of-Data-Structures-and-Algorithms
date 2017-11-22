@@ -45,7 +45,9 @@ public class MDS {
       Returns the number of new entries created.
     */
     public int add(Long supplier, Pair[ ] idPrice) {
-	return 0;
+    	
+    	return m.add(supplier,idPrice);
+	//return 0;
     }
 
     /* return an array with the description of id.  Return null if
