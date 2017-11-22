@@ -3,7 +3,9 @@ package cs6301.g38;
 
 public class MDS {
 
+	MultiDimensionalSearch m;
     public MDS() {
+		 m= new MultiDimensionalSearch();
     }
 
     public static class Pair {
@@ -20,7 +22,10 @@ public class MDS {
        the item.  Returns true if the item is new, and false otherwise.
     */
     public boolean add(Long id, Long[ ] description) {
-	return true;
+    	
+    	
+    	return m.add(id,description);
+    	//return true;
     }
 
     /* add a new supplier (Long) and their reputation (float in
@@ -29,7 +34,9 @@ public class MDS {
        supplier is new, and false otherwise.
     */
     public boolean add(Long supplier, float reputation) {
-	return true;
+	
+    	return m.add(supplier, reputation);
+    	//return true;
     }
 
     /* add products and their prices at which the supplier sells the
@@ -104,7 +111,8 @@ public class MDS {
        Each item can be purchased from a different seller.
     */
     public int invoice(Long[ ] arr, float minReputation) {
-	return 0;
+    	// return 0;
+    	return m.invoice(arr, minReputation);
     }
 
     /* remove all items, all of whose suppliers have a reputation that
@@ -112,7 +120,7 @@ public class MDS {
        an array with the items removed.
     */
     public Long[ ] purge(float maxReputation) {
-	return null;
+    	return m.purge(maxReputation);
     }
 
     /* remove item from storage.  Returns the sum of the Longs that
@@ -120,7 +128,8 @@ public class MDS {
        did not exist).
     */
     public Long remove(Long id) {
-	return 0L;
+	//return 0L;
+    	return m.remove(id);
     }
 
     /* remove from the given id's description those elements that are
@@ -129,7 +138,8 @@ public class MDS {
        number of elements that were actually removed from the description.
     */
     public int remove(Long id, Long[ ] arr) {
-	return 0;
+    	//return 0;
+    	return m.remove(id, arr);
     }
 
     /* remove the elements of the array from the description of all
@@ -137,6 +147,14 @@ public class MDS {
        from their descriptions.
     */
     public int removeAll(Long[ ] arr) {
-	return 0;
+    	// return 0;
+    	return m.removeAll(arr); 
     }
+
+	public void printItems() {
+		// TODO Auto-generated method stub
+		m.printItems();
+	}
+
+	
 }
