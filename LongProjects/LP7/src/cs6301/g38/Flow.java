@@ -1,15 +1,26 @@
 // Starter code for LP7
 package cs6301.g38;
 import cs6301.g38.Graph.*;
+
 import java.util.HashMap;
 import java.util.Set;
 
 public class Flow {
+	HashMap<Edge, Integer> capacity;
+	Graph g;
+	Vertex source;
+	Vertex terminal;
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
+    	this.g = g;
+    	this.capacity = capacity;
+    	source = s;
+    	terminal=t;
     }
 
     // Return max flow found by Dinitz's algorithm
     public int dinitzMaxFlow() {
+    	
+    	DinitzGraph dg = new DinitzGraph(g,source, terminal,capacity);
 	return 0;
     }
 
