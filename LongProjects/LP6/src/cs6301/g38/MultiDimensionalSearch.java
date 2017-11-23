@@ -38,6 +38,7 @@ public class MultiDimensionalSearch {
 	Item it = new Item();
 	Supplier s = new Supplier();
 	ItemPrice ip = new ItemPrice();
+	
 
 	public static class Item implements Comparable<Item> {
 
@@ -445,7 +446,7 @@ public class MultiDimensionalSearch {
 				int index = BinarySearch.recursiveBinarySearch(supplierArr, s);
 				Supplier supplier = supplierArr[index];
 
-				System.out.println("Supplier id:" + supplier.getVid());
+				//System.out.println("Supplier id:" + supplier.getVid());
 
 				TreeSet<ItemPrice> itemPrice = supplierItemMap.get(supplier);
 				supplier.setReputation(reputation);
@@ -963,7 +964,7 @@ public class MultiDimensionalSearch {
 
 	private Item getItemDetails(Item it) {
 		Item[] arr1;
-		System.out.println("Item " + it.id + " present ");
+		//System.out.println("Item " + it.id + " present ");
 
 		Set<Item> itemSet = itemSupplierMap.keySet();
 		arr1 = new Item[itemSet.size()];
@@ -971,54 +972,54 @@ public class MultiDimensionalSearch {
 
 		int index = BinarySearch.recursiveBinarySearch(arr1, it);
 		it = arr1[index];
-		System.out.println("Id From binary Search:" + it.getId() + " and desc " + it.getDescription());
+		//System.out.println("Id From binary Search:" + it.getId() + " and desc " + it.getDescription());
 		return it;
 	}
 
 	public void printItems() {
 
-		System.out.println("\n--------- Present Item Information \n item supplier map -----------");
-		for (Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo : itemSupplierMap.entrySet()) {
-			System.out.println("###");
-			System.out.println("id:" + iteminfo.getKey().id);
-
-			if (iteminfo.getKey().description != null) {
-				for (long d : iteminfo.getKey().description) {
-					System.out.println(d);
-				}
-			} else {
-				System.out.println("No description");
-			}
-
-			TreeSet<SupplierItemInfo> supplierInfo = iteminfo.getValue();
-
-			System.out.println("Value of Item--Supplier Map");
-			System.out.println("-------");
-
-			for (SupplierItemInfo sii : supplierInfo) {
-				System.out.println("Supplier id:" + sii.getVid());
-				System.out.println("Supplier Reputation:" + sii.getReputation());
-				System.out.println("Item id:" + sii.getId());
-				System.out.println("Item Price:" + sii.getPrice());
-			}
-
-		}
-
-		System.out.println("\n---------   supplier item map -----------");
-
-		for (Entry<Supplier, TreeSet<ItemPrice>> map : supplierItemMap.entrySet()) {
-			Supplier up = map.getKey();
-			TreeSet<ItemPrice> ip = map.getValue();
-
-			System.out.println("Supplier id:" + up.getVid());
-			System.out.println("Supplier Reputation:" + up.getReputation());
-
-			for (ItemPrice i : ip) {
-				System.out.println("Item id:" + i.getId());
-				System.out.println("Item Price:" + i.getPrice());
-			}
-
-		}
+//	//	System.out.println("\n--------- Present Item Information \n item supplier map -----------");
+//		for (Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo : itemSupplierMap.entrySet()) {
+//		//	System.out.println("###");
+//			System.out.println("id:" + iteminfo.getKey().id);
+//
+//			if (iteminfo.getKey().description != null) {
+//				for (long d : iteminfo.getKey().description) {
+//					System.out.println(d);
+//				}
+//			} else {
+//				System.out.println("No description");
+//			}
+//
+//			TreeSet<SupplierItemInfo> supplierInfo = iteminfo.getValue();
+//
+//			System.out.println("Value of Item--Supplier Map");
+//			System.out.println("-------");
+//
+//			for (SupplierItemInfo sii : supplierInfo) {
+//				System.out.println("Supplier id:" + sii.getVid());
+//				System.out.println("Supplier Reputation:" + sii.getReputation());
+//				System.out.println("Item id:" + sii.getId());
+//				System.out.println("Item Price:" + sii.getPrice());
+//			}
+//
+//		}
+//
+//		System.out.println("\n---------   supplier item map -----------");
+//
+//		for (Entry<Supplier, TreeSet<ItemPrice>> map : supplierItemMap.entrySet()) {
+//			Supplier up = map.getKey();
+//			TreeSet<ItemPrice> ip = map.getValue();
+//
+//			System.out.println("Supplier id:" + up.getVid());
+//			System.out.println("Supplier Reputation:" + up.getReputation());
+//
+//			for (ItemPrice i : ip) {
+//				System.out.println("Item id:" + i.getId());
+//				System.out.println("Item Price:" + i.getPrice());
+//			}
+//
+//		}
 
 	}
 
