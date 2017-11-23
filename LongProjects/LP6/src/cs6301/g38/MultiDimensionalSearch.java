@@ -298,7 +298,7 @@ public class MultiDimensionalSearch {
 		
 		@Override
 		public int compareTo(ItemDescOccurence o) {
-			return (int) (this.numOfOccurence - o.numOfOccurence);
+			return (int) (this.numOfOccurence - o.numOfOccurence)*-1;
 		}
 		
 
@@ -1136,18 +1136,20 @@ public class MultiDimensionalSearch {
 				// for each item find the suppliers meeting given criteria
 				for(Long itemId : listOfItems){
 					it.setId(itemId);
-					tempMinPrice = 0;
+					tempMinPrice = Integer.MAX_VALUE;
 					// get the supplier item info for that item
 					supplierInfo = itemSupplierMap.get(it);
 					// get only the supplies who meets the given minReputation
-					if(supplierInfo.size()>0)
-					{
+//					if(supplierInfo.size()>0)
+				//{
 					NavigableSet<SupplierItemInfo> suppliersWithMinReputation = supplierInfo.tailSet(sii, true);
 					// get only the suppliers with given price range 
+					if(suppliersWithMinReputation.size()>0)
+					{
 					for(SupplierItemInfo s : suppliersWithMinReputation ){
 						if(s.price >= minPrice && s.price <= maxPrice){
 							//itemPrice.add(new ItemPrice(s.id, s.price));
-							if(tempMinPrice < s.price){
+							if(tempMinPrice > s.price){
 								tempMinPrice = s.price;
 							}
 							
@@ -1156,6 +1158,7 @@ public class MultiDimensionalSearch {
 					//for(supplierInPriceRange  )		
 					itemPrice.add(new ItemPrice(itemId, tempMinPrice));
 					}
+					//}
 				}
 				resultItemArr = new Long[itemPrice.size()];
 				ItemPrice[] tmpArray = itemPrice.toArray(new ItemPrice[itemPrice.size()]);
