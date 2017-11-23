@@ -130,7 +130,9 @@ public class MultiDimensionalSearch {
 		public int compareTo(Supplier s) {
 
 			// return (int) (this.vid-s.vid);
-			return Float.compare(this.reputation, s.getReputation());
+			int cmp= Float.compare(this.reputation, s.getReputation());
+			
+			return (int) (cmp==0?this.vid-s.vid:cmp);
 		}
 
 		@Override
@@ -138,6 +140,11 @@ public class MultiDimensionalSearch {
 
 			Supplier s = (Supplier) obj;
 			return this.vid == s.vid && this.reputation == s.reputation;
+		}
+
+		@Override
+		public String toString() {
+			return "Supplier [vid=" + vid + ", reputation=" + reputation + "]";
 		}
 
 	}
@@ -449,8 +456,10 @@ public class MultiDimensionalSearch {
 				//System.out.println("Supplier id:" + supplier.getVid());
 
 				TreeSet<ItemPrice> itemPrice = supplierItemMap.get(supplier);
-				supplier.setReputation(reputation);
-				supplierItemMap.put(supplier, itemPrice);
+				//supplier.setReputation(reputation);
+				supplierItemMap.remove(supplier);
+				Supplier newSupp = new Supplier(supplier.getVid(), reputation);
+				supplierItemMap.put(newSupp, itemPrice);
 
 				suppplierIdReputation.put(supplier.getVid(), reputation);
 //
