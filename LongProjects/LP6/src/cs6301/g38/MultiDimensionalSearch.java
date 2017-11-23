@@ -1,5 +1,6 @@
 package cs6301.g38;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1081,12 +1082,15 @@ public class MultiDimensionalSearch {
 			// store id, occurence in idOccurenceMap		
 			for(Long desc : arr){
 				items = itemDescription.get(desc);
+				if(items!=null){
+				
 				for(Long item : items){
 					if(!idOccurenceMap.containsKey(item)){
 						idOccurenceMap.put(item, 1);
 					}else{
 						idOccurenceMap.put(item, idOccurenceMap.get(item)+1);
 					}				
+				}
 				}
 			}
 		
@@ -1097,9 +1101,10 @@ public class MultiDimensionalSearch {
 				itd = new ItemDescOccurence();
 				itd.setItemId(idOccurence.getKey());
 				itd.setNumOfOccurence(idOccurence.getValue());
-				idOccArr[i] = itd;			
+				idOccArr[i++] = itd;	
+				
 			}
-			
+			resultArr = Arrays.copyOf(idOccArr, idOccArr.length);
 			// sort based on the num of Occurence
 			MergeSort.mergeSort(idOccArr, resultArr);
 			finalResultArr = new Long[idOccArr.length];
