@@ -674,6 +674,7 @@ public class MultiDimensionalSearch {
 			for (Long supp : removeItemsForSupplier) {
 				// supplierEntry = new Supplier();
 				s.setVid(supp);
+				s.setReputation(suppplierIdReputation.get(supp));
 				if (supplierItemMap.containsKey(s)) {
 					TreeSet<ItemPrice> info = supplierItemMap.get(s);
 					ItemPrice dummyIP = new ItemPrice();
