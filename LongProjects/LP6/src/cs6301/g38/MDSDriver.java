@@ -30,6 +30,22 @@ public class MDSDriver {
 		System.out.println("Status:"+status);
 		System.out.println("---------------------");
 		
+		// e - findItem 
+		System.out.println("\n find Item ");
+		System.out.println("List of items having the description " + mds.findItem(description1));
+		
+		
+		// g - find supplier
+		System.out.println("\n find supplier - Enter id");
+		Long id2 = in.nextLong();
+		System.out.println("List of Suppliers " + mds.findSupplier(id2));
+				
+		// h - find supplier given reputation
+		System.out.println("\n find supplier - Enter id");
+		Long id3 = in.nextLong();
+		System.out.println("List of Suppliers meeting reputation " + mds.findSupplier(id3, 3.5f));
+				
+		
 		// j - invoice(arr, minReputation)
 		System.out.println("Invoice ");
 		Long[] ids = {(long) 12, (long) 3};

@@ -63,7 +63,7 @@ public class MDS {
       description (non-increasing order).
     */
     public Long[ ] findItem(Long[ ] arr) {
-	return null;
+    	return m.findItem(arr);
     }
 
     /* given a Long n, return an array of items whose description
@@ -75,14 +75,14 @@ public class MDS {
       (non-decreasing order).
     */
     public Long[ ] findItem(Long n, int minPrice, int maxPrice, float minReputation) {
-	return null;
+    	return m.findItem(n, minPrice, maxPrice, minReputation);
     }
 
     /* given an id, return an array of suppliers who sell that item,
       ordered by the price at which they sell the item (non-decreasing order).
     */
     public Long[ ] findSupplier(Long id) {
-	return null;
+    	return m.findSupplier(id);
     }
 
     /* given an id and a minimum reputation, return an array of
@@ -91,7 +91,7 @@ public class MDS {
       at which they sell the item (non-decreasing order).
     */
     public Long[ ] findSupplier(Long id, float minReputation) {
-	return null;
+    	return m.findSupplier(id, minReputation);
     }
 
     /* find suppliers selling 5 or more products, who have the same
