@@ -13,7 +13,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import cs6301.g38.MDS.Pair;
-import cs6301.g38.MultiDimensionalSearch.ItemPrice;
 
 public class MultiDimensionalSearch {
 
@@ -511,6 +510,7 @@ public class MultiDimensionalSearch {
 			return removeItem(id);
 		}
 
+
 		
 		private Long removeItem(Long id){
 			
@@ -519,6 +519,7 @@ public class MultiDimensionalSearch {
 			private TreeMap<Item,TreeSet<SupplierItemInfo>> itemSupplierMap= new HashMap<Item,TreeSet<SupplierItemInfo>>();
 			private TreeMap<Supplier,LinkedList<ItemPrice>> supplierItemMap= new TreeMap<Supplier,LinkedList<ItemPrice>>();
 			*/
+
 			long sumOfDescription = 0;
 			//Item []arr; 
 			
@@ -527,16 +528,7 @@ public class MultiDimensionalSearch {
 			if(itemSupplierMap.containsKey(it))
 			{
 				 
-				/*Set<Item> itemSet= itemSupplierMap.keySet();
-				arr = new Item[itemSet.size()];
-				itemSet.toArray(arr);
-				 
-				int index=BinarySearch.recursiveBinarySearch(arr,it);
-				
-				it=arr[index];
-				System.out.println("Id From binary Search:"+ it.getId() + " and desc " + it.getDescription());
-				TreeSet<SupplierItemInfo> supplierinfo= itemSupplierMap.get(it);
-				*/
+
 			
 				Item it1 = getItemDetails(it);
 				//Supplier supplierEntry;
@@ -549,6 +541,25 @@ public class MultiDimensionalSearch {
 				}
 				
 				HashSet<Long> removeItemsForSupplier = new HashSet<Long>();
+			// remove the items with thier description from the itemDescriptionMap
+//			for(Entry<Long, HashSet<Long>> descItem : itemDescription.entrySet()){
+//				//check for item id to be removed				
+//				if(descItem.getValue().contains(it1.getId())){
+//						descItem.getValue().remove(it1.getId());
+//				}
+//			}
+
+			// check for suppliers to be removed, find the item entry and remove item from supplierItemMap
+			for(Long supp : removeItemsForSupplier){
+				//supplierEntry = new Supplier();
+				s.setVid(supp);
+				if(supplierItemMap.containsKey(s)){
+					TreeSet<ItemPrice> info = supplierItemMap.get(s);
+					ItemPrice dummyIP = new ItemPrice();
+					dummyIP.setId(id);
+					info.remove(dummyIP);					
+				}				
+			}			
 			
 				// get the suppliers info for the item to be removed
 				TreeSet<SupplierItemInfo> supplierValue = itemSupplierMap.get(it1); 
