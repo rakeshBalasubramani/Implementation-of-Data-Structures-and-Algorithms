@@ -54,7 +54,7 @@ public class MDS {
       there is no item with this id.
     */
     public Long[ ] description(Long id) {
-	return null;
+    	return m.description(id);
     }
 
     /* given an array of Longs, return an array of items whose

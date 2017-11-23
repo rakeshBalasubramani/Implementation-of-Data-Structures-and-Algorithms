@@ -1164,5 +1164,28 @@ public class MultiDimensionalSearch {
 			return null;
 			
 		}
-		
+
+		public Long[] description(Long id) {
+			
+			return getDescription(id);
+	
+		}
+
+		private Long[] getDescription(Long id) {
+			
+			it.setId(id);
+
+			if (itemSupplierMap.containsKey(it)) {
+			
+			
+			Item item = getItemDetails(it);
+			Long[] descriptions= new Long[item.getDescription().size()];
+			item.getDescription().toArray(descriptions);
+			return descriptions;
+			}
+			else
+			{
+			return null;
+			}
+	}
 }

@@ -37,27 +37,27 @@ public class MDSDriver {
 		System.out.println("Status:"+status);
 		System.out.println("---------------------");
 		
-
-		// e - findItem 
-		System.out.println("\n find Item ");
-		System.out.println("List of items having the description " + mds.findItem(description1));
-		
-		
-		// g - find supplier
-		System.out.println("\n find supplier - Enter id");
-		Long id2 = in.nextLong();
-		System.out.println("List of Suppliers " + mds.findSupplier(id2));
-				
-		// h - find supplier given reputation
-		System.out.println("\n find supplier - Enter id");
-		Long id3 = in.nextLong();
-		System.out.println("List of Suppliers meeting reputation " + mds.findSupplier(id3, 3.5f));
-				
-		
-		// j - invoice(arr, minReputation)
-		System.out.println("Invoice ");
-		Long[] ids = {(long) 12, (long) 3};
-		System.out.println("Total Price of Items " + mds.invoice(ids, 3.3f));
+//		// 
+//		// e - findItem 
+//		System.out.println("\n find Item ");
+//		System.out.println("List of items having the description " + mds.findItem(description1));
+//		
+//		
+//		// g - find supplier
+//		System.out.println("\n find supplier - Enter id");
+//		Long id2 = in.nextLong();
+//		System.out.println("List of Suppliers " + mds.findSupplier(id2));
+//				
+//		// h - find supplier given reputation
+//		System.out.println("\n find supplier - Enter id");
+//		Long id3 = in.nextLong();
+//		System.out.println("List of Suppliers meeting reputation " + mds.findSupplier(id3, 3.5f));
+//				
+//		
+//		// j - invoice(arr, minReputation)
+//		System.out.println("Invoice ");
+//		Long[] ids = {(long) 12, (long) 3};
+//		System.out.println("Total Price of Items " + mds.invoice(ids, 3.3f));
 
 		
 		// Question (b)
@@ -96,8 +96,25 @@ public class MDSDriver {
 		mds.printItems();
 		System.out.println("---------------------");
 		
+		// Question d
 		
-//		
+		Long[] res=mds.description(2432L);
+		System.out.println("Description for given id:");
+		if( res != null)
+		{
+			for(Long l: res)
+			{
+				System.out.println("des:"+ l);
+			}
+		}
+		else
+		{
+			System.out.println("no desc");
+		}
+		
+		
+		
+		
 //		// j - invoice(arr, minReputation)
 //		System.out.println("---------------------");
 //		System.out.println("Invoice ");
