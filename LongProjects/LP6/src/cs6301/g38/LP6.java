@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 
 public class LP6 {
-    static int VERBOSE = 0;
+    static int VERBOSE = 1;
     static int limit = 0;
     static class Container {
 	Long[] arr;
