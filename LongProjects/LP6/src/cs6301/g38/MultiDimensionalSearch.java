@@ -20,7 +20,7 @@ import cs6301.g38.MDS.Pair;
 
 public class MultiDimensionalSearch {
 
-	private HashMap<Long, HashSet<Long>> itemDescription = new HashMap<Long, HashSet<Long>>();// desc,
+	private HashMap<Long, HashMap<Long,Long>> itemDescription = new HashMap<Long, HashMap<Long,Long>>();// desc,
 																								// list
 																								// of
 																								// Item
@@ -319,13 +319,13 @@ public class MultiDimensionalSearch {
 	public static class ItemDescOccurence implements Comparable<ItemDescOccurence>{
 
 		private long itemId;
-		private int numOfOccurence;		
+		private Long numOfOccurence;		
 		
 		public ItemDescOccurence(){
 			
 		}
 		
-		public ItemDescOccurence(long itemId, int numOfOccurence) {
+		public ItemDescOccurence(long itemId, long numOfOccurence) {
 			this.itemId = itemId;
 			this.numOfOccurence = numOfOccurence;
 		}
@@ -334,7 +334,7 @@ public class MultiDimensionalSearch {
 			return itemId;
 		}
 		
-		public int getNumOfOccurence(){
+		public Long getNumOfOccurence(){
 			return numOfOccurence;
 		}
 		
@@ -342,8 +342,8 @@ public class MultiDimensionalSearch {
 			this.itemId = itemId;
 		}
 		
-		public void setNumOfOccurence(int numOfOccurence){
-			this.numOfOccurence = numOfOccurence;
+		public void setNumOfOccurence(Long long1){
+			this.numOfOccurence = long1;
 		}
 		
 		@Override
@@ -365,6 +365,14 @@ public class MultiDimensionalSearch {
 		 {
 		 return (int)itemId;
 		 }
+
+		@Override
+		public String toString() {
+			return "ItemDescOccurence [itemId=" + itemId + ", numOfOccurence="
+					+ numOfOccurence + "]";
+		}
+		 
+		 
 				
 	}	
 
@@ -373,17 +381,17 @@ public class MultiDimensionalSearch {
 		@Override
 		public int compare(ItemDescOccurence sp1, ItemDescOccurence sp2) {
 			
-			//return Integer.compare(sp2.getNumOfOccurence(), sp1.getNumOfOccurence());
+		return Long.compare(sp2.getNumOfOccurence(), sp1.getNumOfOccurence());
 			
 //			return sp1.getNumOfOccurence() > sp2.getNumOfOccurence() ? -1 :(sp1.getNumOfOccurence() < sp2.getNumOfOccurence() ? 1 : 0);
 			
-			
-			if(sp1.getNumOfOccurence() < sp2.getNumOfOccurence()){
-				return 1;
-			}
-			else{
-				return -1;
-			}
+//			
+//			if(sp1.getNumOfOccurence() < sp2.getNumOfOccurence()){
+//				return 1;
+//			}
+//			else{
+//				return -1;
+//			}
 			
 		}
 		
@@ -406,14 +414,14 @@ public class MultiDimensionalSearch {
 			TreeSet<SupplierItemInfo> supplierinfo = itemSupplierMap.get(it1);
 			List<Long> itemDesc = it1.description;
 
-			for (long desc : descriptions) {
+			for (Long desc : descriptions) {
 				itemDesc.add(desc);
 
 				if (itemDescription.containsKey(desc)) {
 
-					HashSet<Long> idWithDescription = itemDescription.get(desc);
+					HashMap<Long,Long> idWithDescription = itemDescription.get(desc);
 
-					idWithDescription.add(id); // check the existence of Id in
+					idWithDescription.put(id,idWithDescription.get(id)+1); // check the existence of Id in
 												// the HashSet before adding the
 												// item id. ??
 					itemDescription.put(desc, idWithDescription);
@@ -421,8 +429,8 @@ public class MultiDimensionalSearch {
 				}
 
 				else {
-					HashSet<Long> idWithDescription = new HashSet<Long>();
-					idWithDescription.add(id);
+					HashMap<Long,Long> idWithDescription = new HashMap<Long,Long>();
+					idWithDescription.put(id,(long) 1);
 					itemDescription.put(desc, idWithDescription);
 				}
 
@@ -454,16 +462,16 @@ public class MultiDimensionalSearch {
 			for (long desc : descriptions) {
 
 				if (itemDescription.containsKey(desc)) {
-					HashSet<Long> ids = itemDescription.get(desc);
-					ids.add(id);
+					HashMap<Long,Long> ids = itemDescription.get(desc);
+					ids.put(id,(long)1 );
 					itemDescription.put(desc, ids); // check this line is
 													// required or not??
 
 				}
 
 				else {
-					HashSet<Long> idWithDescription = new HashSet<Long>();
-					idWithDescription.add(id);
+					HashMap<Long,Long>  idWithDescription = new HashMap<Long,Long> ();
+					idWithDescription.put(id,(long) 1);
 					itemDescription.put(desc, idWithDescription);
 
 				}
@@ -937,7 +945,7 @@ public class MultiDimensionalSearch {
 		for (Long desc : arr) {
 			if (itemDescription.containsKey(desc)) {
 				// LinkedList<Long> items = new LinkedList<Long>();
-				if (itemDescription.get(desc).contains(id)) {
+				if (itemDescription.get(desc).containsKey(id)) {
 					itemDescription.get(desc).remove(id);
 					numOfElementsRemoved++;
 				}
@@ -1206,9 +1214,9 @@ public class MultiDimensionalSearch {
 //			private TreeMap<Supplier, TreeSet<ItemPrice>> supplierItemMap = new TreeMap<Supplier, TreeSet<ItemPrice>>(); // Replace LL to Treeset
 			
 			ItemDescOccurence itd;
-			HashSet<Long> items;
+			HashMap<Long,Long> items;
 			
-			HashMap<Long, Integer> idOccurenceMap = new HashMap<Long, Integer>();		
+			HashMap<Long, Long> idOccurenceMap = new HashMap<Long, Long>();		
 			//ItemDescOccurence[] idOccArr;
 			//ItemDescOccurence[] resultArr = null;
 			Long[] resultArr;
@@ -1220,11 +1228,11 @@ public class MultiDimensionalSearch {
 				items = itemDescription.get(desc);
 				if(items!=null){
 				
-				for(Long item : items){
+				for(Long item : items.keySet()){
 					if(!idOccurenceMap.containsKey(item)){
-						idOccurenceMap.put(item, 1);
+						idOccurenceMap.put(item, items.get(item));
 					}else{
-						idOccurenceMap.put(item, idOccurenceMap.get(item)+1);
+						idOccurenceMap.put(item, idOccurenceMap.get(item)+items.get(item));
 					}				
 				}
 				}
@@ -1233,7 +1241,7 @@ public class MultiDimensionalSearch {
 			// store the entries of the hashmap in the array
 			//idOccArr = new ItemDescOccurence[idOccurenceMap.size()]; 
 					
-			for(Map.Entry<Long, Integer> idOccurence : idOccurenceMap.entrySet()){
+			for(Map.Entry<Long, Long> idOccurence : idOccurenceMap.entrySet()){
 				itd = new ItemDescOccurence();
 				itd.setItemId(idOccurence.getKey());
 				itd.setNumOfOccurence(idOccurence.getValue());
@@ -1265,7 +1273,7 @@ public class MultiDimensionalSearch {
 		}
 
 		private Long[] findItemGivenCriteria(Long n, int minPrice, int maxPrice, float minReputation) {
-			HashSet<Long> listOfItems = null;
+			HashMap<Long,Long> listOfItems = null;
 			TreeSet<SupplierItemInfo> supplierInfo ;
 			SupplierItemInfo sii = new SupplierItemInfo();
 			sii.setReputation(minReputation);
@@ -1278,7 +1286,7 @@ public class MultiDimensionalSearch {
 				listOfItems = itemDescription.get(n);
 				int tempMinPrice;
 				// for each item find the suppliers meeting given criteria
-				for(Long itemId : listOfItems){
+				for(Long itemId : listOfItems.keySet()){
 					it.setId(itemId);
 					tempMinPrice = Integer.MAX_VALUE;
 					// get the supplier item info for that item
