@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import cs6301.g38.DinitzGraph.FVertex;
-import cs6301.g38.Graph.Vertex;
 
 public class RelabelGraph extends Graph {
 
