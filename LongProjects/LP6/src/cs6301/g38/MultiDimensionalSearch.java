@@ -995,9 +995,9 @@ public class MultiDimensionalSearch {
 		SupplierItemInfo sii = new SupplierItemInfo();
 		sii.setReputation(minReputation);
 		List<SupplierItemInfo> supplierWithReputation = new ArrayList<SupplierItemInfo>();
-		Long[] resultArr;
 		SupplierItemInfo[] suppliersByPrice; 
 		
+		int minPrice = 0;
 		int sumOfMinPrice = 0;
 
 		for (Long id : arr) {
@@ -1015,10 +1015,13 @@ public class MultiDimensionalSearch {
 				
 				suppliersByPrice = sortByPrice(supplierWithReputation); 
 				
-				// the min price of the item whose supplier >= minReputation
-				if (result.size() >= 1) {
-					SupplierItemInfo firstElement = suppliersByPrice[0];
-					sumOfMinPrice += firstElement.price;
+				if (suppliersByPrice.length > 0) {
+					minPrice = suppliersByPrice[0].price;
+					int i = 0; 
+					while(i < suppliersByPrice.length && suppliersByPrice[i].price == minPrice ){
+						sumOfMinPrice += suppliersByPrice[i++].price;
+					}
+					
 				}
 			}
 		}
