@@ -1028,35 +1028,56 @@ public class MultiDimensionalSearch {
 		TreeSet<SupplierItemInfo> supplierInfo;
 		SupplierItemInfo sii = new SupplierItemInfo();
 		sii.setReputation(minReputation);
-		List<SupplierItemInfo> supplierWithReputation = new ArrayList<SupplierItemInfo>();
+		List<SupplierItemInfo> supplierWithReputation;
 		SupplierItemInfo[] suppliersByPrice; 
 		
 		int minPrice = 0;
 		int sumOfMinPrice = 0;
 
 		for (Long id : arr) {
-
+			supplierWithReputation = new ArrayList<SupplierItemInfo>();
 			it.setId(id);
 			if (itemSupplierMap.containsKey(it)) {
 				supplierInfo = itemSupplierMap.get(it);
 				
 				// suppliers for the item whose reputation >= minReputation
-				NavigableSet<SupplierItemInfo> result = supplierInfo.tailSet(sii, true);
+				NavigableSet<SupplierItemInfo> itemsWithReputation = supplierInfo.tailSet(sii, true);
 				
-				for(SupplierItemInfo s : result){
-					supplierWithReputation.add(s);
-				}	
-				
-				suppliersByPrice = sortByPrice(supplierWithReputation); 
-				
-				if (suppliersByPrice.length > 0) {
-					minPrice = suppliersByPrice[0].price;
-					int i = 0; 
-					while(i < suppliersByPrice.length && suppliersByPrice[i].price == minPrice ){
-						sumOfMinPrice += suppliersByPrice[i++].price;
+				NavigableSet<SupplierItemInfo> itemsWithReputationH = supplierInfo.headSet(sii,true);
+				int equalsMaxRep=0;
+			
+				for(SupplierItemInfo si : itemsWithReputationH)
+				{
+					if(si.getReputation()== minReputation)
+					{
+						equalsMaxRep++;
+						supplierWithReputation.add(si);
 					}
-					
+					else
+					{
+						break;
+					}
 				}
+				if(itemsWithReputation.size()+equalsMaxRep == itemsWithReputation.size()){
+								
+					for(SupplierItemInfo s : itemsWithReputation){
+						supplierWithReputation.add(s);
+					}	
+					
+					suppliersByPrice = sortByPrice(supplierWithReputation); 
+					
+					if (suppliersByPrice.length > 0) {
+						minPrice = suppliersByPrice[0].price;
+						int i = 0;
+						sumOfMinPrice += suppliersByPrice[0].price;
+//						while(i < suppliersByPrice.length && suppliersByPrice[i].price == minPrice ){
+//							sumOfMinPrice += suppliersByPrice[i++].price;
+//						}
+						
+					}
+				}
+			}else{
+				System.out.println(" Skipping id " + id + " : not available" );
 			}
 		}
 		return sumOfMinPrice;
