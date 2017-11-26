@@ -126,9 +126,7 @@ public class DinitzGraph extends Graph {
 
     }
 
-    @Override
-    public Iterator<Vertex> iterator() { return super.iterator();}
-    		//new DinitzGraphIterator(this); }
+
 
     class DinitzGraphIterator implements Iterator<Vertex> {
 	Iterator<FVertex> it;
@@ -200,7 +198,7 @@ public class DinitzGraph extends Graph {
     	return (Integer.compare(flow, i)>0)?i:flow;
     	}
 
-	public void dinitz()
+	public void dinitz(MaxFlowGraph g)
     {
 		int flow;
     	bfsHelper.bfs();
