@@ -2,14 +2,14 @@ package cs6301.g38;
 
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
-import java.util.Set;
 
-import cs6301.g38.BFS.BFSVertex;
+import cs6301.g38.Graph.Edge;
+import cs6301.g38.Graph.Vertex;
 
 
 
@@ -87,18 +87,13 @@ public class DinitzGraph extends Graph {
 	private Vertex terminal;
 	 int maxFlow;
 	private BFS bfsHelper;
-	private FEdge[] reverseEdge,forwardEdge;
-	
-	private Set<Vertex> minCutS = new HashSet<>();
-	private Set<Vertex> minCutT= new HashSet<>();
-	
+	private FEdge[] reverseEdge;
     public DinitzGraph(Graph g,Vertex source, Vertex terminal, HashMap<Edge, Integer> capacity) {
 	super(g);
 	this.src = source;
 	this.terminal = terminal;
 	fv = new FVertex[g.size()];  // Extra space is allocated in array for nodes to be added later
-	reverseEdge = new FEdge[this.edgeSize()];
-	forwardEdge = new FEdge[this.edgeSize()];
+	reverseEdge = new FEdge[this.edgeSize()+1];
         for(Vertex u: g) {
             fv[u.getName()] = new FVertex(u);
         }
@@ -109,18 +104,16 @@ public class DinitzGraph extends Graph {
 		Vertex v = e.otherEnd(u);
 		FVertex x1 = getVertex(u);
 		FVertex x2 = getVertex(v);
-		FEdge frwdE=new FEdge(x1, x2, e.weight, capacity.get(e),e.name);
-		forwardEdge[e.name-1]=frwdE;
-		x1.adjEdge.add(frwdE);
-		FEdge revE = new FEdge(x2, x1, e.weight,0,e.name);
+		x1.adjEdge.add(new FEdge(x1, x2, e.weight, capacity.get(e),e.name));
+		FEdge revE = new FEdge(x2, x1, e.weight,capacity.get(e),e.name);
 		x2.residualEdge.add(revE);
-		reverseEdge[e.name-1]= revE;
+		reverseEdge[e.name]= revE;
 
 	    }
 	}
 	
-	for(FVertex u: fv) {		
-		u.adjEdge.addAll(u.residualEdge);
+	for(Vertex u: g) {		
+		u.adj.addAll(u.revAdj);
 	}
 	bfsHelper = new BFS(this,this.src);
 
@@ -167,27 +160,39 @@ public class DinitzGraph extends Graph {
 	return Vertex.getVertex(fv, u);
     }
 
+    void disable(int i) {
+	FVertex u = (FVertex) getVertex(i);
+	//u.visit();
+    }
     
     
   private int sendFlow(Vertex vertex, int flow)
     {
+        // Sink reached
         if (vertex.equals(terminal))
             return flow;
      
+        // Traverse all adjacent edges one -by - one.
         for (Edge e : vertex)
         {
            Vertex otherVertex =  e.otherEnd(vertex);
             FEdge fe = (FEdge) e  ;                          
             if (bfsHelper.distance(otherVertex) == (bfsHelper.distance(vertex)+1))
             {
+                // find minimum flow from u to t
                 int curr_flow = findMin(flow, fe.capacity - fe.flow);
      
                 int temp_flow = sendFlow(getVertex(otherVertex), curr_flow);
      
+                // flow is greater than zero
                 if (temp_flow > 0)
                 {
+                    // add flow  to current edge
                     fe.flow += temp_flow;
-                    reverseEdge[e.name-1].flow -= temp_flow;
+     
+                    // subtract flow from reverse edge
+                    // of current edge
+                    reverseEdge[e.name].flow =fe.capacity- temp_flow;
                     return temp_flow;
                 }
             }
@@ -219,34 +224,13 @@ public class DinitzGraph extends Graph {
         	bfsHelper.bfs();
 
     	}
-    	
-    	for(Vertex v: this)
-    	{
-    		BFSVertex bfsV = bfsHelper.getVertex(v);
-    		if(bfsV.distance!=BFS.INFINITY)
-    		{
-    			minCutS.add(v);
-    		}
-    		else
-    		{
-    			minCutT.add(v);
-    		}
-    	}
-    	
     }
-
-	public Set<Vertex> getMinCutS() {
-		return minCutS;
-	}
-
-	public Set<Vertex> getMinCutT() {
-		return minCutT;
-	}
     
-	public int flow(Edge e)
-	{
-		return forwardEdge[e.name-1].flow;
-	}
  
+    public static void main(String[] args) {
+        Graph g = Graph.readDirectedGraph(new Scanner(System.in));
+
+	
+    }
 
 }
