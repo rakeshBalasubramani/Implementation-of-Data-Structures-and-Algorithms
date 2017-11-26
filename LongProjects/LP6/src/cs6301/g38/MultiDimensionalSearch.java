@@ -2,6 +2,7 @@ package cs6301.g38;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -204,6 +205,8 @@ public class MultiDimensionalSearch {
 			return ((reputationDiff == 0) ? Integer.compare(this.price, sio.getPrice()) : reputationDiff);
 			// return (int) (this.reputation-sio.reputation);
 		}
+		
+		
 
 		@Override
 		public boolean equals(Object obj) {
@@ -224,6 +227,23 @@ public class MultiDimensionalSearch {
 		}
 
 	}
+	
+	
+	private class PriceComparator implements Comparator<SupplierItemInfo>{
+
+		@Override
+		public int compare(SupplierItemInfo sp1, SupplierItemInfo sp2) {
+			if(sp1.getPrice() > sp2.getPrice()){
+				return 1;
+			}else{
+				return -1;
+			}
+			
+		}
+		
+	}
+	
+	
 
 	public static class ItemPrice implements Comparable<ItemPrice> {
 		private long id;
@@ -1031,19 +1051,30 @@ public class MultiDimensionalSearch {
 		}
 
 		private Long[] findSupplierForId(Long id){
-			HashSet<Long> supplierResult = new HashSet<Long>();
+			//HashSet<Long> supplierResult = new HashSet<Long>();
+			List<SupplierItemInfo> supplierResult = new ArrayList<SupplierItemInfo>();
 			TreeSet<SupplierItemInfo> supplierInfo ;
-			it.setId(id);
+			Long[] resultArr;
+			int i=0;
 			
+			it.setId(id);
+				
 			if(itemSupplierMap.containsKey(it)){
 				supplierInfo = itemSupplierMap.get(it);  
-				//System.out.println("\t supplier info for item " + it.id + " = " + supplierInfo);
-							
+				//System.out.println("\t supplier info for item " + it.id + " = " + supplierInfo);							
 				for(SupplierItemInfo s : supplierInfo){
-					supplierResult.add(s.vid);
-				}
-			}		
-			return supplierResult.toArray(new Long[supplierResult.size()]);		
+					supplierResult.add(s);
+				}				
+			}	
+			Collections.sort(supplierResult, new PriceComparator());
+			resultArr = new Long[supplierResult.size()];
+			
+			for(SupplierItemInfo supplier : supplierResult){
+				resultArr[i++] = supplier.getVid();
+			}
+			
+			
+			return resultArr;		
 			
 		}
 		
