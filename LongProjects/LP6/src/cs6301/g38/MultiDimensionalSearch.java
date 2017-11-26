@@ -971,24 +971,30 @@ public class MultiDimensionalSearch {
 		TreeSet<SupplierItemInfo> supplierInfo;
 		SupplierItemInfo sii = new SupplierItemInfo();
 		sii.setReputation(minReputation);
-
+		List<SupplierItemInfo> supplierWithReputation = new ArrayList<SupplierItemInfo>();
+		Long[] resultArr;
+		SupplierItemInfo[] suppliersByPrice; 
+		
 		int sumOfMinPrice = 0;
 
 		for (Long id : arr) {
 
 			it.setId(id);
 			if (itemSupplierMap.containsKey(it)) {
-				// Item it1 = getItemDetails(it);
-				// System.out.println("item details from func " + it1.id + "
-				// desc " + it1.description );
 				supplierInfo = itemSupplierMap.get(it);
-				//System.out.println("\t supplier info for item " + it.id + " = " + supplierInfo);
-
+				
 				// suppliers for the item whose reputation >= minReputation
 				NavigableSet<SupplierItemInfo> result = supplierInfo.tailSet(sii, true);
+				
+				for(SupplierItemInfo s : result){
+					supplierWithReputation.add(s);
+				}	
+				
+				suppliersByPrice = sortByPrice(supplierWithReputation); 
+				
 				// the min price of the item whose supplier >= minReputation
 				if (result.size() >= 1) {
-					SupplierItemInfo firstElement = result.first();
+					SupplierItemInfo firstElement = suppliersByPrice[0];
 					sumOfMinPrice += firstElement.price;
 				}
 			}
@@ -1066,27 +1072,44 @@ public class MultiDimensionalSearch {
 			//HashSet<Long> supplierResult = new HashSet<Long>();
 			List<SupplierItemInfo> supplierResult = new ArrayList<SupplierItemInfo>();
 			TreeSet<SupplierItemInfo> supplierInfo ;
+			SupplierItemInfo[] suppliersByPrice; 
 			Long[] resultArr;
-			int i=0;
+			int i = 0;
 			
 			it.setId(id);
 				
 			if(itemSupplierMap.containsKey(it)){
 				supplierInfo = itemSupplierMap.get(it);  
-				//System.out.println("\t supplier info for item " + it.id + " = " + supplierInfo);							
 				for(SupplierItemInfo s : supplierInfo){
 					supplierResult.add(s);
 				}				
-			}	
-			Collections.sort(supplierResult, new PriceComparator());
+			}
+			
+			suppliersByPrice = sortByPrice(supplierResult); 			
+					
+//			Collections.sort(supplierResult, new PriceComparator());
 			resultArr = new Long[supplierResult.size()];
 			
-			for(SupplierItemInfo supplier : supplierResult){
+			for(SupplierItemInfo supplier : suppliersByPrice){
 				resultArr[i++] = supplier.getVid();
 			}
 			
-			
 			return resultArr;		
+			
+		}
+		
+		private SupplierItemInfo[] sortByPrice(List<SupplierItemInfo> supplierResult){
+			SupplierItemInfo[] resultArr;
+			int i = 0;
+			
+			Collections.sort(supplierResult, new PriceComparator());
+			resultArr = new SupplierItemInfo[supplierResult.size()];
+			
+			for(SupplierItemInfo supplier : supplierResult){
+				resultArr[i++] = supplier;
+			}
+					
+			return resultArr;
 			
 		}
 		
@@ -1097,26 +1120,41 @@ public class MultiDimensionalSearch {
 		
 		private Long[] findSupplierForId(Long id, float minReputation) {
 
-			HashSet<Long> supplierResult = new HashSet<Long>();
 			TreeSet<SupplierItemInfo> supplierInfo ;
+			List<SupplierItemInfo> supplierWithReputation = new ArrayList<SupplierItemInfo>();
+			Long[] resultArr;
+			SupplierItemInfo[] suppliersByPrice; 
+			int i = 0;
+			
 			SupplierItemInfo sii = new SupplierItemInfo();
 			sii.setReputation(minReputation);
 			it.setId(id);
 			
 			if(itemSupplierMap.containsKey(it)){
 				supplierInfo = itemSupplierMap.get(it);
-				//System.out.println("\t supplier info for item " + it.id + " = " + supplierInfo);
 				
 				// suppliers for the item whose reputation >= minReputation
 				NavigableSet<SupplierItemInfo> result = supplierInfo.tailSet(sii, true);
-				//System.out.println("\t supplier info for item " + it.id + " = " + supplierInfo);
 				
 				for(SupplierItemInfo s : result){
-					supplierResult.add(s.vid);
-				}
-					
-			}		
-			return supplierResult.toArray(new Long[supplierResult.size()]);
+					supplierWithReputation.add(s);
+				}				
+			}
+			
+			suppliersByPrice= sortByPrice(supplierWithReputation);
+			
+//			Collections.sort(supplierWithReputation, new PriceComparator());
+			resultArr = new Long[supplierWithReputation.size()];
+			
+			for(SupplierItemInfo supplier : suppliersByPrice){
+				resultArr[i++] = supplier.getVid();
+			}
+			
+			
+			return resultArr;	
+			
+			//return supplierResult.toArray(new Long[supplierResult.size()]);
+			
 		}
 
 		public Long[] findItem(Long[] arr) {
