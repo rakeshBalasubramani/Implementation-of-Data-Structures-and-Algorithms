@@ -1,10 +1,9 @@
-
 package cs6301.g38;
 import cs6301.g38.MDS.Pair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -95,6 +94,11 @@ public class LP6 {
 	MDS mds = new MDS();
 	Timer timer = new Timer();
 	int lineno = 0;
+	
+	PrintStream o = new PrintStream(new File("Test.txt"));
+	 
+    // Assign o to output stream
+    System.setOut(o);
 	
 	while (in.hasNext() && !((operation = in.next()).equals("End"))) {
 	    lineno++;

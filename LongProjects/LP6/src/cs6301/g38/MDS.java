@@ -1,4 +1,3 @@
-
 package cs6301.g38;
 
 public class MDS {
@@ -9,6 +8,10 @@ public class MDS {
     }
 
     public static class Pair {
+	@Override
+		public String toString() {
+			return "Pair [id=" + id + ", price=" + price + "]";
+		}
 	long id;
 	int price;
 	public Pair(long id, int price) {
