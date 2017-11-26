@@ -20,23 +20,26 @@ public class MDSDriver {
 		// Question (a)
 		
 		boolean status=mds.add(12L, description1);
-		System.out.println("Status:"+status);
 		System.out.println("---------------------");
-		//mds.printItems();
+		System.out.println("a:Status:"+status);
+		System.out.println("---------------------");
+		mds.printItems();
 		
 
 		status=mds.add(3L, description2);
-		System.out.println("Status:"+status);
 		System.out.println("---------------------");
-		
+		System.out.println("a:Status:"+status);
+		System.out.println("---------------------");
+		mds.printItems();
 		//status=mds.add(12L, description);
 		
-		//mds.printItems();
+		mds.printItems();
 		
 		status=mds.add(12L, description2);
-		System.out.println("Status:"+status);
 		System.out.println("---------------------");
-		
+		System.out.println("a:Status:"+status);
+		System.out.println("---------------------");
+		mds.printItems();
 //		// 
 //		// e - findItem 
 //		System.out.println("\n find Item ");
@@ -63,34 +66,41 @@ public class MDSDriver {
 		// Question (b)
 		
 		status=mds.add(435345L,2.3f);
-		System.out.println("Status:"+status);
 		System.out.println("---------------------");
-		
+		System.out.println("b:Status:"+status);
+		System.out.println("---------------------");
+		mds.printItems();
 		
 		status=mds.add(36534L, 4.8f);
-		System.out.println("Status:"+status);
 		System.out.println("---------------------");
-		
+		System.out.println("b:Status:"+status);
+		System.out.println("---------------------");
+		mds.printItems();
 		
 		status=mds.add(435345L, 3.7f);
-		System.out.println("Status:"+status);
 		System.out.println("---------------------");
+		System.out.println("b:Status:"+status);
+		System.out.println("---------------------");
+		mds.printItems();
 		
 		// Question (c)
 		
 		int noOfProd=mds.add(435345L, pair);
+		System.out.println("---------------------");
 		System.out.println("New Products count:"+noOfProd);
 		System.out.println("---------------------");
 		mds.printItems();
 		System.out.println("---------------------");
 		
 		noOfProd=mds.add(36534L, pair1);
+		System.out.println("---------------------");
 		System.out.println("New Products count:"+noOfProd);
 		System.out.println("---------------------");
 		mds.printItems();
 		System.out.println("---------------------");
 		
 		noOfProd=mds.add(983621L, pair);
+		System.out.println("---------------------");
 		System.out.println("New Products count:"+noOfProd);
 		System.out.println("---------------------");
 		mds.printItems();

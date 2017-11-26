@@ -21,7 +21,8 @@ public class Flow {
     public int dinitzMaxFlow() {
     	
     	DinitzGraph dg = new DinitzGraph(g,source, terminal,capacity);
-	return 0;
+    	dg.dinitz();
+	return dg.maxFlow;
     }
 
     // Return max flow found by relabelToFront algorithm

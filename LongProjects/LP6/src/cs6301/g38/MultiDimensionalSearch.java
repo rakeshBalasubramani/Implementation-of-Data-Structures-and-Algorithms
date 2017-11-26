@@ -716,14 +716,6 @@ public class MultiDimensionalSearch {
 			s.setReputation(rep);
 			if (supplierItemMap.containsKey(s)) {
 
-				// Set<Supplier> supplierSet = supplierItemMap.keySet();
-				//
-				// supplierArr = new Supplier[supplierSet.size()];
-				// supplierSet.toArray(supplierArr);
-				//
-				// int sIndex = BinarySearch.recursiveBinarySearch(supplierArr,
-				// s);
-				// Supplier supplier = supplierArr[sIndex];
 
 				Supplier supplier = s;
 
@@ -737,9 +729,9 @@ public class MultiDimensionalSearch {
 
 						isnewProd = true;
 						Item item;
-						ip.setId(p.id);
 						item = getItemDetails(it);
 
+						ip.setId(p.id);
 						if (ipSet.contains(ip)) {
 
 							itemPriceArr = new ItemPrice[ipSet.size()];
@@ -796,11 +788,15 @@ public class MultiDimensionalSearch {
 						}
 
 					} else {
-						// item= new Item();
-						// item.setId(p.id);
-						// supplierItemSet = new TreeSet<>();
-						// supplierItemSet.add(si);
-						System.out.println("UNKNOWN ITEM:" + it.getId());
+						Item item= new Item();
+						 item.setId(p.id);
+						 ipSet.add(new ItemPrice(p.id,p.price));
+						newProductscount++; 
+						 supplierItemSet = new TreeSet<>();
+						SupplierItemInfo si = new SupplierItemInfo(p.id, vid, supplier.getReputation(), p.price);
+						supplierItemSet.add(si);
+						itemSupplierMap.put(item, supplierItemSet);
+						//System.out.println("UNKNOWN ITEM:" + it.getId());
 					}
 
 				}
@@ -810,55 +806,51 @@ public class MultiDimensionalSearch {
 		}
 
 		else
-			// {
-			//
-			//
-			System.out.println("UNKNOWN SUPPLIER:" + vid);
-		//
-		//
-		// Supplier supplier = new Supplier(vid, 0.0f);
-		//
-		// TreeSet<ItemPrice> itemPriceSet = new TreeSet<>();
-		// Item ite;
-		//
-		//
-		// for (Pair p : idPrice) {
-		// itemPriceSet.add(new ItemPrice(p.id, p.price));
-		// newProductscount++;
-		//
-		// it.setId(p.id);
-		//
-		// if (itemSupplierMap.containsKey(it)) {
-		//
-		// ite=getItemDetails(it);
-		//
-		// SupplierItemInfo sio= new SupplierItemInfo(p.id,vid,0.0f,p.price);
-		// TreeSet<SupplierItemInfo> supplierItemInfoSet=
-		// itemSupplierMap.get(ite);
-		//
-		// supplierItemInfoSet.add(sio);
-		// itemSupplierMap.put(ite, supplierItemInfoSet);
-		//
-		//
-		// }
-		// else
-		// {
-		// TreeSet<SupplierItemInfo> supplierItemInfoSet= new
-		// TreeSet<SupplierItemInfo>();
-		// ite= new Item();
-		// ite.setId(p.id);
-		//
-		// SupplierItemInfo sio= new SupplierItemInfo(p.id,vid,0.0f,p.price);
-		// supplierItemInfoSet.add(sio);
-		//
-		// itemSupplierMap.put(ite, supplierItemInfoSet);
-		// }
-		//
-		//
-		// }
-		//
-		// supplierItemMap.put(supplier, itemPriceSet);
-		// }
+			{ 
+			
+			//System.out.println("UNKNOWN SUPPLIER:" + vid);
+		
+		 Supplier supplier = new Supplier(vid, 0.0f);
+		
+		 TreeSet<ItemPrice> itemPriceSet = new TreeSet<>();
+		 Item ite;
+		
+		
+		 for (Pair p : idPrice) {
+		 itemPriceSet.add(new ItemPrice(p.id, p.price));
+		 
+		
+		 it.setId(p.id);
+		
+		 if (itemSupplierMap.containsKey(it)) {
+		
+		 ite=getItemDetails(it);
+		
+		 SupplierItemInfo sio= new SupplierItemInfo(p.id,vid,0.0f,p.price);
+		 TreeSet<SupplierItemInfo> supplierItemInfoSet=itemSupplierMap.get(ite);
+		
+		 supplierItemInfoSet.add(sio);
+		 itemSupplierMap.put(ite, supplierItemInfoSet);
+		 newProductscount++;
+		
+		 }
+		 else
+		 {
+			newProductscount++;
+		 TreeSet<SupplierItemInfo> supplierItemInfoSet= new TreeSet<SupplierItemInfo>();
+		 ite= new Item();
+		 ite.setId(p.id);
+		
+		 SupplierItemInfo sio= new SupplierItemInfo(p.id,vid,0.0f,p.price);
+		 supplierItemInfoSet.add(sio);
+		
+		 itemSupplierMap.put(ite, supplierItemInfoSet);
+		 }
+	 }
+		
+		 supplierItemMap.put(supplier, itemPriceSet);
+		 suppplierIdReputation.put(vid,0.0f);
+		 }
 
 		return newProductscount;
 
@@ -988,48 +980,48 @@ public class MultiDimensionalSearch {
 
 	public void printItems() {
 
-//	//	System.out.println("\n--------- Present Item Information \n item supplier map -----------");
-//		for (Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo : itemSupplierMap.entrySet()) {
-//		//	System.out.println("###");
-//			System.out.println("id:" + iteminfo.getKey().id);
-//
-//			if (iteminfo.getKey().description != null) {
-//				for (long d : iteminfo.getKey().description) {
-//					System.out.println(d);
-//				}
-//			} else {
-//				System.out.println("No description");
-//			}
-//
-//			TreeSet<SupplierItemInfo> supplierInfo = iteminfo.getValue();
-//
-//			System.out.println("Value of Item--Supplier Map");
-//			System.out.println("-------");
-//
-//			for (SupplierItemInfo sii : supplierInfo) {
-//				System.out.println("Supplier id:" + sii.getVid());
-//				System.out.println("Supplier Reputation:" + sii.getReputation());
-//				System.out.println("Item id:" + sii.getId());
-//				System.out.println("Item Price:" + sii.getPrice());
-//			}
-//
-//		}
-//
-//		System.out.println("\n---------   supplier item map -----------");
-//
-//		for (Entry<Supplier, TreeSet<ItemPrice>> map : supplierItemMap.entrySet()) {
-//			Supplier up = map.getKey();
-//			TreeSet<ItemPrice> ip = map.getValue();
-//
-//			System.out.println("Supplier id:" + up.getVid());
-//			System.out.println("Supplier Reputation:" + up.getReputation());
-//
-//			for (ItemPrice i : ip) {
-//				System.out.println("Item id:" + i.getId());
-//				System.out.println("Item Price:" + i.getPrice());
-//			}
-//
-//		}
+		System.out.println("\n--------- Present Item Information \n item supplier map -----------");
+		for (Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo : itemSupplierMap.entrySet()) {
+			System.out.println("###");
+			System.out.println("id:" + iteminfo.getKey().id);
+
+			if (iteminfo.getKey().description != null) {
+				for (long d : iteminfo.getKey().description) {
+					System.out.println(d);
+				}
+			} else {
+				System.out.println("No description");
+			}
+
+			TreeSet<SupplierItemInfo> supplierInfo = iteminfo.getValue();
+
+			System.out.println("Value of Item--Supplier Map");
+			System.out.println("-------");
+
+			for (SupplierItemInfo sii : supplierInfo) {	
+				System.out.println("Supplier id:" + sii.getVid());
+				System.out.println("Supplier Reputation:" + sii.getReputation());
+				System.out.println("Item id:" + sii.getId());
+				System.out.println("Item Price:" + sii.getPrice());
+			}
+
+		}
+
+		System.out.println("\n---------   supplier item map -----------");
+
+		for (Entry<Supplier, TreeSet<ItemPrice>> map : supplierItemMap.entrySet()) {
+			Supplier up = map.getKey();
+			TreeSet<ItemPrice> ip = map.getValue();
+
+			System.out.println("Supplier id:" + up.getVid());
+			System.out.println("Supplier Reputation:" + up.getReputation());
+
+			for (ItemPrice i : ip) {
+				System.out.println("Item id:" + i.getId());
+				System.out.println("Item Price:" + i.getPrice());
+			}
+
+		}
 
 	}
 
@@ -1044,7 +1036,7 @@ public class MultiDimensionalSearch {
 			it.setId(id);
 			
 			if(itemSupplierMap.containsKey(it)){
-				supplierInfo = itemSupplierMap.get(it);
+				supplierInfo = itemSupplierMap.get(it);  
 				//System.out.println("\t supplier info for item " + it.id + " = " + supplierInfo);
 							
 				for(SupplierItemInfo s : supplierInfo){
