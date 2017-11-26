@@ -604,8 +604,21 @@ public class MultiDimensionalSearch {
 			Item item = itemInfo.getKey();
 			TreeSet<SupplierItemInfo> value = itemInfo.getValue();
 			
-			NavigableSet<SupplierItemInfo> itemsWithReputation = value.tailSet(sii, false);
-			if(itemsWithReputation.size() == 0){
+			NavigableSet<SupplierItemInfo> itemsWithReputation = value.headSet(sii,false);
+			NavigableSet<SupplierItemInfo> itemsWithReputationT = value.tailSet(sii,true);
+			int equalsMaxRep=0;
+			for(SupplierItemInfo si : itemsWithReputationT)
+			{
+				if(si.getReputation()== maxReputation)
+				{
+					equalsMaxRep++;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if(itemsWithReputation.size()+equalsMaxRep == value.size()){
 				result.add(item.id);
 				//remove(item.id);
 			}		
