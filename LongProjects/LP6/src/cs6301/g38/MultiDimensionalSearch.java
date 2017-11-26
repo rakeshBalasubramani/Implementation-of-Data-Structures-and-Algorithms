@@ -347,7 +347,19 @@ public class MultiDimensionalSearch {
 				
 	}	
 
+	private class OccComparator implements Comparator<ItemDescOccurence>{
 
+		@Override
+		public int compare(ItemDescOccurence sp1, ItemDescOccurence sp2) {
+			if(sp1.getNumOfOccurence() < sp2.getNumOfOccurence()){
+				return 1;
+			}else{
+				return -1;
+			}
+			
+		}
+		
+	}
 	
 	public MultiDimensionalSearch() {
 
@@ -1121,10 +1133,10 @@ public class MultiDimensionalSearch {
 			HashSet<Long> items;
 			
 			HashMap<Long, Integer> idOccurenceMap = new HashMap<Long, Integer>();		
-			ItemDescOccurence[] idOccArr;
-			ItemDescOccurence[] resultArr = null;
-			Long[] finalResultArr = null;
-			
+			//ItemDescOccurence[] idOccArr;
+			//ItemDescOccurence[] resultArr = null;
+			Long[] resultArr;
+			List<ItemDescOccurence> idOccList = new ArrayList<ItemDescOccurence>();
 			int i = 0;
 			
 			// store id, occurence in idOccurenceMap		
@@ -1143,24 +1155,32 @@ public class MultiDimensionalSearch {
 			}
 		
 			// store the entries of the hashmap in the array
-			idOccArr = new ItemDescOccurence[idOccurenceMap.size()]; 
+			//idOccArr = new ItemDescOccurence[idOccurenceMap.size()]; 
 					
 			for(Map.Entry<Long, Integer> idOccurence : idOccurenceMap.entrySet()){
 				itd = new ItemDescOccurence();
 				itd.setItemId(idOccurence.getKey());
 				itd.setNumOfOccurence(idOccurence.getValue());
-				idOccArr[i++] = itd;	
+				idOccList.add(itd);
+				//idOccArr[i++] = itd;	
 				
 			}
-			resultArr = Arrays.copyOf(idOccArr, idOccArr.length);
-			// sort based on the num of Occurence
-			MergeSort.mergeSort(idOccArr, resultArr);
-			finalResultArr = new Long[idOccArr.length];
 			
-			for(int j = 0; j < idOccArr.length ; j++){
-				finalResultArr[j] = idOccArr[j].itemId;
+			Collections.sort(idOccList, new OccComparator());
+			
+			resultArr = new Long[idOccList.size()];
+			for(ItemDescOccurence it : idOccList){
+				resultArr[i++] = it.getItemId();
 			}
-			return finalResultArr;
+			
+			//resultArr = Arrays.copyOf(idOccArr, idOccArr.length);
+			// sort based on the num of Occurence
+			
+			//MergeSort.mergeSort(idOccArr, resultArr);
+			//finalResultArr = new Long[idOccArr.length];
+			
+			
+			return resultArr;
 		}
 			
 		
