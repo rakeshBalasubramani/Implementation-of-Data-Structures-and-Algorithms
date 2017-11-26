@@ -27,7 +27,9 @@ public class Flow {
 
     // Return max flow found by relabelToFront algorithm
     public int relabelToFront() {
-	return 0;
+    	RelabelGraph rg = new RelabelGraph(g,source,terminal,capacity);
+    	rg.relabelToFront();
+    	return rg.getMaxFlow();
     }
 
     // flow going through edge e
