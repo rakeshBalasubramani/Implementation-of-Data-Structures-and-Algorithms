@@ -244,11 +244,16 @@ public class MultiDimensionalSearch {
 
 		@Override
 		public int compare(SupplierItemInfo sp1, SupplierItemInfo sp2) {
-			if(sp1.getPrice() > sp2.getPrice()){
-				return 1;
-			}else{
-				return -1;
-			}
+			
+			int priceDiff = Float.compare(sp1.price, sp2.price);
+			return ((priceDiff==0))?Long.compare(sp1.vid, sp2.vid):priceDiff;
+			
+			
+//			if(sp1.getPrice() > sp2.getPrice()){
+//				return 1;
+//			}else{
+//				return -1;
+//			}
 			
 		}
 		
