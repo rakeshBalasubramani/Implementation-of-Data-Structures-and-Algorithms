@@ -1,75 +1,61 @@
-package cs6301.g38;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+package cs6301.g38;
 
 import cs6301.g38.Graph.Edge;
 import cs6301.g38.Graph.Vertex;
 
 public class LP7 {
-    static int VERBOSE = 0;
-    public static void main(String[] args) {
-	if(args.length > 0) { VERBOSE = Integer.parseInt(args[0]); }
-	java.util.Scanner in = new java.util.Scanner(System.in);
-	Graph g = Graph.readDirectedGraph(in);
-	Timer timer = new Timer();
-	int s = in.nextInt();
-	int t = in.nextInt();
-	java.util.HashMap<Edge,Integer> capacity = new java.util.HashMap<>();
-	int[] arr = new int[1 + g.edgeSize()];
-	for(int i=1; i<=g.edgeSize(); i++) {
-	    arr[i] = 1;   // default capacity
-	}
-	while(in.hasNextInt()) {
-	    int i = in.nextInt();
-	    int cap = in.nextInt();
-	    arr[i] = cap;
-	}
-	for(Vertex u: g) {
-	    for(Edge e: u) {
-		capacity.put(e, arr[e.getName()]);
-	    }
-	}
+	static int VERBOSE = 0;
 
-	Flow f = new Flow(g, g.getVertex(s), g.getVertex(t), capacity);
-	//f.setVerbose(VERBOSE);
-	int value = f.dinitzMaxFlow();//f.relabelToFront();
-
-	/* Uncomment this if you have implemented verify()
-	if(f.verify()) {
-	    System.out.println("Max flow is verified");
-	} else {
-	    System.out.println("Algorithm is wrong. Verification failed.");
-	}
-	*/
-
-	System.out.println(value);
-
-	if(VERBOSE > 0) {
-		
-//		try {
-//			PrintStream o = new PrintStream(new File("A.txt"));
-//			System.setOut(o);
-//	        System.out.println("This will be written to the text file");
-//	 
-//		} catch (FileNotFoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		
-	    for(Vertex u: g) {
-		System.out.print(u + " : ");
-		for(Edge e: u) {
-		    System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e) + " | ");
+	public static void main(String[] args) {
+		if (args.length > 0) {
+			VERBOSE = Integer.parseInt(args[0]);
 		}
-		System.out.println();
-	    }
-	    System.out.println("Min cut: S = " + f.minCutS());
-	    System.out.println("Min cut: T = " + f.minCutT());
-	}
+		java.util.Scanner in = new java.util.Scanner(System.in);
+		Graph g = Graph.readDirectedGraph(in);
+		Timer timer = new Timer();
+		int s = in.nextInt();
+		int t = in.nextInt();
+		java.util.HashMap<Edge, Integer> capacity = new java.util.HashMap<>();
+		int[] arr = new int[1 + g.edgeSize()];
+		for (int i = 1; i <= g.edgeSize(); i++) {
+			arr[i] = 1; // default capacity
+		}
+		while (in.hasNextInt()) {
+			int i = in.nextInt();
+			int cap = in.nextInt();
+			arr[i] = cap;
+		}
+		for (Vertex u : g) {
+			for (Edge e : u) {
+				capacity.put(e, arr[e.getName()]);
+			}
+		}
+		Flow f = new Flow(g, g.getVertex(s), g.getVertex(t), capacity);
+		// f.setVerbose(VERBOSE);
+//		int value = f.dinitzMaxFlow(); 
+		int value = f.relabelToFront();
 
-	System.out.println(timer.end());
-    }
+		/*
+		 * Uncomment this if you have implemented verify() if(f.verify()) {
+		 * System.out.println("Max flow is verified"); } else {
+		 * System.out.println("Algorithm is wrong. Verification failed."); }
+		 */
+
+		System.out.println(value);
+
+		if (VERBOSE > 0) {
+			for (Vertex u : g) {
+				System.out.print(u + " : ");
+				for (Edge e : u) {
+					System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e) + " | ");
+				}
+				System.out.println();
+			}
+			System.out.println("Min cut: S = " + f.minCutS());
+			System.out.println("Min cut: T = " + f.minCutT());
+		}
+
+		System.out.println(timer.end());
+	}
 }
-	
