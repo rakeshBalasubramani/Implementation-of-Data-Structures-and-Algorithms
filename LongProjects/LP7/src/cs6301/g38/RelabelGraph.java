@@ -192,11 +192,13 @@ public class RelabelGraph extends Graph {
 	}
 
 	private void push(FVertex u, FVertex v, FEdge e) {
-		int delta = Math.min(u.getExcess(), e.getCapacity()-e.getFlow());
+		int delta;
 		if (e.from.equals(u)) {
+			delta = Math.min(u.getExcess(), e.getCapacity()-e.getFlow());
 			e.setFlow(e.getFlow() + delta);
 			v.parent = u;
 		} else {
+			delta = Math.min(u.getExcess(), e.getCapacity()-e.getFlow()+u.getExcess());
 			e.setFlow(e.getFlow() - delta);
 		}
 		u.setExcess(u.getExcess() - delta);
