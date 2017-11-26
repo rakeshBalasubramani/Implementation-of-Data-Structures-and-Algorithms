@@ -1,10 +1,11 @@
-
 package cs6301.g38;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 
 import cs6301.g38.Graph.Edge;
 import cs6301.g38.Graph.Vertex;
-
-
 
 public class LP7 {
     static int VERBOSE = 0;
@@ -33,7 +34,7 @@ public class LP7 {
 
 	Flow f = new Flow(g, g.getVertex(s), g.getVertex(t), capacity);
 	//f.setVerbose(VERBOSE);
-	int value = f.dinitzMaxFlow(); //f.relabelToFront();
+	int value = f.dinitzMaxFlow();//f.relabelToFront();
 
 	/* Uncomment this if you have implemented verify()
 	if(f.verify()) {
@@ -46,6 +47,17 @@ public class LP7 {
 	System.out.println(value);
 
 	if(VERBOSE > 0) {
+		
+//		try {
+//			PrintStream o = new PrintStream(new File("A.txt"));
+//			System.setOut(o);
+//	        System.out.println("This will be written to the text file");
+//	 
+//		} catch (FileNotFoundException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		
 	    for(Vertex u: g) {
 		System.out.print(u + " : ");
 		for(Edge e: u) {
