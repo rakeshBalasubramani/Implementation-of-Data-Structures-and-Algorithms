@@ -152,6 +152,14 @@ public class MultiDimensionalSearch {
 
 	public static class SupplierItemInfo implements Comparable<SupplierItemInfo> {
 
+		@Override
+		public String toString() {
+			return "SupplierItemInfo [id=" + id + ", vid=" + vid + ", reputation=" + reputation + ", price=" + price
+					+ "]";
+		}
+
+
+
 		private long id, vid;
 		private float reputation;
 		private int price;
@@ -202,7 +210,10 @@ public class MultiDimensionalSearch {
 		@Override
 		public int compareTo(SupplierItemInfo sio) {
 			int reputationDiff = Float.compare(this.reputation, sio.getReputation());
-			return ((reputationDiff == 0) ? Integer.compare(this.price, sio.getPrice()) : reputationDiff);
+			int priceDiff= ((reputationDiff == 0) ? Integer.compare(this.price, sio.getPrice()) : reputationDiff);
+			return ((priceDiff==0))?Long.compare(this.vid, sio.vid):priceDiff;
+			
+			//return ((reputationDiff == 0) ? Integer.compare(this.price, sio.getPrice()) : reputationDiff);
 			// return (int) (this.reputation-sio.reputation);
 		}
 		
@@ -246,6 +257,11 @@ public class MultiDimensionalSearch {
 	
 
 	public static class ItemPrice implements Comparable<ItemPrice> {
+		@Override
+		public String toString() {
+			return "ItemPrice [id=" + id + ", price=" + price + "]";
+		}
+
 		private long id;
 		private int price;
 
@@ -807,6 +823,11 @@ public class MultiDimensionalSearch {
 
 						else if (isnewProd) {
 
+							if(vid==4543 && p.id==9891)
+							{
+								System.out.println("");
+							}
+							
 							newProductscount++;
 							ItemPrice newItemPrice = new ItemPrice(p.id, p.price);
 							ipSet.add(newItemPrice);
@@ -816,6 +837,8 @@ public class MultiDimensionalSearch {
 							TreeSet<SupplierItemInfo> supplierInfoSet = itemSupplierMap.get(item);
 							supplierInfoSet.add(si);
 
+							
+							
 							itemSupplierMap.put(item, supplierInfoSet);
 						}
 
