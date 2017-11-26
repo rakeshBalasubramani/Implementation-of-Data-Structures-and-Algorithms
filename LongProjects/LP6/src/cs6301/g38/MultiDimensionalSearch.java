@@ -372,9 +372,16 @@ public class MultiDimensionalSearch {
 
 		@Override
 		public int compare(ItemDescOccurence sp1, ItemDescOccurence sp2) {
+			
+			//return Integer.compare(sp2.getNumOfOccurence(), sp1.getNumOfOccurence());
+			
+//			return sp1.getNumOfOccurence() > sp2.getNumOfOccurence() ? -1 :(sp1.getNumOfOccurence() < sp2.getNumOfOccurence() ? 1 : 0);
+			
+			
 			if(sp1.getNumOfOccurence() < sp2.getNumOfOccurence()){
 				return 1;
-			}else{
+			}
+			else{
 				return -1;
 			}
 			
