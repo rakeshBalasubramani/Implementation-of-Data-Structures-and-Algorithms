@@ -23,20 +23,9 @@ import cs6301.g38.MDS.Pair;
 
 public class MultiDimensionalSearch {
 
-	private HashMap<Long, HashMap<Long,Long>> itemDescription = new HashMap<Long, HashMap<Long,Long>>();// desc,
-																								// list
-																								// of
-																								// Item
-																								// id's,
-																								// Replace
-																								// LL
-																								// to
-																								// HashSet
+	private HashMap<Long, HashMap<Long,Long>> itemDescription = new HashMap<Long, HashMap<Long,Long>>();
 	private TreeMap<Item, TreeSet<SupplierItemInfo>> itemSupplierMap = new TreeMap<Item, TreeSet<SupplierItemInfo>>();
-	private TreeMap<Supplier, TreeSet<ItemPrice>> supplierItemMap = new TreeMap<Supplier, TreeSet<ItemPrice>>(); // Replace
-																													// LL
-																													// to
-																													// Treeset
+	private TreeMap<Supplier, TreeSet<ItemPrice>> supplierItemMap = new TreeMap<Supplier, TreeSet<ItemPrice>>(); 
 	private HashMap<Long, Float> suppplierIdReputation = new HashMap<Long, Float>();
 
 	Item it = new Item();
@@ -216,8 +205,6 @@ public class MultiDimensionalSearch {
 			int priceDiff= ((reputationDiff == 0) ? Integer.compare(this.price, sio.getPrice()) : reputationDiff);
 			return ((priceDiff==0))?Long.compare(this.vid, sio.vid):priceDiff;
 			
-			//return ((reputationDiff == 0) ? Integer.compare(this.price, sio.getPrice()) : reputationDiff);
-			// return (int) (this.reputation-sio.reputation);
 		}
 		
 		
@@ -250,13 +237,6 @@ public class MultiDimensionalSearch {
 			
 			int priceDiff = Float.compare(sp1.price, sp2.price);
 			return ((priceDiff==0))?Long.compare(sp1.vid, sp2.vid):priceDiff;
-			
-			
-//			if(sp1.getPrice() > sp2.getPrice()){
-//				return 1;
-//			}else{
-//				return -1;
-//			}
 			
 		}
 		
@@ -398,17 +378,6 @@ public class MultiDimensionalSearch {
 			
 		}
 
-//
-//		@Override
-//		public int hashCode() {
-//			final int prime = 31;
-//			int result = 1;
-//			result = prime * result + ((listOfItems == null) ? 0 : listOfItems.hashCode());
-//			result = prime * result + numOfItems;
-//			result = prime * result + ((supplier == null) ? 0 : supplier.hashCode());
-//			return result;
-//		}
-
 
 		@Override
 		public boolean equals(Object obj) {
@@ -545,15 +514,6 @@ Iterator<T> it2 = l2.iterator();
 			
 		return Long.compare(sp2.getNumOfOccurence(), sp1.getNumOfOccurence());
 			
-//			return sp1.getNumOfOccurence() > sp2.getNumOfOccurence() ? -1 :(sp1.getNumOfOccurence() < sp2.getNumOfOccurence() ? 1 : 0);
-			
-//			
-//			if(sp1.getNumOfOccurence() < sp2.getNumOfOccurence()){
-//				return 1;
-//			}
-//			else{
-//				return -1;
-//			}
 			
 		}
 		
@@ -607,19 +567,6 @@ Iterator<T> it2 = l2.iterator();
 
 			itemSupplierMap.put(it1, supplierinfo);
 
-//			System.out.println("New desc added");
-//			System.out.println(" Present Item Information");
-//
-//			for (Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo : itemSupplierMap.entrySet()) {
-//				System.out.println("###");
-//				System.out.println("id:" + iteminfo.getKey().id);
-//
-//				for (long d : iteminfo.getKey().description) {
-//					System.out.println(d);
-//				}
-//
-//			}
-//
 			return false;
 		}
 
@@ -633,8 +580,7 @@ Iterator<T> it2 = l2.iterator();
 				if (itemDescription.containsKey(desc)) {
 					HashMap<Long,Long> ids = itemDescription.get(desc);
 					ids.put(id,(long)1 );
-					itemDescription.put(desc, ids); // check this line is
-													// required or not??
+					itemDescription.put(desc, ids); 
 
 				}
 
@@ -647,20 +593,7 @@ Iterator<T> it2 = l2.iterator();
 
 			}
 
-//			// Debug purpose
-//			System.out.println(" new element added");
-//			System.out.println(" New Item Information");
-//
-//			for (Map.Entry<Item, TreeSet<SupplierItemInfo>> iteminfo : itemSupplierMap.entrySet()) {
-//				System.out.println("###");
-//				System.out.println("id:" + iteminfo.getKey().id);
-//
-//				for (long d : iteminfo.getKey().description) {
-//					System.out.println(d);
-//				}
-//
-//			}
-//			/// End of debug
+
 			return true;
 		}
 
@@ -699,22 +632,6 @@ Iterator<T> it2 = l2.iterator();
 				supplierItemMap.put(newSupp, itemPrice);
 
 				suppplierIdReputation.put(supplier.getVid(), reputation);
-//
-//				System.out.println("Updated reputation of supplier");
-//
-//				for (Entry<Supplier, TreeSet<ItemPrice>> map : supplierItemMap.entrySet()) {
-//					Supplier up = map.getKey();
-//					TreeSet<ItemPrice> ip = map.getValue();
-//
-//					System.out.println("Supplier id:" + up.getVid());
-//					System.out.println("Supplier Reputation:" + up.getReputation());
-//
-//					for (ItemPrice i : ip) {
-//						System.out.println("Item id:" + i.getId());
-//						System.out.println("Item Price:" + i.getPrice());
-//					}
-//
-//				}
 
 			} else {
 				System.out.println("INCONSISTENT SUPPLIER MAP");
@@ -730,21 +647,7 @@ Iterator<T> it2 = l2.iterator();
 			// adding id and reputation of Supplier in HashMap
 			suppplierIdReputation.put(vid, reputation);
 
-//			System.out.println("NEW supplier");
-//
-//			for (Entry<Supplier, TreeSet<ItemPrice>> map : supplierItemMap.entrySet()) {
-//				Supplier up = map.getKey();
-//				TreeSet<ItemPrice> ip = map.getValue();
-//
-//				System.out.println("Supplier id:" + up.getVid());
-//				System.out.println("Supplier Reputation:" + up.getReputation());
-//
-//				for (ItemPrice i : ip) {
-//					System.out.println("Item id:" + i.getId());
-//					System.out.println("Item Price:" + i.getPrice());
-//				}
-//
-//			}
+
 			return true;
 		}
 
@@ -798,61 +701,7 @@ Iterator<T> it2 = l2.iterator();
 		}
 		
 		
-//		
-//		Supplier sii = new Supplier();
-//		sii.setReputation(maxReputation);
-//
-//		HashSet<Long> itemsRemoved = new HashSet<Long>();
-//		// HashSet<Supplier> supplierRemoved = new HashSet<Supplier>();
-//		HashSet<Long> descriptionChecked = new HashSet<Long>();
-//
-//		// get the items and suppliers where suppliers's reputation <=
-//		// maxReputation
-//		NavigableMap<Supplier, TreeSet<ItemPrice>> supplierResultMap = supplierItemMap.headMap(sii, true);
-//
-//		for (Entry<Supplier, TreeSet<ItemPrice>> supplierMaxReputation : supplierResultMap.entrySet()) {
-//			Supplier supplierEntry = supplierMaxReputation.getKey();
-//			TreeSet<ItemPrice> supplierItems = supplierMaxReputation.getValue();
-//			// supplierRemoved.add(supplierEntry);
-//			for (ItemPrice item : supplierItems) {
-//				it.setId(item.id);
-//
-//				
-//				itemsRemoved.add(item.id); // storing the items to be removed
-////				supplierItems.remove(item);
-//
-//				// ----storing descriptions to be checked to remove item entry
-//				// -------
-//				
-//				it.setId(item.id);
-//				Item it1 = getItemDetails(it);
-//				itemSupplierMap.remove(it); // remove the item entry from
-//				// itemSupplierMap
-//				for (Long d : it1.description) {
-//					descriptionChecked.add(d);
-//				}
-//			}
-//			supplierItems.clear();
-//			
-//			supplierItemMap.remove(supplierEntry.vid);
-//		}
-//
-//		System.out.println("Items to be purged :" + itemsRemoved);
-//
-//		// -------------------checking for item entry only in stored
-//		// description----------------
-//		for (Long desc : descriptionChecked) {
-//			if (itemDescription.containsKey(desc)) {
-//				// check for presence of items removed , if so remove the item
-//				// entry
-//				for (Long id : itemsRemoved) {
-//					if (itemDescription.get(desc).contains(id)) {
-//						itemDescription.get(desc).remove(id);
-//					}
-//				}
-//			}
-//		}
-//
+
 		return result.toArray(new Long[result.size()]);
 	}
 
@@ -878,16 +727,7 @@ Iterator<T> it2 = l2.iterator();
 
 		if (itemSupplierMap.containsKey(it)) {
 
-			/*
-			 * Set<Item> itemSet= itemSupplierMap.keySet(); arr = new
-			 * Item[itemSet.size()]; itemSet.toArray(arr);
-			 * 
-			 * int index=BinarySearch.recursiveBinarySearch(arr,it);
-			 * 
-			 * it=arr[index]; System.out.println("Id From binary Search:"+
-			 * it.getId() + " and desc " + it.getDescription());
-			 * TreeSet<SupplierItemInfo> supplierinfo= itemSupplierMap.get(it);
-			 */
+			
 
 			Item it1 = getItemDetails(it);
 			// Supplier supplierEntry;
@@ -909,15 +749,7 @@ Iterator<T> it2 = l2.iterator();
 			// remove entry from itemSupplierMap
 			itemSupplierMap.remove(it1);
 
-			// remove the items with thier description from the
-			// itemDescriptionMap
-			// for(Entry<Long, HashSet<Long>> descItem :
-			// itemDescription.entrySet()){
-			// //check for item id to be removed
-			// if(descItem.getValue().contains(it1.getId())){
-			// descItem.getValue().remove(it1.getId());
-			// }
-			// }
+			
 
 			// check for suppliers to be removed, find the item entry and remove
 			// item from supplierItemMap
@@ -996,10 +828,6 @@ Iterator<T> it2 = l2.iterator();
 							SupplierItemInfo si = new SupplierItemInfo(p.id, vid, supplier.getReputation(),
 									oldItemPrice);
 
-							// it.setId(p.id);
-
-							// if (itemSupplierMap.containsKey(it)) {
-
 							supplierItemSet = itemSupplierMap.get(item);
 
 							// if(item.getId()==itemPrice.getId())
@@ -1010,17 +838,7 @@ Iterator<T> it2 = l2.iterator();
 
 							itemSupplierMap.put(item, supplierItemSet);
 
-							// }
-							// else
-							// {
-							// item= new Item();
-							// item.setId(p.id);
-							// supplierItemSet = new TreeSet<>();
-							// supplierItemSet.add(si);
-							// System.out.println("UNKNOWN ITEM");
-
-							// }
-							// break;
+							
 						}
 
 						else if (isnewProd) {
@@ -1140,14 +958,7 @@ Iterator<T> it2 = l2.iterator();
 		if (itemSupplierMap.containsKey(it)) {
 
 			Item it1 = getItemDetails(it);
-			/*
-			 * Set<Item> itemSet= itemSupplierMap.keySet(); arr1 = new
-			 * Item[itemSet.size()]; itemSet.toArray(arr1);
-			 * 
-			 * int index=BinarySearch.recursiveBinarySearch(arr1,it);
-			 * it=arr1[index]; System.out.println("Id From binary Search:"+
-			 * it.getId() + " and desc " + it.getDescription());
-			 */
+			
 			List<Long> desc = it1.description;
 			for (Long d : arr) {
 				if (desc.contains(d)) {
@@ -1459,14 +1270,7 @@ Iterator<T> it2 = l2.iterator();
 			for(ItemDescOccurence it : idOccList){
 				resultArr[i++] = it.getItemId();
 			}
-			
-			//resultArr = Arrays.copyOf(idOccArr, idOccArr.length);
-			// sort based on the num of Occurence
-			
-			//MergeSort.mergeSort(idOccArr, resultArr);
-			//finalResultArr = new Long[idOccArr.length];
-			
-			
+						
 			return resultArr;
 		}
 			
@@ -1559,20 +1363,21 @@ Iterator<T> it2 = l2.iterator();
 		private Long[] identicalSuppliers(){
 			
 			//private TreeMap<Supplier, TreeSet<ItemPrice>> supplierItemMap = new TreeMap<Supplier, TreeSet<ItemPrice>>(); // Replace
-			TreeMap<SupplierItemPairs,Integer> suppliersSorted =  new TreeMap<SupplierItemPairs,Integer>();
+			TreeMap<SupplierItemPairs,Long> suppliersSorted =  new TreeMap<SupplierItemPairs,Long>();
 			HashSet<Long> identicalSuppliers = new HashSet<Long>();
 			Iterator<SupplierItemPairs> itr;
 			SupplierItemPairs obj;
+			
 			//Iterator i2;
 			
 			for(Map.Entry<Supplier, TreeSet<ItemPrice>> supplierEntry : supplierItemMap.entrySet()){
 				
-				if((supplierEntry.getKey().vid==20480)||(supplierEntry.getKey().vid==91139)||(supplierEntry.getKey().vid==60420)||(supplierEntry.getKey().vid==10244)||(supplierEntry.getKey().vid==94213))
-				
-				{
-					System.out.println("...");
-				}
-				
+//				if((supplierEntry.getKey().vid==20480)||(supplierEntry.getKey().vid==91139)||(supplierEntry.getKey().vid==60420)||(supplierEntry.getKey().vid==10244)||(supplierEntry.getKey().vid==94213))
+//				
+//				{
+//					System.out.println("...");
+//				}
+//				
 				if(supplierEntry.getValue().size() < 5){
 					continue;
 				}else{
@@ -1580,14 +1385,17 @@ Iterator<T> it2 = l2.iterator();
 					obj.setSupplier(supplierEntry.getKey());
 					obj.setListOfItems(supplierEntry.getValue());
 					obj.setNumOfItems(supplierEntry.getValue().size());
-					Integer val = suppliersSorted.get(obj);
+					Long val = suppliersSorted.get(obj);
 					if(val!=null)
 					{
-						suppliersSorted.put(obj, val+1);
+						suppliersSorted.put(obj, val);
+						identicalSuppliers.add(obj.getSupplier().getVid());
+						identicalSuppliers.add(val);
+
 					}
 					else
 					{
-						suppliersSorted.put(obj, 1);
+						suppliersSorted.put(obj, obj.getSupplier().getVid());
 					}
 				}
 				
