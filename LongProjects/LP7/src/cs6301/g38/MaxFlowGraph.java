@@ -1,23 +1,29 @@
 package cs6301.g38;
 
-import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
-import cs6301.g38.BFS.BFSVertex;
+import cs6301.g38.BFSFlowGraph.BFSVertex;
 
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ *
+ * @Desc Class used to implement Dinitz and relabelToFront
+ */
 public class MaxFlowGraph extends Graph {
-	FVertex[] fVertices; // vertices of graph
+	private FVertex[] fVertices; // vertices of graph
 	private FVertex source;
 	private FVertex terminal;
-	int maxFlow;
-	LinkedList<FVertex> nodes;
-	private BFS bfsHelper;
+	private int maxFlow;
+	private LinkedList<FVertex> nodes;
+	private BFSFlowGraph bfsHelper;
 	private FEdge[] reverseEdge, forwardEdge;
 	int maxHeight;
 
@@ -27,7 +33,6 @@ public class MaxFlowGraph extends Graph {
 	static class FVertex extends Vertex {
 
 		List<FEdge> adjEdge, revEdge;
-		// FVertex parent;
 		int height, excess;
 		boolean visited;
 
@@ -55,7 +60,6 @@ public class MaxFlowGraph extends Graph {
 			revEdge = new LinkedList<>();
 		}
 
-		@Override
 		public Iterator<Edge> iterator() {
 			return new XVertexIterator(this);
 		}
@@ -144,8 +148,7 @@ public class MaxFlowGraph extends Graph {
 
 	}
 
-	public MaxFlowGraph(Graph g, Vertex source, Vertex terminal,
-			HashMap<Edge, Integer> capacity) {
+	public MaxFlowGraph(Graph g, Vertex source, Vertex terminal, HashMap<Edge, Integer> capacity) {
 		super(g);
 		maxHeight = 2 * g.size() - 2;
 		nodes = new LinkedList<>();
@@ -158,19 +161,14 @@ public class MaxFlowGraph extends Graph {
 		}
 		this.source = getVertex(source);
 		this.terminal = getVertex(terminal);
-		// for (Vertex u : g) {
-		// if (!(u.equals(source) || u.equals(terminal))) {
-		// nodes.add(getVertex(u));
-		// }
-		// }
+
 		// Make copy of edges
 		for (Vertex u : g) {
 			for (Edge e : u) {
 				Vertex v = e.otherEnd(u);
 				FVertex x1 = getVertex(u);
 				FVertex x2 = getVertex(v);
-				FEdge frwdE = new FEdge(x1, x2, e.weight, capacity.get(e),
-						e.name);
+				FEdge frwdE = new FEdge(x1, x2, e.weight, capacity.get(e), e.name);
 				forwardEdge[e.name - 1] = frwdE;
 				x1.adjEdge.add(frwdE);
 				FEdge revE = new FEdge(x2, x1, e.weight, 0, e.name);
@@ -185,7 +183,7 @@ public class MaxFlowGraph extends Graph {
 		for (FVertex u : fVertices) {
 			u.adjEdge.addAll(u.revEdge);
 		}
-		bfsHelper = new BFS(this, this.source);
+		bfsHelper = new BFSFlowGraph(this, this.source);
 
 	}
 
@@ -193,17 +191,19 @@ public class MaxFlowGraph extends Graph {
 		return Vertex.getVertex(fVertices, u);
 	}
 
-	private int sendFlow(Vertex vertex, int flow) {
+	private int pushFlow(Vertex vertex, int flow) {
 		if (vertex.equals(terminal))
 			return flow;
 
+		int curr_flow;
+		int temp_flow;
 		for (Edge e : vertex) {
 			Vertex otherVertex = e.otherEnd(vertex);
 			FEdge fe = (FEdge) e;
 			if (bfsHelper.distance(otherVertex) == (bfsHelper.distance(vertex) + 1)) {
-				int curr_flow = Math.min(flow, fe.capacity - fe.flow);
+				curr_flow = Math.min(flow, fe.capacity - fe.flow);
 
-				int temp_flow = sendFlow(getVertex(otherVertex), curr_flow);
+				temp_flow = pushFlow(getVertex(otherVertex), curr_flow);
 
 				if (temp_flow > 0) {
 					fe.flow += temp_flow;
@@ -216,16 +216,16 @@ public class MaxFlowGraph extends Graph {
 		return 0;
 	}
 
-	public void dinitz() {
+	public void dinitzMaxFlow() {
 		int flow;
 		bfsHelper.bfs();
-		while (bfsHelper.distance(terminal) != BFS.INFINITY) {
-			flow = sendFlow(getVertex(source), BFS.INFINITY);
+		while (bfsHelper.distance(terminal) != BFSFlowGraph.INFINITY) {
+			flow = pushFlow(getVertex(source), BFSFlowGraph.INFINITY);
 			while (flow > 0) {
 
 				// Add path flow to overall flow
 				this.maxFlow += flow;
-				flow = sendFlow(getVertex(source), BFS.INFINITY);
+				flow = pushFlow(getVertex(source), BFSFlowGraph.INFINITY);
 
 			}
 			bfsHelper.reinitialize(source);
@@ -243,7 +243,7 @@ public class MaxFlowGraph extends Graph {
 
 		for (Vertex v : this) {
 			BFSVertex bfsV = bfsHelper.getVertex(v);
-			if (bfsV.distance != BFS.INFINITY) {
+			if (bfsV.distance != BFSFlowGraph.INFINITY) {
 				minCutS.add(v);
 			} else {
 				minCutT.add(v);
@@ -265,88 +265,33 @@ public class MaxFlowGraph extends Graph {
 
 	public void relabelToFront() {
 		initialize();
-<<<<<<< HEAD
 
 		while (!nodes.isEmpty()) {
 			FVertex u = nodes.removeFirst();
 
 			discharge(u);
 
-=======
-		// boolean done = false;
-		// int oldHeight;
-		// while (!done) {
-		// Iterator<FVertex> it = nodes.iterator();
-		// done = true;
-		// FVertex temp = null;
-		while (!nodes.isEmpty()) {
-			FVertex u = nodes.removeFirst();
-			// if (u.getExcess() == 0) {
-			// continue;
-			// }
-			// oldHeight = u.getHeight();
-			discharge(u);
-			// if (u.getHeight() != oldHeight) {
-			// done = false;
-			// temp = u;
-			// break;
-			// }
-			// }
-			// if (!done) {
-			// //it.remove();
-			// nodes.addFirst(temp);
-			// }
->>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
 		}
-		System.out.println("Src excess " + source.getExcess());
 		maxFlow = terminal.getExcess();
 
 		findCut();
 	}
 
 	private void discharge(FVertex u) {
-<<<<<<< HEAD
-=======
-		int relabelCounter = 0;
->>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
-		while (u.getExcess() > 0 && u.getHeight()<=maxHeight) {
+		while (u.getExcess() > 0 && u.getHeight() <= maxHeight) {
 			for (FEdge e : u.adjEdge) {
 				FVertex v = (FVertex) e.otherEnd(u);
 				if (e.isFeasibleFlow() && u.getHeight() == 1 + v.getHeight()) {
 					push(u, v, e);
-<<<<<<< HEAD
-					 if (u.getExcess() == 0) {
-					 return;
-					 }
+					if (u.getExcess() == 0) {
+						return;
+					}
 				}
 			}
-				relabel(u);
+			relabel(u);
 
 		}
 
-=======
-					// if (u.getExcess() == 0) {
-					// return;
-					// }
-				}
-			}
-			if (u.getExcess() > 0) {
-				relabel(u);
-			}
-
-		}
-		// if (u.getExcess() > 0) {
-		// FEdge parentEdge = null;
-		// for (FEdge e : u.parent.adjEdge) {
-		// FVertex v = (FVertex) e.otherEnd(u.parent);
-		// if (v.equals(u)) {
-		// parentEdge = e;
-		// }
-		// }
-		// u.setHeight(u.parent.getHeight() + 1);
-		// push(u, u.parent, parentEdge);
-		// }
->>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
 	}
 
 	private void relabel(FVertex u) {
@@ -357,17 +302,11 @@ public class MaxFlowGraph extends Graph {
 			if (e.isFeasibleFlow()) {
 				FVertex temp = (FVertex) e.otherEnd(u);
 				if (temp.getHeight() < minHeight) {
-					// u.setHeight(1 + temp.getHeight());
 					minHeight = temp.getHeight();
 				}
 			}
 		}
-		if (minHeight != Integer.MAX_VALUE && u.getHeight()<=maxHeight) {
-<<<<<<< HEAD
-			//System.out.println( u.getHeight());
-=======
-		//	System.out.println( u.getHeight());
->>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
+		if (minHeight != Integer.MAX_VALUE && u.getHeight() <= maxHeight) {
 			u.setHeight(1 + minHeight);
 		}
 	}
@@ -376,15 +315,7 @@ public class MaxFlowGraph extends Graph {
 		int delta;
 		delta = Math.min(u.getExcess(), e.getCapacity() - e.getFlow());
 
-		// if (e.from.equals(u)) {
 		e.setFlow(e.getFlow() + delta);
-
-		// v.parent = u;
-		// } else {
-		// // delta = Math.min(u.getExcess(),
-		// // e.getCapacity() - e.getFlow() + u.getExcess());
-		// e.setFlow(e.getFlow() - delta);
-		// }
 
 		e.getReverseEdge().flow -= delta;
 
@@ -396,10 +327,6 @@ public class MaxFlowGraph extends Graph {
 
 	}
 
-	// private boolean inResidualGraph(FVertex u, FEdge e) {
-	// return (boolean) (e.capacity - e.getFlow() > 0);
-	// }
-
 	private void initialize() {
 		source.height = this.size();
 		for (FEdge e : source.adjEdge) {
@@ -410,14 +337,13 @@ public class MaxFlowGraph extends Graph {
 			e.getReverseEdge().flow -= e.getCapacity();
 			if (!u.equals(terminal))
 				nodes.add(u);
-			// u.parent = source;
 
 		}
 
 	}
 
-<<<<<<< HEAD
+	public int getMaxFlow() {
+		return this.maxFlow;
+	}
+
 }
-=======
-}
->>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c

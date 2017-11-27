@@ -10,7 +10,15 @@ import java.util.LinkedList;
 
 import cs6301.g38.MaxFlowGraph.FVertex;
 
-public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ *
+ * @Desc Modified BFSClass for max flow.
+ */
+public class BFSFlowGraph extends GraphAlgorithm<BFSFlowGraph.BFSVertex> {
 	public static final int INFINITY = Integer.MAX_VALUE;
 	private MaxFlowGraph graph;
 
@@ -36,7 +44,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
 
 	Graph.Vertex src;
 
-	public BFS(Graph g, Graph.Vertex src) {
+	public BFSFlowGraph(Graph g, Graph.Vertex src) {
 		super(g);
 		graph = (MaxFlowGraph) g;
 		this.src = src;
