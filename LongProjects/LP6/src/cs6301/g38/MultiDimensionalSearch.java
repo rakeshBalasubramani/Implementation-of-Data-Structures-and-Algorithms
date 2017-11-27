@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -296,11 +297,28 @@ public class MultiDimensionalSearch {
 			this.price = price;
 		}
 
+		
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ItemPrice other = (ItemPrice) obj;
+			if (id != other.id)
+				return false;
+			if (price != other.price)
+				return false;
+			return true;
+		}
+
 		@Override
 		public int compareTo(ItemPrice o) {
-
-			return (int) (this.id - o.id);
-
+			int idDiff = Long.compare(this.id, o.id);
+			return ((idDiff==0))?Integer.compare(this.price, o.price):idDiff;
 		}
 	}
 
@@ -316,6 +334,97 @@ public class MultiDimensionalSearch {
 		}
 		
 	}
+	
+	public static class SupplierItemPairs implements Comparable<SupplierItemPairs>{
+		private Supplier supplier;
+		private TreeSet<ItemPrice> listOfItems;
+		int numOfItems;
+		
+		public SupplierItemPairs() {
+		
+		}
+		
+		
+		public SupplierItemPairs(Supplier supplier, TreeSet<ItemPrice> listOfItems){
+			this.supplier = supplier;
+			this.listOfItems = listOfItems;			
+		}
+		
+		public void setSupplier(Supplier supplier){
+			this.supplier = supplier;
+		}
+		
+		public void setListOfItems(TreeSet<ItemPrice> listOfItems){
+			this.listOfItems = listOfItems;
+		}
+		
+		public Supplier getSupplier(){
+			return this.supplier;
+		}
+		
+		public void setNumOfItems(int numOfItems){
+			this.numOfItems = numOfItems;
+		}
+		
+		
+		public int getNumOfItems(){
+			return this.numOfItems;
+		}
+		
+		public TreeSet<ItemPrice> getListOfItems(){
+			return this.listOfItems;
+		}
+		
+		@Override
+		public int compareTo(SupplierItemPairs sip) {
+			
+			int supplierDiff = Float.compare(this.supplier.getReputation(), sip.supplier.getReputation());
+			int numOfItemsDiff = ((supplierDiff == 0) ? Integer.compare(this.numOfItems, sip.numOfItems) : supplierDiff);
+			return ((numOfItemsDiff == 0) ? ((this.listOfItems.equals(sip.listOfItems) == true) ? 0 : -1) : numOfItemsDiff);
+
+		}
+
+//
+//		@Override
+//		public int hashCode() {
+//			final int prime = 31;
+//			int result = 1;
+//			result = prime * result + ((listOfItems == null) ? 0 : listOfItems.hashCode());
+//			result = prime * result + numOfItems;
+//			result = prime * result + ((supplier == null) ? 0 : supplier.hashCode());
+//			return result;
+//		}
+
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			SupplierItemPairs other = (SupplierItemPairs) obj;
+			
+			if (supplier == null) {
+				if (other.supplier != null)
+					return false;
+			}else if (!supplier.equals(other.supplier))
+				return false;
+			if (numOfItems != other.numOfItems)
+				return false;				
+			if (listOfItems == null) {
+				if (other.listOfItems != null)
+					return false;
+			} else if (!listOfItems.equals(other.listOfItems))
+				return false;
+			
+			return true;
+
+		}	
+		
+	}
+	
 	
 	public static class ItemDescOccurence implements Comparable<ItemDescOccurence>{
 
@@ -421,8 +530,15 @@ public class MultiDimensionalSearch {
 				if (itemDescription.containsKey(desc)) {
 
 					HashMap<Long,Long> idWithDescription = itemDescription.get(desc);
-
-					idWithDescription.put(id,idWithDescription.get(id)+1); // check the existence of Id in
+					if(idWithDescription.get(id)!=null)
+					{
+					idWithDescription.put(id,idWithDescription.get(id)+1); 
+					}
+					else
+					{
+						idWithDescription.put(id,(long)1); 
+// check the existence of Id in
+					}
 												// the HashSet before adding the
 												// item id. ??
 					itemDescription.put(desc, idWithDescription);
@@ -1383,5 +1499,59 @@ public class MultiDimensionalSearch {
 			return null;
 			}
 	}
+
+		public Long[] identical() {
+			return identicalSuppliers();
+		}
+		
+		private Long[] identicalSuppliers(){
+			
+			//private TreeMap<Supplier, TreeSet<ItemPrice>> supplierItemMap = new TreeMap<Supplier, TreeSet<ItemPrice>>(); // Replace
+			TreeSet<SupplierItemPairs> suppliersSorted =  new TreeSet<SupplierItemPairs>();
+			HashSet<Long> identicalSuppliers = new HashSet<Long>();
+			Iterator<SupplierItemPairs> itr;
+			//Iterator i2;
+			
+			for(Map.Entry<Supplier, TreeSet<ItemPrice>> supplierEntry : supplierItemMap.entrySet()){
+				
+				if(supplierEntry.getValue().size() < 5){
+					break;
+				}else{
+					SupplierItemPairs obj = new SupplierItemPairs();
+					obj.setSupplier(supplierEntry.getKey());
+					obj.setListOfItems(supplierEntry.getValue());
+					obj.setNumOfItems(supplierEntry.getValue().size());
+					
+					suppliersSorted.add(obj);
+				}
+				
+			}
+	
+			
+			
+			itr = suppliersSorted.iterator();
+			SupplierItemPairs supplierItemPairs;
+			SupplierItemPairs supplierItemPairs2;
+			
+			if(itr.hasNext()){
+				supplierItemPairs = itr.next();
+				while(itr.hasNext()){
+					supplierItemPairs2 = itr.next();
+					if(supplierItemPairs.equals(supplierItemPairs2))
+					{
+						identicalSuppliers.add(supplierItemPairs.getSupplier().getVid());
+
+					}
+					supplierItemPairs = supplierItemPairs2;
+					
+					
+				}				
+				
+			}
+			
+			return identicalSuppliers.toArray(new Long[identicalSuppliers.size()]);			
+			
+		}
+		
 }
 
