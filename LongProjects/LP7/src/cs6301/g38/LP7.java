@@ -5,7 +5,7 @@ import cs6301.g38.Graph.Edge;
 import cs6301.g38.Graph.Vertex;
 
 public class LP7 {
-	static int VERBOSE = 1;
+	static int VERBOSE = 0;
 
 	public static void main(String[] args) {
 		if (args.length > 0) {
@@ -33,7 +33,8 @@ public class LP7 {
 		}
 		Flow f = new Flow(g, g.getVertex(s), g.getVertex(t), capacity);
 		// f.setVerbose(VERBOSE);
-		int value = f.dinitzMaxFlow(); 
+		int value;
+		//value = f.dinitzMaxFlow(); 
 		
 		if (VERBOSE > 0) {
 			for (Vertex u : g) {

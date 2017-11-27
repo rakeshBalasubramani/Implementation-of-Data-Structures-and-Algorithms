@@ -48,6 +48,16 @@ public class Flow {
     public int relabelToFront() {
     	dg = new MaxFlowGraph(g,source, terminal,capacity);
     	dg.relabelToFront();
+    	minCutS = dg.getMinCutS();
+    	minCutT = dg.getMinCutT();
+    	
+    	for(Vertex v : g)
+    	{
+    		for(Edge e:v)
+    		{
+    			edgesFlow[e.name-1] = dg.flow(e);
+    		}
+    	}
     	System.out.println("RG : "+dg.maxFlow);
     	return dg.maxFlow;
     }
