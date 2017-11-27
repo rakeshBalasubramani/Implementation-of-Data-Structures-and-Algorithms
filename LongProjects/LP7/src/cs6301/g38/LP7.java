@@ -1,11 +1,14 @@
-
 package cs6301.g38;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 
 import cs6301.g38.Graph.Edge;
 import cs6301.g38.Graph.Vertex;
 
 public class LP7 {
-	static int VERBOSE = 1;
+	static int VERBOSE = 0;
 
 	public static void main(String[] args) {
 		if (args.length > 0) {
@@ -32,14 +35,25 @@ public class LP7 {
 			}
 		}
 		Flow f = new Flow(g, g.getVertex(s), g.getVertex(t), capacity);
+		PrintStream o = null;
+		try {
+			o = new PrintStream(new File("Flow.txt"));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 
+	    // Assign o to output stream
+	   // System.setOut(o);
 		// f.setVerbose(VERBOSE);
-		int value = f.dinitzMaxFlow(); 
-		
+		int value;
+		value = f.dinitzMaxFlow();
 		if (VERBOSE > 0) {
 			for (Vertex u : g) {
 				System.out.print(u + " : ");
 				for (Edge e : u) {
-					System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e) + " | ");
+				//	System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e)
+					//		+ " | ");
 				}
 				System.out.println();
 			}
@@ -48,9 +62,8 @@ public class LP7 {
 		}
 
 		System.out.println(timer.end());
-		timer.start();
-		 value = f.relabelToFront();
-		 
+		timer = new Timer(); 
+		value = f.relabelToFront();
 
 		/*
 		 * Uncomment this if you have implemented verify() if(f.verify()) {
@@ -58,13 +71,14 @@ public class LP7 {
 		 * System.out.println("Algorithm is wrong. Verification failed."); }
 		 */
 
-//		System.out.println(value);
+		// System.out.println(value);
 
 		if (VERBOSE > 0) {
 			for (Vertex u : g) {
 				System.out.print(u + " : ");
 				for (Edge e : u) {
-					System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e) + " | ");
+				//	System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e)
+					//		+ " | ");
 				}
 				System.out.println();
 			}
