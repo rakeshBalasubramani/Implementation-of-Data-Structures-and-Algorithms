@@ -20,6 +20,12 @@ import java.util.TreeSet;
 
 import cs6301.g38.MDS.Pair;
 
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ */
 public class MultiDimensionalSearch {
 
 	private HashMap<Long, HashMap<Long, Long>> itemDescription = new HashMap<Long, HashMap<Long, Long>>();
