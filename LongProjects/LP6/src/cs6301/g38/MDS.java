@@ -156,10 +156,7 @@ public class MDS {
     	return m.removeAll(arr); 
     }
 
-	public void printItems() {
-		// TODO Auto-generated method stub
-		m.printItems();
-	}
+
 
 	
 }
