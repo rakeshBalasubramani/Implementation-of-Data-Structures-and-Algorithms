@@ -6,6 +6,14 @@ import cs6301.g38.Graph.*;
 import java.util.HashMap;
 import java.util.Set;
 
+/**
+ * @author Rajkumar PanneerSelvam - rxp162130 <br>
+ *         Avinash Venkatesh - axv165330 <br>
+ *         Rakesh Balasubramani - rxb162130 <br>
+ *         HariPriyaa Manian - hum160030
+ *
+ * @Desc Class used to implement MaxFlow
+ */
 public class Flow {
 	HashMap<Edge, Integer> capacity;
 	Graph g;
@@ -27,13 +35,11 @@ public class Flow {
 
 	// Return max flow found by Dinitz's algorithm
 	public int dinitzMaxFlow() {
-
+		System.out.println("Running Dinitz's Algorithm");
 		dg = new MaxFlowGraph(g, source, terminal, capacity);
-		dg.dinitz();
+		dg.dinitzMaxFlow();
 		assignFlowParams();
-		System.out.println("DG : " + dg.maxFlow);
-		return dg.maxFlow;
-	}
+		return dg.getMaxFlow();	}
 
 	private void assignFlowParams() {
 		minCutS = dg.getMinCutS();
@@ -46,14 +52,15 @@ public class Flow {
 		}
 	}
 
-	// Return max flow found by relabelToFront algorithm
-	public int relabelToFront() {
-		dg = new MaxFlowGraph(g, source, terminal, capacity);
-		dg.relabelToFront();
-		assignFlowParams();
-		System.out.println("RG : " + dg.maxFlow);
-		return dg.maxFlow;
-	}
+    // Return max flow found by relabelToFront algorithm
+    public int relabelToFront() {
+    	System.out.println("Running relabelToFront Algorithm");
+    	dg = new MaxFlowGraph(g,source, terminal,capacity);
+    	dg.relabelToFront();
+    	assignFlowParams();
+    	return dg.getMaxFlow();
+    }
+
 
 	// flow going through edge e
 	public int flow(Edge e) {
