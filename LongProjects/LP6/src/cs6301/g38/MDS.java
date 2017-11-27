@@ -107,7 +107,7 @@ public class MDS {
        that each supplier appears only once in the returned array.
     */
     public Long[ ] identical() {
-	return null;
+	return m.identical();
     }
 
     /* given an array of ids, find the total price of those items, if

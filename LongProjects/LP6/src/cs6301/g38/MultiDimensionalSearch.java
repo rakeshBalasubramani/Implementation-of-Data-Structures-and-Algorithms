@@ -7,8 +7,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
@@ -296,11 +298,28 @@ public class MultiDimensionalSearch {
 			this.price = price;
 		}
 
+		
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ItemPrice other = (ItemPrice) obj;
+			if (id != other.id)
+				return false;
+			if (price != other.price)
+				return false;
+			return true;
+		}
+
 		@Override
 		public int compareTo(ItemPrice o) {
-
-			return (int) (this.id - o.id);
-
+			int idDiff = Long.compare(this.id, o.id);
+			return ((idDiff==0))?Integer.compare(this.price, o.price):idDiff;
 		}
 	}
 
@@ -317,6 +336,148 @@ public class MultiDimensionalSearch {
 		
 	}
 	
+	public static class SupplierItemPairs implements Comparable<SupplierItemPairs>{
+		@Override
+		public String toString() {
+			return "SupplierItemPairs [supplier=" + supplier + ", listOfItems=" + listOfItems + ", numOfItems="
+					+ numOfItems + "]";
+		}
+
+		private Supplier supplier;
+		private TreeSet<ItemPrice> listOfItems;
+		int numOfItems;
+		
+		public SupplierItemPairs() {
+		
+		}
+		
+		
+		public SupplierItemPairs(Supplier supplier, TreeSet<ItemPrice> listOfItems){
+			this.supplier = supplier;
+			this.listOfItems = listOfItems;			
+		}
+		
+		public void setSupplier(Supplier supplier){
+			this.supplier = supplier;
+		}
+		
+		public void setListOfItems(TreeSet<ItemPrice> listOfItems){
+			this.listOfItems = listOfItems;
+		}
+		
+		public Supplier getSupplier(){
+			return this.supplier;
+		}
+		
+		public void setNumOfItems(int numOfItems){
+			this.numOfItems = numOfItems;
+		}
+		
+		
+		public int getNumOfItems(){
+			return this.numOfItems;
+		}
+		
+		public TreeSet<ItemPrice> getListOfItems(){
+			return this.listOfItems;
+		}
+		
+		@Override
+		public int compareTo(SupplierItemPairs sip) {
+			
+			int supplierDiff = Float.compare(this.supplier.getReputation(), sip.supplier.getReputation());
+//			int numOfItemsDiff = ((supplierDiff == 0) ? Integer.compare(this.numOfItems, sip.numOfItems) : supplierDiff);
+//			return ((numOfItemsDiff == 0) ? ((this.listOfItems.equals(sip.listOfItems) == true) ? 0 : -1) : numOfItemsDiff);
+
+			Set<ItemPrice> result = new TreeSet<>();
+			intersect(this.listOfItems, sip.listOfItems, result);
+			int minSize = Math.min(this.listOfItems.size(), sip.listOfItems.size());
+			
+			return ((supplierDiff == 0) ? Integer.compare(result.size(),minSize) : supplierDiff);
+//			return ((numOfItemsDiff == 0) ? ((this.listOfItems.equals(sip.listOfItems) == true) ? 0 : -1) : numOfItemsDiff);
+			
+		}
+
+//
+//		@Override
+//		public int hashCode() {
+//			final int prime = 31;
+//			int result = 1;
+//			result = prime * result + ((listOfItems == null) ? 0 : listOfItems.hashCode());
+//			result = prime * result + numOfItems;
+//			result = prime * result + ((supplier == null) ? 0 : supplier.hashCode());
+//			return result;
+//		}
+
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			SupplierItemPairs other = (SupplierItemPairs) obj;
+			
+			if (supplier == null) {
+				if (other.supplier != null)
+					return false;
+			}else if (!(supplier.getReputation()==(other.supplier.getReputation())))
+				return false;
+						
+			if (listOfItems == null) {
+				if (other.listOfItems != null)
+					return false;
+			} else 
+			{
+				Set<ItemPrice> result = new TreeSet<>();
+				intersect(this.listOfItems, other.listOfItems, result);
+				int minSize = Math.min(this.listOfItems.size(), other.listOfItems.size());
+				return minSize==result.size();
+			}
+			
+			return true;
+
+		}	
+		
+	}
+	
+	
+	private static <T> T hasNext(Iterator<T> it) {
+		return it.hasNext() ? it.next() : null;
+	}
+	
+	public static <T extends Comparable<? super T>> void intersect(Set<T> l1, Set<T> l2, Set<T> outList) {
+		// set the iterator for both lists
+	Iterator<T> it1 = l1.iterator();
+Iterator<T> it2 = l2.iterator();
+		
+		// pointing to first element of both lists
+		T x1 =  hasNext(it1);
+		T x2 =  hasNext(it2);
+		
+		
+		// now traverse till the end of both the lists
+		// find the common elements and append to the outList
+		
+		while(x1 != null  && x2 != null){
+			// since the elements are sorted, if the element is small, then advance the iterator
+			if((x1).compareTo(x2) < 0){
+				x1 = hasNext(it1);
+			}
+			else if((x1).compareTo(x2) > 0){
+				x2 = hasNext(it2);
+			}
+			
+			else{
+				outList.add( x1); // adding the common element to the outList and increment both iterator
+				x1 =  hasNext(it1);
+				x2 =  hasNext(it2);
+			}
+			
+		}
+	}
 	public static class ItemDescOccurence implements Comparable<ItemDescOccurence>{
 
 		private long itemId;
@@ -421,8 +582,15 @@ public class MultiDimensionalSearch {
 				if (itemDescription.containsKey(desc)) {
 
 					HashMap<Long,Long> idWithDescription = itemDescription.get(desc);
-
-					idWithDescription.put(id,idWithDescription.get(id)+1); // check the existence of Id in
+					if(idWithDescription.get(id)!=null)
+					{
+					idWithDescription.put(id,idWithDescription.get(id)+1); 
+					}
+					else
+					{
+						idWithDescription.put(id,(long)1); 
+// check the existence of Id in
+					}
 												// the HashSet before adding the
 												// item id. ??
 					itemDescription.put(desc, idWithDescription);
@@ -1383,5 +1551,80 @@ public class MultiDimensionalSearch {
 			return null;
 			}
 	}
+
+		public Long[] identical() {
+			return identicalSuppliers();
+		}
+		
+		private Long[] identicalSuppliers(){
+			
+			//private TreeMap<Supplier, TreeSet<ItemPrice>> supplierItemMap = new TreeMap<Supplier, TreeSet<ItemPrice>>(); // Replace
+			TreeMap<SupplierItemPairs,Integer> suppliersSorted =  new TreeMap<SupplierItemPairs,Integer>();
+			HashSet<Long> identicalSuppliers = new HashSet<Long>();
+			Iterator<SupplierItemPairs> itr;
+			SupplierItemPairs obj;
+			//Iterator i2;
+			
+			for(Map.Entry<Supplier, TreeSet<ItemPrice>> supplierEntry : supplierItemMap.entrySet()){
+				
+				if((supplierEntry.getKey().vid==20480)||(supplierEntry.getKey().vid==91139)||(supplierEntry.getKey().vid==60420)||(supplierEntry.getKey().vid==10244)||(supplierEntry.getKey().vid==94213))
+				
+				{
+					System.out.println("...");
+				}
+				
+				if(supplierEntry.getValue().size() < 5){
+					continue;
+				}else{
+					 obj = new SupplierItemPairs();
+					obj.setSupplier(supplierEntry.getKey());
+					obj.setListOfItems(supplierEntry.getValue());
+					obj.setNumOfItems(supplierEntry.getValue().size());
+					Integer val = suppliersSorted.get(obj);
+					if(val!=null)
+					{
+						suppliersSorted.put(obj, val+1);
+					}
+					else
+					{
+						suppliersSorted.put(obj, 1);
+					}
+				}
+				
+			}
+	
+			
+			
+//			itr = suppliersSorted.iterator();
+//			SupplierItemPairs supplierItemPairs;
+//			SupplierItemPairs supplierItemPairs2;
+			
+//			if(itr.hasNext()){
+//				supplierItemPairs = itr.next();
+//				while(itr.hasNext()){
+//					supplierItemPairs2 = itr.next();
+//					
+//					if((supplierItemPairs2.supplier.vid==20480)||(supplierItemPairs2.supplier.vid==91139)||(supplierItemPairs2.supplier.vid==60420)||(supplierItemPairs2.supplier.vid==10244)||(supplierItemPairs2.supplier.vid==94213))
+//						
+//					{
+//						System.out.println("...");
+//					}
+//					
+//					if(supplierItemPairs.equals(supplierItemPairs2))
+//					{
+//						identicalSuppliers.add(supplierItemPairs.getSupplier().getVid());
+//
+//					}
+//					supplierItemPairs = supplierItemPairs2;
+//					
+//					
+//				}				
+//				
+//			}
+			
+			return identicalSuppliers.toArray(new Long[identicalSuppliers.size()]);			
+			
+		}
+		
 }
 

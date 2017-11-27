@@ -265,12 +265,38 @@ public class MaxFlowGraph extends Graph {
 
 	public void relabelToFront() {
 		initialize();
+<<<<<<< HEAD
 
 		while (!nodes.isEmpty()) {
 			FVertex u = nodes.removeFirst();
 
 			discharge(u);
 
+=======
+		// boolean done = false;
+		// int oldHeight;
+		// while (!done) {
+		// Iterator<FVertex> it = nodes.iterator();
+		// done = true;
+		// FVertex temp = null;
+		while (!nodes.isEmpty()) {
+			FVertex u = nodes.removeFirst();
+			// if (u.getExcess() == 0) {
+			// continue;
+			// }
+			// oldHeight = u.getHeight();
+			discharge(u);
+			// if (u.getHeight() != oldHeight) {
+			// done = false;
+			// temp = u;
+			// break;
+			// }
+			// }
+			// if (!done) {
+			// //it.remove();
+			// nodes.addFirst(temp);
+			// }
+>>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
 		}
 		System.out.println("Src excess " + source.getExcess());
 		maxFlow = terminal.getExcess();
@@ -279,11 +305,16 @@ public class MaxFlowGraph extends Graph {
 	}
 
 	private void discharge(FVertex u) {
+<<<<<<< HEAD
+=======
+		int relabelCounter = 0;
+>>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
 		while (u.getExcess() > 0 && u.getHeight()<=maxHeight) {
 			for (FEdge e : u.adjEdge) {
 				FVertex v = (FVertex) e.otherEnd(u);
 				if (e.isFeasibleFlow() && u.getHeight() == 1 + v.getHeight()) {
 					push(u, v, e);
+<<<<<<< HEAD
 					 if (u.getExcess() == 0) {
 					 return;
 					 }
@@ -293,6 +324,29 @@ public class MaxFlowGraph extends Graph {
 
 		}
 
+=======
+					// if (u.getExcess() == 0) {
+					// return;
+					// }
+				}
+			}
+			if (u.getExcess() > 0) {
+				relabel(u);
+			}
+
+		}
+		// if (u.getExcess() > 0) {
+		// FEdge parentEdge = null;
+		// for (FEdge e : u.parent.adjEdge) {
+		// FVertex v = (FVertex) e.otherEnd(u.parent);
+		// if (v.equals(u)) {
+		// parentEdge = e;
+		// }
+		// }
+		// u.setHeight(u.parent.getHeight() + 1);
+		// push(u, u.parent, parentEdge);
+		// }
+>>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
 	}
 
 	private void relabel(FVertex u) {
@@ -309,7 +363,11 @@ public class MaxFlowGraph extends Graph {
 			}
 		}
 		if (minHeight != Integer.MAX_VALUE && u.getHeight()<=maxHeight) {
+<<<<<<< HEAD
 			//System.out.println( u.getHeight());
+=======
+		//	System.out.println( u.getHeight());
+>>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
 			u.setHeight(1 + minHeight);
 		}
 	}
@@ -358,4 +416,8 @@ public class MaxFlowGraph extends Graph {
 
 	}
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 1effdc18452b114a5c49c9dab02072a28bb81b8c
