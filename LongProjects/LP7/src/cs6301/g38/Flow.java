@@ -13,6 +13,7 @@ public class Flow {
 	int [] edgesFlow;
 	private Set<Vertex> minCutT;
 	private Set<Vertex> minCutS;
+	MaxFlowGraph dg;
 
     public Flow(Graph g, Vertex s, Vertex t, HashMap<Edge, Integer> capacity) {
     	this.g = g;
@@ -21,12 +22,13 @@ public class Flow {
     	terminal=t;
     	edgesFlow = new int[g.edgeSize()];
     	
+    	
     }
 
     // Return max flow found by Dinitz's algorithm
     public int dinitzMaxFlow() {
     	
-    	DinitzGraph dg = new DinitzGraph(g,source, terminal,capacity);
+    	dg = new MaxFlowGraph(g,source, terminal,capacity);
     	dg.dinitz();
     	minCutS = dg.getMinCutS();
     	minCutT = dg.getMinCutT();
@@ -38,14 +40,16 @@ public class Flow {
     			edgesFlow[e.name-1] = dg.flow(e);
     		}
     	}
-	return dg.maxFlow;
+    	System.out.println("DG : "+dg.maxFlow);
+    	return dg.maxFlow;
     }
 
     // Return max flow found by relabelToFront algorithm
     public int relabelToFront() {
-    	RelabelGraph rg= new RelabelGraph(g, source, terminal, capacity);
-    	rg.relabelToFront();
-	return rg.getMaxFlow();
+    	dg = new MaxFlowGraph(g,source, terminal,capacity);
+    	dg.relabelToFront();
+    	System.out.println("RG : "+dg.maxFlow);
+    	return dg.maxFlow;
     }
 
     // flow going through edge e

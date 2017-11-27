@@ -5,7 +5,7 @@ import cs6301.g38.Graph.Edge;
 import cs6301.g38.Graph.Vertex;
 
 public class LP7 {
-	static int VERBOSE = 0;
+	static int VERBOSE = 1;
 
 	public static void main(String[] args) {
 		if (args.length > 0) {
@@ -33,8 +33,24 @@ public class LP7 {
 		}
 		Flow f = new Flow(g, g.getVertex(s), g.getVertex(t), capacity);
 		// f.setVerbose(VERBOSE);
-//		int value = f.dinitzMaxFlow(); 
-		int value = f.relabelToFront();
+		int value = f.dinitzMaxFlow(); 
+		
+		if (VERBOSE > 0) {
+			for (Vertex u : g) {
+				System.out.print(u + " : ");
+				for (Edge e : u) {
+					System.out.print(e + ":" + f.flow(e) + "/" + f.capacity(e) + " | ");
+				}
+				System.out.println();
+			}
+			System.out.println("Min cut: S = " + f.minCutS());
+			System.out.println("Min cut: T = " + f.minCutT());
+		}
+
+		System.out.println(timer.end());
+		timer.start();
+		 value = f.relabelToFront();
+		 
 
 		/*
 		 * Uncomment this if you have implemented verify() if(f.verify()) {
@@ -42,7 +58,7 @@ public class LP7 {
 		 * System.out.println("Algorithm is wrong. Verification failed."); }
 		 */
 
-		System.out.println(value);
+//		System.out.println(value);
 
 		if (VERBOSE > 0) {
 			for (Vertex u : g) {

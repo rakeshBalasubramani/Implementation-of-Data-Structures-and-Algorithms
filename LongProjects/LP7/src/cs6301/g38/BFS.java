@@ -7,13 +7,13 @@ package cs6301.g38;
 import java.util.Queue;
 import java.util.LinkedList;
 
-import cs6301.g38.DinitzGraph.FVertex;
+import cs6301.g38.MaxFlowGraph.FVertex;
 
 
 
 public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
     public static final int INFINITY = Integer.MAX_VALUE;
-    private DinitzGraph graph;
+    private MaxFlowGraph graph;
     // Class to store information about a vertex in this algorithm
     static class BFSVertex {
 	boolean seen;
@@ -37,7 +37,7 @@ public class BFS extends GraphAlgorithm<BFS.BFSVertex> {
 
     public BFS(Graph g, Graph.Vertex src) {
 	super(g);
-	graph = (DinitzGraph) g;
+	graph = (MaxFlowGraph) g;
 	this.src = src;
 	node = new BFSVertex[g.size()];
 	// Create array for storing vertex properties

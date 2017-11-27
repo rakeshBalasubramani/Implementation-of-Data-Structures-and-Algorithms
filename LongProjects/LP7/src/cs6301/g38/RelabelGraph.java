@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+
 public class RelabelGraph extends Graph {
 
 	public RelabelGraph(Graph g, Vertex source, Vertex terminal, HashMap<Edge, Integer> capacity) {
@@ -65,6 +66,42 @@ public class RelabelGraph extends Graph {
 			excess = 0;
 			adjEdge = new LinkedList<>();
 		}
+		public Iterator<Edge> iterator() { return new XVertexIterator(this); }
+		class XVertexIterator implements Iterator<Edge> {
+		    FEdge cur;
+		    Iterator<FEdge> it;
+		    boolean ready;
+
+		    XVertexIterator(FVertex u) {
+			this.it = u.adjEdge.iterator();
+			ready = false;
+		    }
+
+		    public boolean hasNext() {
+			if(ready) { return true; }
+			if(!it.hasNext()) { return false; }
+			cur = it.next();
+			while(!cur.isFeasibleFlow() && it.hasNext()) {
+			    cur = it.next();
+			}
+			ready = true;
+			return cur.isFeasibleFlow();
+		    }
+
+		    public Edge next() {
+			if(!ready) {
+			    if(!hasNext()) {
+				throw new java.util.NoSuchElementException();
+			    }
+			}
+			ready = false;
+			return cur;
+		    }
+
+		    public void remove() {
+			throw new java.lang.UnsupportedOperationException();
+		    }
+		}
 
 	}
 
@@ -93,19 +130,18 @@ public class RelabelGraph extends Graph {
 			this.capacity = capacity;
 
 		}
-
-	}
+		boolean isFeasibleFlow() {
+			return (flow < capacity) ;
+		    }
+	    }
 
 	FVertex source, terminal;
 	LinkedList<FVertex> nodes;
 	FVertex fVertices[];
 	int maxHeight;
 
-	public int getMaxFlow() {
-		return terminal.getExcess();
-	}
 
-	public void relabelToFront() {
+	public int relabelToFront() {
 		initialize();
 		boolean done = false;
 		int oldHeight;
@@ -131,6 +167,8 @@ public class RelabelGraph extends Graph {
 				nodes.addFirst(temp);
 			}
 		}
+		return terminal.getExcess();
+
 
 	}
 
