@@ -41,9 +41,12 @@ public class MinCostFlow {
     }
 
     // Return cost of d units of flow found by successive shortest paths
-    int successiveSPMinCostFlow(int d) {
-        return 0;
-    }
+    int successiveSPMinCostFlow(int d) {      
+    	CycleCancellationGraph ccg = new CycleCancellationGraph(g, source, terminal, capacity, cost);
+    int minCost = ccg.successiveSPMinCostFlow(d);
+    System.out.println("Flow " + ccg.getFlow() + "min Cost " + minCost);
+
+    return minCost;}
 
     // Return cost of d units of flow found by cost scaling algorithm
     int costScalingMinCostFlow(int d) {
