@@ -26,8 +26,6 @@ public class CycleCancellationGraph extends Graph {
 	private FEdge[] reverseEdge, forwardEdge;
 	private BFSFlowGraph bfsHelper;
 
-	private static boolean feasibleFlow = true;
-
 	static class FVertex extends Vertex {
 
 		public static final int INFINITY = Integer.MAX_VALUE;
@@ -250,7 +248,86 @@ public class CycleCancellationGraph extends Graph {
 		// return feasible;
 	}
 
-	private FVertex bellmanFord() {
+	
+	private boolean hasNegativeCycle()
+	{
+		boolean noChange=false;
+		for (FVertex fv : fVertices) {
+			fv.distance = FVertex.INFINITY;
+			fv.parentEdge = null;
+			fv.seen=false;
+		}
+	
+		boolean isVertexFound=false;
+		for(FVertex fv : fVertices)
+		{
+			
+			for(Edge e:fv)
+			{
+				fv.distance=0;
+				isVertexFound=true;
+				break;
+			}
+			if(isVertexFound)
+			{
+				break;
+			}
+		}
+		
+		
+		
+		for(int k=0; k<fVertices.length; k++ )
+		{
+			noChange=true;
+			
+			for(FEdge frwdEdge : forwardEdge)
+			{
+				if(frwdEdge.isFeasibleFlow())
+				{
+					FVertex u = getVertex(frwdEdge.from);
+					FVertex v = getVertex(frwdEdge.to);
+					
+					if(u.distance!=FVertex.INFINITY && v.distance > u.distance + frwdEdge.cost)
+					{
+						v.distance = u.distance + frwdEdge.cost;
+						v.parentEdge = frwdEdge;
+						noChange = false;
+					}
+				}
+			}
+			
+			for(FEdge revEdge:reverseEdge)
+			{
+				if(revEdge.isFeasibleFlow())
+				{
+					FVertex u = getVertex(revEdge.from);
+					FVertex v = getVertex(revEdge.to);
+					
+					if(u.distance!=FVertex.INFINITY && v.distance > u.distance + revEdge.cost)
+					{
+						v.distance = u.distance + revEdge.cost;
+						v.parentEdge = revEdge;
+						noChange = false;
+					}
+				}
+			}
+				
+			
+		}
+		
+		if(noChange)
+		{
+		return false;
+		}
+		else
+		{
+			return true;
+		}
+			
+	}
+	
+	
+	private FVertex bellmanFordBFS() {
 		Queue<FVertex> queue = new LinkedList<FVertex>();
 
 		for (FVertex fv : fVertices) {
@@ -296,14 +373,13 @@ public class CycleCancellationGraph extends Graph {
 	public int cycleCancellation(int flow) {
 
 		dinitzFlow(flow);
-		CycleCancellationGraph.feasibleFlow = false;
 		FVertex cycleVertex;
 		int minFlowEdge;
 		HashSet<FEdge> edgeSet = new HashSet<FEdge>();
-		while (( cycleVertex= bellmanFord()) != null) {
+		while (hasNegativeCycle()) {
 
 		
-			cycleVertex = findCycle(cycleVertex,edgeSet);
+			cycleVertex = findCycle(edgeSet);
 		minFlowEdge = identifyMinFlow(cycleVertex);
 		augment(minFlowEdge, cycleVertex);
 
@@ -312,16 +388,57 @@ public class CycleCancellationGraph extends Graph {
 		return currentCost;
 	}
 
-	private FVertex findCycle(FVertex cycleVertex, Set<FEdge> edgeSet) {
-		
-		while(!edgeSet.contains(cycleVertex.parentEdge))
+	private FVertex findCycle( Set<FEdge> edgeSet) {
+		FVertex cycleVertex = null;
+		int cycleCost=0;
+
+		for(FVertex fv : fVertices)
 		{
-			edgeSet.add(cycleVertex.parentEdge);
-			cycleVertex = getVertex(cycleVertex.parentEdge.otherEnd(cycleVertex));
+			edgeSet.clear();
+			 cycleCost=0;
+			if(fv.parentEdge!=null)
+			{
+			FEdge parentEdge = fv.parentEdge;
+			fv.seen=true;
+			FVertex parent = getVertex(parentEdge.otherEnd(fv));
+			while(!edgeSet.contains(parentEdge)) {
+				edgeSet.add(parentEdge);
+				parentEdge = parent.parentEdge;
+				parent.seen=true;
+				parent = getVertex(parentEdge.otherEnd(parent));
+				
+
+			}
+			FEdge currentEdge = parentEdge;
+			cycleVertex = parent;
+			do
+			{
+				cycleCost+=currentEdge.cost;
+				parent = getVertex(currentEdge.otherEnd(parent));
+				currentEdge = parent.parentEdge;
+
+				
+			}
+			while(!parentEdge.equals(currentEdge));
+			
+			
+			if(cycleCost<0)
+			{
+			break;
+			}
+			else
+			{
+				cycleVertex=null;
+			}
+			}
+			
 		}
-		edgeSet.clear();
-		return cycleVertex;
 		
+		if(cycleVertex==null)
+		{
+			System.out.println(cycleCost);
+		}
+		return cycleVertex;
 	}
 
 	private void augment(int minFlowEdge, FVertex cycleVertex) {
