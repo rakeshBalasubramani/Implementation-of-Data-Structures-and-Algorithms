@@ -33,6 +33,7 @@ public class CycleCancellationGraph extends Graph {
 		List<FEdge> adjEdge, revEdge;
 
 		boolean seen;
+		
 		int distance = INFINITY;
 		FEdge parentEdge;
 		int count; // used for BellmanFord algo iteration count.
@@ -284,24 +285,41 @@ public class CycleCancellationGraph extends Graph {
 			fv.seen=false;
 		}
 	
-		boolean isVertexFound=false;
-		for(FVertex fv : fVertices)
+		findFeasibleVertices();
+		
+		
+		
+		noChange = runBellman(noChange);
+		
+		if(noChange)
 		{
+			for(FVertex fv:fVertices)
+			{
+
+				if(!fv.seen)
+				{
+					fv.distance=0;
+					fv.seen=true;
+					noChange = runBellman(noChange);
+					if(!noChange)
+					{
+						return true;
+					}
+				}
+			}
+		
 			
-			for(Edge e:fv)
-			{
-				fv.distance=0;
-				isVertexFound=true;
-				break;
-			}
-			if(isVertexFound)
-			{
-				break;
-			}
+			
+		return false;
 		}
-		
-		
-		
+		else
+		{
+			return true;
+		}
+			
+	}
+
+	private boolean runBellman(boolean noChange) {
 		for(int k=0; k<fVertices.length; k++ )
 		{
 			noChange=true;
@@ -317,6 +335,8 @@ public class CycleCancellationGraph extends Graph {
 					{
 						v.distance = u.distance + frwdEdge.cost;
 						v.parentEdge = frwdEdge;
+						u.seen=true;
+						v.seen=true;
 						noChange = false;
 					}
 				}
@@ -333,6 +353,8 @@ public class CycleCancellationGraph extends Graph {
 					{
 						v.distance = u.distance + revEdge.cost;
 						v.parentEdge = revEdge;
+						u.seen=true;
+						v.seen=true;
 						noChange = false;
 					}
 				}
@@ -340,16 +362,26 @@ public class CycleCancellationGraph extends Graph {
 				
 			
 		}
-		
-		if(noChange)
+		return noChange;
+	}
+
+	private void findFeasibleVertices() {
+		boolean isVertexFound=false;
+		for(FVertex fv : fVertices)
 		{
-		return false;
-		}
-		else
-		{
-			return true;
-		}
+			fv.seen=true;
 			
+			for(Edge e:fv)
+			{
+				fv.distance=0;
+				isVertexFound=true;
+				break;
+			}
+			if(isVertexFound)
+			{
+				break;
+			}
+		}
 	}
 	
 	
@@ -406,9 +438,7 @@ public class CycleCancellationGraph extends Graph {
 
 		
 			cycleVertex = findCycle(edgeSet);
-		minFlowEdge = identifyMinFlow(cycleVertex);
-		augment(minFlowEdge, cycleVertex);
-
+		
 		}
 
 		return currentCost;
@@ -450,7 +480,9 @@ public class CycleCancellationGraph extends Graph {
 			
 			if(cycleCost<0)
 			{
-			break;
+			int	minFlowEdge = identifyMinFlow(cycleVertex);
+				augment(minFlowEdge, cycleVertex);
+
 			}
 			else
 			{
@@ -511,7 +543,7 @@ public class CycleCancellationGraph extends Graph {
 			fv.seen = false;
 			fv.distance = FVertex.INFINITY;
 			fv.count = 0;
-			fv.tightEdges = new FEdge[fv.revEdge.size()];
+			fv.tightEdges = new FEdge[fv.adjEdge.size()];
 			fv.tightEdgeSize = 0;
 
 		}
@@ -522,7 +554,9 @@ public class CycleCancellationGraph extends Graph {
 			FVertex currrent = queue.poll();
 			currrent.seen = false;
 			currrent.count++;
+			System.out.println("Cur"+currrent);
 			if (currrent.count >= fVertices.length - 1) {
+				System.out.println("Negative cycle");
 				return false;
 			}
 
@@ -531,16 +565,25 @@ public class CycleCancellationGraph extends Graph {
 				FVertex child = getVertex(e.otherEnd(currrent));
 				FEdge fe = (FEdge) e;
 				if (child.distance >= currrent.distance + (fe.cost)) {
+					boolean existingEdge=false;
+					for(FEdge tempE:currrent.tightEdges){
+						if(tempE!=null&&tempE.reverseEdge.equals(fe)){
+							existingEdge=true;
+						}
+					}
 					if (child.distance == currrent.distance + (fe.cost)) {
-						if (!child.containsTightEdge(fe)) {
+						
+						
+						if (!child.containsTightEdge(fe)&&!existingEdge) {
 							child.addTightEdge(fe);
 						}
-					} else {
+					} else if(!existingEdge){
 						child.distance = currrent.distance + e.weight;
 						child.clearTightEdges();
+						
 						child.addTightEdge(fe);
 					}
-					if (!child.seen) {
+					if (!child.seen&&!existingEdge) {
 						if (child.equals(terminal)) {
 							reachedTerminal = true;
 						}
@@ -560,13 +603,21 @@ public class CycleCancellationGraph extends Graph {
 		currentCost = 0;
 		int requiredFlow = d;
 		while (findTightEdges() && requiredFlow > 0) {
+			
+			for(FVertex fv : fVertices)
+			{
+				fv.seen=false;
+			}
 			for (Edge e : source) {
 				FEdge fe = (FEdge) e;
 				if (fe.isTightEdge) {
-					System.out.println();
+					//System.out.println();
+					source.seen=true;
 					returnFlow = pushToTerminal(source, requiredFlow);
+					source.seen=false;
+						
 					if (returnFlow > 0) {
-						System.out.println("Flow done: " + returnFlow);
+						//System.out.println("Flow done: " + returnFlow);
 						requiredFlow -= returnFlow;
 					}
 				}
@@ -586,9 +637,12 @@ public class CycleCancellationGraph extends Graph {
 		for (Edge e : vertex) {
 			Vertex otherVertex = e.otherEnd(vertex);
 			FEdge fe = (FEdge) e;
-			if (fe.isTightEdge) {
+			FVertex fvOther= getVertex(otherVertex);
+			if (fe.isTightEdge && !fvOther.seen) {
 				curr_flow = Math.min(flow, fe.capacity - fe.flow);
+				fvOther.seen=true;
 				temp_flow = pushToTerminal(getVertex(otherVertex), curr_flow);
+				fvOther.seen=false;
 				if (temp_flow > 0) {
 					fe.flow += temp_flow;
 					currentCost += fe.cost * temp_flow;
