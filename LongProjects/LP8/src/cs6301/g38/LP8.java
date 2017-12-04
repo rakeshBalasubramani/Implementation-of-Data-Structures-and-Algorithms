@@ -40,7 +40,7 @@ public class LP8 {
         }
 
         MinCostFlow f = new MinCostFlow(g, g.getVertex(s), g.getVertex(t), capacity, cost);
-       // f.cycleCancellingMinCostFlow(Integer.MAX_VALUE);
+       //f.cycleCancellingMinCostFlow(Integer.MAX_VALUE);
        f.successiveSPMinCostFlow(Integer.MAX_VALUE);
         //f.setVerbose(VERBOSE);
 

@@ -1,6 +1,5 @@
 package cs6301.g38;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,7 +16,7 @@ import java.util.Set;
  *
  * @Desc Class used to implement CycleCancellation algorithm
  */
-public class CycleCancellationGraph extends Graph {
+public class MinCostGraph extends Graph {
 	private FVertex[] fVertices; // vertices of graph
 	private FVertex source;
 	private FVertex terminal;
@@ -166,7 +165,7 @@ public class CycleCancellationGraph extends Graph {
 
 	}
 
-	public CycleCancellationGraph(Graph g, Vertex source, Vertex terminal,
+	public MinCostGraph(Graph g, Vertex source, Vertex terminal,
 			HashMap<Edge, Integer> capacity, HashMap<Edge, Integer> cost) {
 		super(g);
 		new LinkedList<>();
@@ -662,7 +661,6 @@ public class CycleCancellationGraph extends Graph {
 		currentCost = 0;
 		int requiredFlow = d;
 		cancelNegativeCycle();
-		System.out.println("Done");
 		while (hasPathToTerminal() && requiredFlow > 0) {
 		for(FVertex fv : fVertices)
 			{

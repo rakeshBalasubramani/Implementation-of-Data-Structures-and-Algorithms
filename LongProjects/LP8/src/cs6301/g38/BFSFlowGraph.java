@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 import java.util.Queue;
 
-import cs6301.g38.CycleCancellationGraph.FVertex;
+import cs6301.g38.MinCostGraph.FVertex;
 
 /**
  * @author Rajkumar PanneerSelvam - rxp162130 <br>
@@ -22,7 +22,7 @@ import cs6301.g38.CycleCancellationGraph.FVertex;
  */
 public class BFSFlowGraph extends GraphAlgorithm<BFSFlowGraph.BFSVertex> {
     public static final int INFINITY = Integer.MAX_VALUE;
-    private CycleCancellationGraph graph;
+    private MinCostGraph graph;
 
     // Class to store information about a vertex in this algorithm
     static class BFSVertex {
@@ -49,7 +49,7 @@ public class BFSFlowGraph extends GraphAlgorithm<BFSFlowGraph.BFSVertex> {
     public BFSFlowGraph(Graph g,
             Graph.Vertex src) {
         super(g);
-        graph = (CycleCancellationGraph) g;
+        graph = (MinCostGraph) g;
         this.src = src;
         node = new BFSVertex[g.size()];
         // Create array for storing vertex properties
