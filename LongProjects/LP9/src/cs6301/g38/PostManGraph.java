@@ -1,16 +1,11 @@
 package cs6301.g38;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import cs6301.g38.Graph.Edge;
 
 /**
  * @author Rajkumar PanneerSelvam - rxp162130 <br>
@@ -21,8 +16,6 @@ import cs6301.g38.Graph.Edge;
  * @Desc Class used to find PostMan tour.
  */
 public class PostManGraph extends Graph {
-
-	private static final int VERBOSE = 10;
 
 	private PVertex source;
 
@@ -88,61 +81,41 @@ public class PostManGraph extends Graph {
 		return Vertex.getVertex(pVertices, u);
 	}
 
-	  // Get a postman tour
-    public List<Edge> getTour() {
-    	Euler euler = new Euler(this.graph, startVertex);
+	// Get a postman tour
+	public List<Edge> getTour() {
 
-		boolean eulerian = euler.isEulerian();
+		findTour();
 
-    	findTour();
-    //	Euler euler = new Euler(this.graph, startVertex);
-//		euler.setVerbose(VERBOSE);
+		Euler euler = new Euler(this.graph, startVertex);
 
-		 eulerian = euler.isEulerian();
-		if (!eulerian) {
-
-			System.out.println("FAILED");
-			return null;
-		}
 		eulerTour = euler.findEulerTour();
 		return eulerTour;
-    }
+	}
 
-    // Find length of postman tour
-    public long postmanTour() {
-    	
+	// Find length of postman tour
+	public long postmanTour() {
 
-    	findTour();
-    	Euler euler = new Euler(this.graph, startVertex);
-//		euler.setVerbose(VERBOSE);
 
-		boolean eulerian = euler.isEulerian();
-		if (!eulerian) {
 
-			System.out.println("FAILED");
-			return 0;
-		}
-		
-		for(Vertex v : this.graph)
-		{
-			for(Edge e:v)
-			{
-				eulerLength= eulerLength+e.weight;
+		findTour();
+
+		for (Vertex v : this.graph) {
+			for (Edge e : v) {
+				eulerLength = eulerLength + e.weight;
 			}
 		}
 		return eulerLength;
-    
-    }
-    
-    @Override
-    public int size()
-    {
-    	return pVertices.length;
-    }
+
+	}
+
+	@Override
+	public int size() {
+		return pVertices.length;
+	}
+
 	private void findTour() {
 		if (findImbalancedVertices()) {
-			CycleCancellationGraph cg = new CycleCancellationGraph(this,
-					source, sink, capacity, cost);
+			MinCostGraph cg = new MinCostGraph(this, source, sink, capacity, cost);
 			cg.cycleCancellation(Integer.MAX_VALUE);
 			Map<Edge, Integer> edges = new HashMap<Edge, Integer>();
 			int flow = 0;
@@ -162,13 +135,10 @@ public class PostManGraph extends Graph {
 				while (flow > 0) {
 					this.addEdge(e.from, e.to, e.weight, this.edgeSize() + 1);
 					flow--;
-					
-					
+
 				}
 			}
 		}
-
-	
 
 	}
 
@@ -177,17 +147,17 @@ public class PostManGraph extends Graph {
 		boolean isExist = false;
 		for (PVertex pv : pVertices) {
 			if (pv != null) {
-			pv.excess = pv.revAdj.size() - pv.adj.size();
-			if (!isExist && pv.excess != 0) {
-				isExist = true;
-			}
+				pv.excess = pv.revAdj.size() - pv.adj.size();
+				if (!isExist && pv.excess != 0) {
+					isExist = true;
+				}
 			}
 		}
 
 		if (isExist) {
 			capacity = new java.util.HashMap<>();
 			cost = new java.util.HashMap<>();
-			
+
 			for (PVertex pv : pVertices) {
 				if (pv != null) {
 					for (Edge e : pv) {
@@ -196,31 +166,29 @@ public class PostManGraph extends Graph {
 					}
 				}
 			}
-			
-			source = new PVertex(new Vertex(graph.size() ));
+
+			source = new PVertex(new Vertex(graph.size()));
 			sink = new PVertex(new Vertex(graph.size() + 1));
 
 			for (PVertex pv : pVertices) {
 				if (pv != null) {
-				if (pv.excess > 0) {
-					Edge e = new Edge(source, pv, 0, ++m);
-					source.adj.add(e);
-					pv.revAdj.add(e);
-					capacity.put(e, pv.excess);
-					cost.put(e, 0);
+					if (pv.excess > 0) {
+						Edge e = new Edge(source, pv, 0, ++m);
+						source.adj.add(e);
+						pv.revAdj.add(e);
+						capacity.put(e, pv.excess);
+						cost.put(e, 0);
 
-				} else if (pv.excess < 0) {
-					Edge e = new Edge(pv, sink, 0, ++m);
-					pv.adj.add(e);
-					sink.revAdj.add(e);
-					capacity.put(e, pv.excess * -1);
-					cost.put(e, 0);
+					} else if (pv.excess < 0) {
+						Edge e = new Edge(pv, sink, 0, ++m);
+						pv.adj.add(e);
+						sink.revAdj.add(e);
+						capacity.put(e, pv.excess * -1);
+						cost.put(e, 0);
 
-				}
+					}
 				}
 			}
-
-
 
 			pVertices[source.name] = source;
 
