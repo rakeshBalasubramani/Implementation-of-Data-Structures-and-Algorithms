@@ -532,95 +532,156 @@ public class CycleCancellationGraph extends Graph {
 	public int getFlow() {
 		return currentFlow;
 	}
-	private boolean findTightEdges() {
-		Queue<FVertex> queue = new LinkedList<FVertex>();
-		boolean reachedTerminal = false;
+	
+	
+	
+	private boolean hasPathToTerminal() {
 		for (FVertex fv : fVertices) {
-			fv.seen = false;
 			fv.distance = FVertex.INFINITY;
-			fv.count = 0;
+			fv.parentEdge = null;
+			for (FEdge e : fv.adjEdge) {
+				e.isTightEdge = false;
+			}
 			fv.tightEdges = new FEdge[fv.adjEdge.size()];
 			fv.tightEdgeSize = 0;
 
 		}
-		source.seen = true;
 		source.distance = 0;
-		queue.offer(source);
-		while (!queue.isEmpty()) {
-			FVertex currrent = queue.poll();
-			currrent.seen = false;
-			currrent.count++;
-			System.out.println("Cur"+currrent);
-			if (currrent.count >= fVertices.length - 1) {
-				System.out.println("Negative cycle");
-				return false;
-			}
-
-			for (Edge e : currrent) {
-
-				FVertex child = getVertex(e.otherEnd(currrent));
-				FEdge fe = (FEdge) e;
-				if (child.distance >= currrent.distance + (fe.cost)) {
-					boolean existingEdge=false;
-					for(FEdge tempE:currrent.tightEdges){
-						if(tempE!=null&&tempE.reverseEdge.equals(fe)){
+		boolean existingEdge=false;
+		for (int i = 0; i < fVertices.length - 1; i++) {
+			for (FVertex u : fVertices) {
+				if(u.distance==FVertex.INFINITY) {
+					continue;
+				}
+				for (Edge e : u) {
+					FEdge fe = (FEdge) e;
+					existingEdge=false;
+					FVertex child = (FVertex) fe.otherEnd(u);
+					for(FEdge temp:u.tightEdges) {
+						if(temp!=null&&temp.reverseEdge.equals(fe)) {
 							existingEdge=true;
+							break;
 						}
 					}
-					if (child.distance == currrent.distance + (fe.cost)) {
+					if (child.distance > u.distance + fe.cost && !existingEdge) {
 						
-						
-						if (!child.containsTightEdge(fe)&&!existingEdge) {
+						if (child.distance == u.distance + fe.cost) {
+							if (!child.containsTightEdge(fe)) {
+								child.addTightEdge(fe);
+							}
+						} else {
+							child.distance = u.distance + fe.cost;
+							child.clearTightEdges();
 							child.addTightEdge(fe);
 						}
-					} else if(!existingEdge){
-						child.distance = currrent.distance + e.weight;
-						child.clearTightEdges();
-						
-						child.addTightEdge(fe);
-					}
-					if (!child.seen&&!existingEdge) {
-						if (child.equals(terminal)) {
-							reachedTerminal = true;
-						}
-						queue.offer(child);
-						child.seen = true;
+						child.parentEdge = fe;
 					}
 				}
+			}
+		}
+		if (terminal.parentEdge == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	
+	
+	private void cancelNegativeCycle() {
+		boolean cyclePossible = true;
+		while (cyclePossible) {
+			cyclePossible = false;
+			for (FVertex i : fVertices) {
+				FVertex cycleNode = findTightEdges(i);
+				if (cycleNode != null) {
+					System.out.println(cycleNode);
+					cyclePossible = true;
+					int pathFlow = Integer.MAX_VALUE;
+					FVertex v = cycleNode, u = (FVertex) v.parentEdge.to;
+					FEdge tempEdge = v.parentEdge;
+					pathFlow = Math.min(pathFlow, tempEdge.capacity - tempEdge.flow);
+					for (v = u; !v.equals(cycleNode); v = (FVertex) v.parentEdge.to) {
+						u = (FVertex) v.parentEdge.to;
+						tempEdge = v.parentEdge;
+						pathFlow = Math.min(pathFlow, tempEdge.capacity - tempEdge.flow);
+						
+					}
+					v = cycleNode;
+					u = (FVertex) v.parentEdge.to;
+					tempEdge = v.parentEdge;
+					FEdge tempEdgeRev = tempEdge.reverseEdge;
+					tempEdge.flow -= pathFlow;
+					tempEdgeRev.flow += pathFlow;
+					for (v = u; !v.equals(cycleNode); v = (FVertex) v.parentEdge.to) {
+						u = (FVertex) v.parentEdge.to;
+						tempEdge = v.parentEdge;
+						tempEdgeRev = tempEdge.reverseEdge;
+						tempEdge.flow -= pathFlow;
+						tempEdgeRev.flow+=pathFlow;
+					}
 
+				}
 			}
 		}
 
-		return reachedTerminal;
+	}
+	private FVertex findTightEdges(FVertex tempFVertex) {
+		FVertex cycleNode = null;
+		for (FVertex fv : fVertices) {
+			fv.distance = FVertex.INFINITY;
+
+		}
+		tempFVertex.distance = 0;
+		for (int i = 0; i < fVertices.length - 1; i++) {
+			for (FVertex current : fVertices) {
+				for (Edge e : current) {
+					FVertex child = getVertex(e.otherEnd(current));
+					FEdge fe = (FEdge) e;
+					if (child.distance > current.distance + (fe.cost)) {
+						child.distance = current.distance + e.weight;
+						child.parentEdge = fe;
+					}
+				}
+			}
+		}
+		for (FVertex u : fVertices) {
+			for (Edge e : u) {
+				FVertex child = getVertex(e.otherEnd(u));
+				FEdge fe = (FEdge) e;
+				if (child.distance > u.distance + fe.cost) {
+					cycleNode = child;
+				}
+			}
+		}
+		return cycleNode;
 
 	}
 	public int successiveSPMinCostFlow(int d) {
 		int returnFlow = 0;
 		currentCost = 0;
 		int requiredFlow = d;
-		while (findTightEdges() && requiredFlow > 0) {
-			
-			for(FVertex fv : fVertices)
+		cancelNegativeCycle();
+		System.out.println("Done");
+		while (hasPathToTerminal() && requiredFlow > 0) {
+		for(FVertex fv : fVertices)
 			{
 				fv.seen=false;
 			}
 			for (Edge e : source) {
 				FEdge fe = (FEdge) e;
 				if (fe.isTightEdge) {
-					//System.out.println();
 					source.seen=true;
 					returnFlow = pushToTerminal(source, requiredFlow);
 					source.seen=false;
-						
 					if (returnFlow > 0) {
-						//System.out.println("Flow done: " + returnFlow);
 						requiredFlow -= returnFlow;
+						currentFlow += returnFlow;
 					}
 				}
 			}
 
 		}
-		currentFlow = d - requiredFlow;
 		return currentCost;
 	}
 
