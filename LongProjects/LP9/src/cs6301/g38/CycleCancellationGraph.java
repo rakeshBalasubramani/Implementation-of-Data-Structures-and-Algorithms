@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+import cs6301.g38.Graph.Vertex;
+
 /**
  * @author Rajkumar PanneerSelvam - rxp162130 <br>
  *         Avinash Venkatesh - axv165330 <br>
@@ -166,12 +168,16 @@ public class CycleCancellationGraph extends Graph {
 
 	}
 
+	@Override
+	public Iterator<Vertex> iterator() {
+		return new ArrayIterator<Vertex>(fVertices);
+	}
+	
 	public CycleCancellationGraph(Graph g, Vertex source, Vertex terminal,
 			HashMap<Edge, Integer> capacity, HashMap<Edge, Integer> cost) {
 		super(g);
-		new LinkedList<>();
-		fVertices = new FVertex[g.size()]; // Extra space is allocated in array
-											// for nodes to be added later
+		fVertices = new FVertex[g.size()]; 
+											
 		reverseEdge = new FEdge[this.edgeSize()];
 		forwardEdge = new FEdge[this.edgeSize()];
 		for (Vertex u : g) {
@@ -210,6 +216,12 @@ public class CycleCancellationGraph extends Graph {
 		return Vertex.getVertex(fVertices, u);
 	}
 
+	
+	@Override
+	public int size()
+	{
+		return fVertices.length;
+	}
 	private int pushFlow(Vertex vertex, int flow) {
 		if (vertex.equals(terminal))
 			return flow;
@@ -648,5 +660,10 @@ public class CycleCancellationGraph extends Graph {
 			}
 		}
 		return 0;
+	}
+	
+	public int flow(Edge e)
+	{
+		return forwardEdge[e.name-1].flow;
 	}
 }
