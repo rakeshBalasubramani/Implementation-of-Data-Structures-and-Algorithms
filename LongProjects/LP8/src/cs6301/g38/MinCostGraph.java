@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Set;
  *         Rakesh Balasubramani - rxb162130 <br>
  *         HariPriyaa Manian - hum160030
  *
- * @Desc Class used to implement CycleCancellation algorithm
+ * @Desc Class used to implement CycleCancellation and Successive Shortest Paths algorithm to calculate Mincost-MaxFlow.
  */
 public class MinCostGraph extends Graph {
 	private FVertex[] fVertices; // vertices of graph
@@ -283,9 +282,23 @@ public class MinCostGraph extends Graph {
 			fv.parentEdge = null;
 			fv.seen=false;
 		}
-	
-		findFeasibleVertex();
-		
+		boolean isVertexFound = false;
+
+		for(FVertex fv : fVertices)
+		{
+			fv.seen=true;
+			
+			for(Edge e:fv)
+			{
+				fv.distance=0;
+				isVertexFound=true;
+				break;
+			}
+			if(isVertexFound)
+			{
+				break;
+			}
+		}		
 		
 		
 		noChange = runBellman(noChange);
@@ -364,69 +377,9 @@ public class MinCostGraph extends Graph {
 		return noChange;
 	}
 
-	private void findFeasibleVertex() {
-		boolean isVertexFound=false;
-		for(FVertex fv : fVertices)
-		{
-			fv.seen=true;
-			
-			for(Edge e:fv)
-			{
-				fv.distance=0;
-				isVertexFound=true;
-				break;
-			}
-			if(isVertexFound)
-			{
-				break;
-			}
-		}
-	}
 	
 	
-	private FVertex bellmanFordBFS() {
-		Queue<FVertex> queue = new LinkedList<FVertex>();
-
-		for (FVertex fv : fVertices) {
-			fv.seen = false;
-			fv.distance = FVertex.INFINITY;
-			fv.parentEdge = null;
-			fv.count = 0;
-
-		}
-		source.seen = true;
-		source.distance = 0;
-		queue.offer(source);
-		while (!queue.isEmpty()) {
-			FVertex currrent = queue.poll();
-			currrent.seen = false;
-			currrent.count++;
-			if (currrent.count >= fVertices.length - 1) {
-				return currrent;
-			}
-
-			for (Edge e : currrent) {
-
-				FVertex child = getVertex(e.otherEnd(currrent));
-				FEdge fe = (FEdge) e;
-				if (child.distance > currrent.distance
-						+ (fe.cost)) {
-					child.distance = currrent.distance
-							+ (fe.cost );
-					child.parentEdge = fe;
-					if (!child.seen) {
-						queue.offer(child);
-						child.seen = true;
-					}
-				}
-
-			}
-		}
-
-		return null;
-
-	}
-
+	
 	public int cycleCancellation(int flow) {
 
 		dinitzFlow(flow);
@@ -707,5 +660,20 @@ public class MinCostGraph extends Graph {
 			}
 		}
 		return 0;
+	}
+	
+	public int flow(Edge e)
+	{
+		return forwardEdge[e.name-1].flow;
+	}
+	
+	public int capacity(Edge e)
+	{
+		return forwardEdge[e.name-1].capacity;
+	}
+	
+	public int cost(Edge e)
+	{
+		return forwardEdge[e.name-1].cost;
 	}
 }
