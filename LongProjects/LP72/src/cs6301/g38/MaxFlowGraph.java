@@ -26,6 +26,7 @@ public class MaxFlowGraph extends Graph {
 	private int maxFlow;
 	int choice;
 	private LinkedList<FVertex> nodes;
+	private Set<Integer> setHeights;
 	private BFSFlowGraph bfsHelper;
 	private FEdge[] reverseEdge, forwardEdge;
 	int maxHeight;
@@ -154,15 +155,17 @@ public class MaxFlowGraph extends Graph {
 	public MaxFlowGraph(Graph g, Vertex source, Vertex terminal, HashMap<Edge, Integer> capacity, int choice) {
 		super(g);
 		this.choice = choice;
-		maxHeight = 2 * g.size() - 2;
+		maxHeight = g.size() + 1;
 		nodes = new LinkedList<>();
 		fVertices = new FVertex[g.size()]; // Extra space is allocated in array
 											// for nodes to be added later
 		reverseEdge = new FEdge[this.edgeSize()];
 		forwardEdge = new FEdge[this.edgeSize()];
+		setHeights = new HashSet<Integer>();
 		for (Vertex u : g) {
 			fVertices[u.getName()] = new FVertex(u);
 		}
+		
 		this.source = getVertex(source);
 		this.terminal = getVertex(terminal);
 
@@ -269,6 +272,9 @@ public class MaxFlowGraph extends Graph {
 
 	public void relabelToFront() {
 		initialize();
+		if (choice == 1 || choice == 3) {
+			bfs();
+		}
 		while (!nodes.isEmpty()) {
 			FVertex u = nodes.removeFirst();
 			discharge(u);
@@ -278,7 +284,6 @@ public class MaxFlowGraph extends Graph {
 	}
 
 	private void discharge(FVertex u) {
-		int counter = 0;
 		while (u.getExcess() > 0 && u.getHeight() <= maxHeight) {
 			for (FEdge e : u.adjEdge) {
 				FVertex v = (FVertex) e.otherEnd(u);
@@ -289,18 +294,8 @@ public class MaxFlowGraph extends Graph {
 					}
 				}
 			}
-			if (counter++ < 3) {
-				relabel(u);
-			} else {
-				System.out.println("Called BFS");
-				bfs();
-				for(FVertex v:fVertices) {
-					if(!v.equals(source)&&!v.equals(terminal)&&!v.visited&&v.height<this.size()) {
-						v.height = this.size()+1;
-					}
-				}
-			}
-
+			relabel(u);
+			//gap(u.height);
 		}
 
 	}
@@ -317,6 +312,7 @@ public class MaxFlowGraph extends Graph {
 		}
 		if (minHeight != Integer.MAX_VALUE && u.getHeight() <= maxHeight) {
 			u.setHeight(1 + minHeight);
+			setHeights.add(1+minHeight);
 		}
 	}
 
@@ -333,6 +329,7 @@ public class MaxFlowGraph extends Graph {
 
 	private void initialize() {
 		source.height = this.size();
+		setHeights.add(source.height);
 		for (FEdge e : source.adjEdge) {
 			e.setFlow(e.getCapacity());
 			source.setExcess(source.getExcess() - e.getCapacity());
@@ -351,12 +348,15 @@ public class MaxFlowGraph extends Graph {
 	}
 
 	private void bfs() {
+		for (FVertex v : fVertices) {
+			v.visited = false;
+		}
 		Queue<FVertex> q = new LinkedList<>();
 		q.add(terminal);
 		getVertex(terminal).visited = true;
 		while (!q.isEmpty()) {
 			FVertex u = q.remove();
-			for (Edge e : u) {
+			for (Edge e : u.revEdge) {
 				FVertex v = (FVertex) e.otherEnd(u);
 				if (!v.visited) {
 					v.visited = true;
@@ -365,6 +365,40 @@ public class MaxFlowGraph extends Graph {
 				}
 			}
 		}
+		for (FVertex v : fVertices) {
+			if (!v.equals(source) && !v.equals(terminal) && !v.visited && v.height < this.size()) {
+				v.height = maxHeight;
+			}
+		}
+	}
+
+	private void gap(int k) {
+		for (FVertex v : fVertices) {
+			v.visited = false;
+		}
+		for(FVertex v:fVertices) {
+			if(!v.equals(source)&&!v.equals(terminal)&&v.height>=k&&!pathExists(v)) {
+				v.height=this.size()+1;
+			}
+		}
+	}
+
+	private boolean pathExists(FVertex v) {
+		boolean temp;
+		for(FEdge e:v.adjEdge) {
+			FVertex u = (FVertex) e.otherEnd(v);
+			if(u.equals(terminal)&&!u.visited) {
+				return true;
+			}
+			else if(!u.visited){
+				u.visited=true;
+				temp = pathExists(u);
+				u.visited=false;
+				return temp;
+				
+			}
+		}
+		return false;
 	}
 
 }

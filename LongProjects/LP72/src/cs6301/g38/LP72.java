@@ -1,15 +1,19 @@
 // Driver program for LP72: push-relabel algorithm using 2 heuristics
 package cs6301.g38;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
 import cs6301.g38.Graph;
 import cs6301.g38.Graph.Edge;
 import cs6301.g38.Graph.Vertex;
 
 
 public class LP72 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 	int extra = 0, choice = 0;
 	if(args.length > 0) { extra = Integer.parseInt(args[0]); }
 	if(args.length > 1) { choice = Integer.parseInt(args[1]); }
+//	java.util.Scanner in = new java.util.Scanner(new FileReader("lp7-big.txt"));
 	java.util.Scanner in = new java.util.Scanner(System.in);
 	Graph g = Graph.readDirectedGraph(in);
 	int s = in.nextInt();
@@ -64,7 +68,7 @@ public class LP72 {
 		choice = 2  =>  use gap heuristic only
 		choice = 3  =>  use both heuristics
 	*/
-	f.chooseHeuristics(choice);
+	f.chooseHeuristics(1);
 	int value = f.relabelToFront();
 	System.out.println(value);
 	System.out.println(timer.end());
